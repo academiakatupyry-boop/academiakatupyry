@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Katypyry - Gimnasio mental</title>
+    <link rel="icon" type="image/png" href="/logo.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-island": "#7C3AED", "primary-light": "#9F7AEA",
+                        "secondary-adventure": "#FFD700", "secondary-orange": "#FFA500",
+                        "accent-ocean": "#6DD5ED", "accent-path": "#FF6B6B",
+                        "text-dark-fun": "#2D3748", "text-light-fun": "#FFFFFF",
+                        "background-sky": "#E0FFFF", "background-grass": "#90EE90",
+                        "surface-cloud": "#FFFFFF", primary: "#607AFB",
+                        "background-light": "#f5f6f8", "background-dark": "#0f1323",
+                        "primary-dark": "#0284c7", accent: "#fbbf24", "accent-dark": "#d97706",
+                        "surface-light": "#ffffff", "surface-dark": "#075985",
+                        "text-main-light": "#0c4a6e", "text-main-dark": "#f0f9ff",
+                        "text-muted-light": "#64748b", "text-muted-dark": "#bae6fd",
+                        "adventure-green": "#4ade80", "adventure-brown": "#8d6e63",
+                        "island-primary": "#00C49A", "island-primary-dark": "#009E7B",
+                        "island-secondary": "#FFB347", "island-accent": "#FF6B6B",
+                        "bg-light": "#FDFCF5", "bg-dark": "#122A26",
+                        "text-main": "#1A3C34", "text-muted": "#648F83",
+                        "board-light": "#F0E6D2", "board-dark": "#6AB098",
+                        "island-bg": "#FFF9F0", "island-text": "#4A3B32",
+                        leaf: "#8AC926", wood: "#8D6E63", ocean: "#4CC9F0", danger: "#FF595E",
+                        "primary-hover": "#16a34a", secondary: "#fbbf24", "bg-page": "#fffbeb",
+                        "bg-card": "#ffffff", "border-main": "#e7e5e4", forest: "#5DB56E",
+                        "wood-light": "#D7CCC8", "wood-medium": "#A1887F", "wood-dark": "#5D4037", parchment: "#FFF3E0",
+                        "dark-text": "#0F1C2E"
+                    },
+                    fontFamily: {
+                        display: ["Plus Jakarta Sans", "sans-serif"],
+                        body: ["Nunito", "Lexend", "Noto Sans", "sans-serif"],
+                        sans: ["Spline Sans", "Lexend", "sans-serif"]
+                    },
+                    borderRadius: { DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px" },
+                    animation: {
+                        float: "float 6s ease-in-out infinite",
+                        "bounce-slow": "bounce 3s infinite",
+                        wiggle: "wiggle 1s ease-in-out infinite",
+                        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+                    },
+                    keyframes: {
+                        float: { "0%, 100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-20px)" } },
+                        wiggle: { "0%, 100%": { transform: "rotate(-3deg)" }, "50%": { transform: "rotate(3deg)" } }
+                    },
+                    boxShadow: {
+                        cartoon: "4px 4px 0px rgba(45, 55, 72, 1)",
+                        "cartoon-lg": "8px 8px 0px rgba(45, 55, 72, 0.15)",
+                        "cartoon-hover": "2px 2px 0px rgba(45, 55, 72, 1)",
+                        comic: "4px 4px 0px 0px rgba(0,0,0,0.15)",
+                        "comic-hover": "6px 6px 0px 0px rgba(0,0,0,0.15)",
+                        "comic-primary": "4px 4px 0px 0px #0284c7",
+                        "comic-accent": "4px 4px 0px 0px #d97706",
+                        game: "0 4px 0 0 rgba(0,0,0,0.1)",
+                        "game-hover": "0 2px 0 0 rgba(0,0,0,0.1)",
+                        "game-active": "0 0 0 0 rgba(0,0,0,0.1), inset 0 2px 0 0 rgba(0,0,0,0.1)",
+                        card: "0 8px 20px -6px rgba(0, 0, 0, 0.05)",
+                        board: "0 20px 40px -10px rgba(0, 0, 0, 0.2)",
+                        "btn-primary": "0 4px 0 0 #15803d",
+                        "btn-white": "0 4px 0 0 #d6d3d1",
+                        button: "0 4px 0px 0px rgba(0,0,0,0.2)",
+                        "button-active": "0 0px 0px 0px rgba(0,0,0,0.2)",
+                        floating: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                        btn: "0 4px 0 0 #D68C00", "btn-hover": "0 2px 0 0 #D68C00"
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- CHESSGROUND & CUSTOM STYLES CORRECTED -->
+    <style>
+        /* CHESSGROUND ELEMENT SELECTORS (Tag selectors, not classes) */
+        .cg-wrap {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: block;
+        }
+
+        cg-board,
+        cg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            user-select: none;
+            line-height: 0;
+            background-size: cover;
+            cursor: pointer;
+            /* BLUE AND WHITE CHECKERBOARD PATTERN */
+            background-image: conic-gradient(#60A5FA 90deg,
+                    #FFFFFF 90deg 180deg,
+                    #60A5FA 180deg 270deg,
+                    #FFFFFF 270deg);
+            background-size: 25% 25%;
+        }
+
+        cg-board square {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12.5%;
+            height: 12.5%;
+            pointer-events: none;
+        }
+
+        cg-board piece {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12.5%;
+            height: 12.5%;
+            background-size: cover;
+            z-index: 2;
+            will-change: transform;
+            pointer-events: none;
+            /* Events are handled by container */
+        }
+
+        cg-board piece.dragging {
+            cursor: move;
+            z-index: 9;
+        }
+
+        cg-board piece.anim {
+            z-index: 8;
+        }
+
+        cg-board piece.fading {
+            z-index: 1;
+            opacity: .5;
+        }
+
+        .cg-wrap piece.ghost {
+            opacity: 0.3;
+        }
+
+        /* Shapes (SVG overlay) */
+        .cg-wrap svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.6;
+            overflow: visible;
+        }
+
+        /* PIECE IMAGES - Tag Selectors */
+        piece.pawn.white {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg');
+        }
+
+        piece.bishop.white {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg');
+        }
+
+        piece.knight.white {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg');
+        }
+
+        piece.rook.white {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg');
+        }
+
+        piece.queen.white {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg');
+        }
+
+        piece.king.white {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg');
+        }
+
+        piece.pawn.black {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg');
+        }
+
+        piece.bishop.black {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg');
+        }
+
+        piece.knight.black {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg');
+        }
+
+        piece.rook.black {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg');
+        }
+
+        piece.queen.black {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg');
+        }
+
+        piece.king.black {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg');
+        }
+
+        /* General Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #E0FFFF;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #7C3AED;
+            border-radius: 6px;
+            border: 3px solid #E0FFFF;
+        }
+
+        .map-path-dashed {
+            background-image: linear-gradient(#7dd3fc 50%, rgba(255, 255, 255, 0) 0%);
+            background-position: right;
+            background-size: 6px 24px;
+            background-repeat: repeat-y;
+        }
+
+        .dark .map-path-dashed {
+            background-image: linear-gradient(#0369a1 50%, rgba(255, 255, 255, 0) 0%);
+        }
+
+        .wood-pattern {
+            background-color: #FFF8E1;
+            background-image: radial-gradient(#D7CCC8 15%, transparent 16%), radial-gradient(#D7CCC8 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 1, "wght" 600, "GRAD" 0, "opsz" 24;
+        }
+    </style>
+
+    <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
+    "chessground": "https://esm.sh/chessground@9.1.1"
+  }
+}
+</script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+</body>
+
+</html>
