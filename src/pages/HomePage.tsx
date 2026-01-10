@@ -41,15 +41,15 @@ const HomePage: React.FC = () => {
                                     </span>
                                 </div>
 
-                                <h1 className="text-5xl sm:text-6xl xl:text-7xl font-black font-display tracking-tight mb-6 leading-[1.1] drop-shadow-xl text-white">
+                                <h1 className="text-5xl sm:text-6xl xl:text-8xl font-black font-display tracking-tight mb-8 leading-[1.1] drop-shadow-2xl text-white">
                                     Academia <br className="hidden lg:block" />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500 relative inline-block transform hover:scale-105 transition-transform duration-300 filter drop-shadow-sm cursor-default">
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 relative inline-block transform hover:scale-105 transition-transform duration-300 filter drop-shadow-[0_0_20px_rgba(251,191,36,0.5)] cursor-default">
                                         Katupyry
                                     </span>
                                 </h1>
 
-                                <p className="text-xl md:text-2xl text-indigo-100 mb-10 font-bold max-w-2xl mx-auto lg:mx-0 leading-relaxed drop-shadow-md">
-                                    Transforma tu mente. <span className="text-white underline decoration-wavy decoration-yellow-400 decoration-2">Juega</span>, aprende y conquista el tablero.
+                                <p className="text-2xl md:text-3xl text-indigo-100 mb-10 font-bold max-w-2xl mx-auto lg:mx-0 leading-relaxed drop-shadow-lg tracking-wide">
+                                    El gimnasio de las mentes estrategas.
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
