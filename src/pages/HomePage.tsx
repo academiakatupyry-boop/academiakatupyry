@@ -10,7 +10,7 @@ const HomePage: React.FC = () => {
             <main className="w-full pt-32 pb-24">
                 <section className="island-section max-w-7xl mx-auto px-4 relative mb-24">
                     {/* Main Hero Card */}
-                    <div className="relative overflow-hidden rounded-[3rem] shadow-floating border-[6px] border-white/20 p-8 md:p-12 lg:p-16 bg-cover bg-center" style={{ backgroundImage: 'url("/galaxiainicio.png")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+                    <div className="relative overflow-hidden rounded-[3rem] shadow-floating border-[6px] border-white/20 p-8 md:p-12 lg:p-16 bg-cover bg-center" style={{ backgroundImage: 'url("/fondogalaxiachess.svg")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
 
                         {/* Dynamic Background Elements (The "Life") */}
                         <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/stardust.png")' }}></div>
