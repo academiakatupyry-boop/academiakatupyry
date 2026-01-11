@@ -35,9 +35,8 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
             </div>
 
             {/* Main Content Area */}
-            {/* Add margin-left to accommodate fixed sidebar on desktop */}
-            {/* Sidebar is w-20 (80px) or w-64 (256px) */}
-            <main className={`flex-1 w-full min-h-screen relative transition-all duration-300 ${collapsed ? 'md:pl-24' : 'lg:pl-64 md:pl-24'}`}>
+            {/* Sidebar is fixed. We need padding-left equal to its width */}
+            <main className={`flex-1 w-full min-h-screen relative transition-all duration-300 ${collapsed ? 'md:pl-24' : 'md:pl-64'}`}>
                 <div className="w-full h-full animate-fade-in-up">
                     {children}
                 </div>

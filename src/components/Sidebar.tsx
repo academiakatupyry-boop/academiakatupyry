@@ -43,16 +43,17 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                         <button
                             key={item.path}
                             onClick={() => navigate(item.path)}
-                            className={`w - full flex items - center gap - 4 px - 4 py - 3 rounded - 2xl transition - all duration - 200 border - 2 border - transparent ${isActive
+                            className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 border-2 border-transparent ${isActive
                                     ? "bg-blue-100/50 border-blue-200 text-primary-island"
                                     : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-                                } ${collapsed ? 'justify-center' : ''} `}
+                                } ${collapsed ? 'justify-center px-0' : ''}`}
+                            title={collapsed ? item.label : ''}
                         >
-                            <span className={`material - symbols - outlined text - [28px] ${isActive ? "fill-current" : ""} `}>
+                            <span className={`material-symbols-outlined text-[28px] ${isActive ? "fill-current" : ""}`}>
                                 {item.icon}
                             </span>
                             {!collapsed && (
-                                <span className={`uppercase font - bold text - sm tracking - widest ${isActive ? "text-primary-island" : "text-slate-500"} `}>
+                                <span className={`uppercase font-bold text-sm tracking-widest ${isActive ? "text-primary-island" : "text-slate-500"}`}>
                                     {item.label}
                                 </span>
                             )}
