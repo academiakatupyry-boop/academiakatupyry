@@ -126,6 +126,11 @@ const LearnPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {/* Fixed Mascot Companion */}
+            <div className="fixed bottom-0 right-[-10px] z-50 w-32 h-32 md:w-48 md:h-48 pointer-events-none mix-blend-multiply opacity-90">
+                <img src="/personaje movimiento.gif" alt="Companion" className="w-full h-full object-contain" />
+            </div>
+
         </div>
     );
 };
