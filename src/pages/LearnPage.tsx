@@ -121,7 +121,7 @@ const LearnPage: React.FC = () => {
 
                     {/* End of Path Trophy */}
                     <div className="mt-12 flex flex-col items-center opacity-50 grayscale">
-                        <img src="/logochicoSVG.svg" className="w-32 h-32 mb-4 animate-bounce-slow" alt="Trophy" />
+                        <img src="/isologosvg.svg" className="w-32 h-32 mb-4 animate-bounce-slow" alt="Trophy" />
                         <span className="font-black text-slate-400 uppercase tracking-widest">Próximamente más niveles</span>
                     </div>
                 </div>

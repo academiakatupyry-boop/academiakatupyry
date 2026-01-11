@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
                 {/* Logo - Adjusted for size */}
                 <div className="flex items-center justify-center w-full h-full">
                     <img
-                        src="/logochicoSVG.svg"
+                        src="/isologosvg.svg"
                         alt="Logo"
                         className={`object-contain hover:scale-110 transition-transform cursor-pointer ${isCollapsed ? 'w-16 h-16' : 'w-48 h-48 drop-shadow-xl'}`}
                         onClick={() => navigate('/')}

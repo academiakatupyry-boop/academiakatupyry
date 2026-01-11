@@ -27,7 +27,7 @@ const PrototypeNav: React.FC = () => {
                 <div className="flex items-center gap-2 shrink-0 cursor-pointer" onClick={() => navigate('/')}>
                     <div className="relative group">
                         <div className="absolute inset-0 bg-secondary-adventure rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                        <img src="/logochicoSVG.svg" alt="Katupyry" className="w-12 h-12 md:w-16 md:h-16 relative z-10 transform group-hover:scale-110 transition-transform" />
+                        <img src="/isologosvg.svg" alt="Katupyry" className="w-12 h-12 md:w-16 md:h-16 relative z-10 transform group-hover:scale-110 transition-transform" />
                     </div>
                 </div>
 
