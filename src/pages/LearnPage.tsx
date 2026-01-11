@@ -90,10 +90,25 @@ const LearnPage: React.FC = () => {
                 )}
 
                 {/* Header (Floating island style) */}
-                <div className="bg-white border-b-4 border-slate-200 rounded-[2rem] p-6 text-center w-full mb-8 shadow-panel">
-                    <PageTitle title="Ruta de" highlight="Aprendizaje" className="!mb-4" />
-                    <div className="bg-primary-island/10 rounded-xl py-2 px-4 inline-block">
-                        <span className="text-primary-island font-bold text-sm">Nivel 1: Conceptos Básicos</span>
+                <div className="bg-white border-b-4 border-slate-200 rounded-[2rem] p-6 w-full mb-8 shadow-panel relative overflow-hidden group">
+                    {/* Decorative Background */}
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary-island/5 to-transparent z-0 pointer-events-none"></div>
+
+                    <div className="flex items-center justify-between relative z-10">
+                        <div className="text-left flex flex-col items-start">
+                            <PageTitle title="Ruta de" highlight="Aprendizaje" className="!mb-2" />
+                            <div className="bg-primary-island/10 rounded-xl py-2 px-4 inline-block border-2 border-primary-island/20">
+                                <span className="text-primary-island font-black text-sm uppercase tracking-wide flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-base">flag</span>
+                                    Nivel 1: Conceptos Básicos
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Animated Mascot */}
+                        <div className="w-28 h-28 md:w-40 md:h-40 shrink-0 transform hover:scale-110 transition-transform duration-500 cursor-pointer">
+                            <img src="/personaje movimiento.gif" alt="Mascota Katupyry" className="w-full h-full object-contain drop-shadow-lg" />
+                        </div>
                     </div>
                 </div>
 
