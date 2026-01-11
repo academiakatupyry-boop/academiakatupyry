@@ -57,11 +57,20 @@ export default {
                 cartoon: "4px 4px 0px rgba(45, 55, 72, 1)",
                 "cartoon-lg": "8px 8px 0px rgba(45, 55, 72, 0.15)",
                 "cartoon-hover": "2px 2px 0px rgba(45, 55, 72, 1)",
+                // 3D Button Shadows (Solid bottom border effect)
+                "btn-primary": "0 4px 0 #059669", // emerald-600
+                "btn-primary-hover": "0 6px 0 #059669",
+                "btn-primary-active": "0 0 0 #059669",
+
+                "btn-secondary": "0 4px 0 #ca8a04", // yellow-600
+                "btn-danger": "0 4px 0 #dc2626",
+                "btn-neutral": "0 4px 0 #9ca3af",
+
+                "panel": "0 8px 0 rgba(0,0,0,0.1)", // For cards/sidebar
+
                 comic: "4px 4px 0px 0px rgba(0,0,0,0.15)",
                 "comic-hover": "6px 6px 0px 0px rgba(0,0,0,0.15)",
-                "comic-primary": "4px 4px 0px 0px #0284c7",
-                "comic-accent": "4px 4px 0px 0px #d97706",
-                game: "0 4px 0 0 rgba(0,0,0,0.1)",
+                "game": "0 4px 0 0 rgba(0,0,0,0.1)",
                 "game-hover": "0 2px 0 0 rgba(0,0,0,0.1)",
                 "game-active": "0 0 0 0 rgba(0,0,0,0.1), inset 0 2px 0 0 rgba(0,0,0,0.1)",
                 card: "0 8px 20px -6px rgba(0, 0, 0, 0.05)",
