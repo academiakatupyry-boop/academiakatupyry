@@ -34,10 +34,10 @@ const Sidebar: React.FC = () => {
             {/* Logo / Header */}
             <div className="p-6 flex items-center justify-center border-b-2 border-slate-100 h-24">
                 {isCollapsed ? (
-                    <img src="/escudo_azul.png" alt="K" className="w-10 h-10 object-contain" />
+                    <img src="/isologo.png" alt="K" className="w-10 h-10 object-contain" />
                 ) : (
                     <div className="flex items-center gap-3">
-                        <img src="/escudo_azul.png" alt="Logo" className="w-10 h-10 object-contain" />
+                        <img src="/isologo.png" alt="Logo" className="w-10 h-10 object-contain" />
                         <span className="font-display font-black text-xl text-primary-island tracking-tight">Katupyry</span>
                     </div>
                 )}
