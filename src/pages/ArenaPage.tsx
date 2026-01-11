@@ -49,14 +49,15 @@ const tournaments = [
 ];
 
 const ArenaPage: React.FC = () => {
+
     return (
-        <div className="bg-island-bg text-island-text min-h-screen pb-24 font-sans pt-28" style={{backgroundImage: 'radial-gradient(#F5E6D3 1px, transparent 1px)', backgroundSize: '24px 24px'}}>
-            
+        <div className="text-island-text pb-24 font-sans pt-28">
+
             <main className="flex flex-col">
                 <section className="relative px-4 sm:px-10 lg:px-40 py-8 lg:py-10">
                     <div className="mx-auto max-w-7xl">
-                        <div className="relative overflow-hidden rounded-[2.5rem] bg-cover bg-center shadow-card group border-4 border-white" style={{backgroundImage: 'linear-gradient(rgba(74, 59, 50, 0.4) 0%, rgba(74, 59, 50, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9dDS_3pGF_ihpiBA4gMEZn_Di4Csivi7yccejS-qiuBchXutH7A6WMATqrOomT-ZKrD9bTqpo0Fh9yPM5rLvUMEFBkFulneMpZZ-7yWJJvqNQARB4M5A_9kU1YD9RNJpyc-B5uTXO_TBSR1ljjjE1ZWj_fH6vB1OKSoD2-D8RIcgu1ON97e4yLVZvtrbC7Wlaih6hsF1xEOe0HM7v6LVL2c-ZZD061DKluAc8On2CLnUoivX41mElUVE1lYPSVaKVCCClNTzc2ont")'}}>
-                                <div className="relative z-10 flex min-h-[250px] md:min-h-[300px] flex-col items-center justify-center gap-5 p-8 text-center">
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-cover bg-center shadow-card group border-4 border-white" style={{ backgroundImage: 'linear-gradient(rgba(74, 59, 50, 0.4) 0%, rgba(74, 59, 50, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9dDS_3pGF_ihpiBA4gMEZn_Di4Csivi7yccejS-qiuBchXutH7A6WMATqrOomT-ZKrD9bTqpo0Fh9yPM5rLvUMEFBkFulneMpZZ-7yWJJvqNQARB4M5A_9kU1YD9RNJpyc-B5uTXO_TBSR1ljjjE1ZWj_fH6vB1OKSoD2-D8RIcgu1ON97e4yLVZvtrbC7Wlaih6hsF1xEOe0HM7v6LVL2c-ZZD061DKluAc8On2CLnUoivX41mElUVE1lYPSVaKVCCClNTzc2ont")' }}>
+                            <div className="relative z-10 flex min-h-[250px] md:min-h-[300px] flex-col items-center justify-center gap-5 p-8 text-center">
                                 <span className="material-symbols-outlined text-yellow-300 text-6xl drop-shadow-md animate-bounce-slow">emoji_events</span>
                                 <h1 className="text-white text-5xl sm:text-6xl font-black leading-tight tracking-tight drop-shadow-lg font-display">
                                     Arena de Torneos
@@ -64,7 +65,7 @@ const ArenaPage: React.FC = () => {
                                 <p className="text-white/90 text-lg font-bold bg-black/30 px-6 py-2 rounded-full backdrop-blur-sm">
                                     Demuestra tu valor, gana experiencia y premios
                                 </p>
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -75,17 +76,17 @@ const ArenaPage: React.FC = () => {
                             <span className="material-symbols-outlined text-primary-island">swords</span>
                             Torneos Disponibles
                         </h2>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                             {tournaments.map((tournament) => (
                                 <div key={tournament.id} className="bg-white rounded-[2rem] shadow-card border-4 border-white overflow-hidden hover:translate-y-[-4px] hover:shadow-card-hover transition-all duration-300 flex flex-col group relative">
-                                    
+
                                     {/* Image Header */}
                                     <div className="h-40 md:h-48 relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{backgroundImage: `url('${tournament.image}')`}}></div>
+                                        <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: `url('${tournament.image}')` }}></div>
                                         <div className={`absolute inset-0 bg-gradient-to-t ${tournament.gradient} opacity-80 mix-blend-multiply`}></div>
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                        
+
                                         <div className="absolute bottom-4 left-6 text-white z-10">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <span className="material-symbols-outlined text-lg">{tournament.icon}</span>

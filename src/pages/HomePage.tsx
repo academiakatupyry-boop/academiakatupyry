@@ -5,7 +5,7 @@ import Button from '../components/ui/Button';
 
 const HomePage: React.FC = () => {
     return (
-        <div className="font-body bg-background-sky relative min-h-screen overflow-x-hidden" style={{ backgroundImage: 'radial-gradient(#6dd5ed 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+        <div className="font-body relative overflow-x-hidden">
 
             <main className="w-full pt-32 pb-24">
                 <section className="island-section max-w-7xl mx-auto px-4 relative mb-24">

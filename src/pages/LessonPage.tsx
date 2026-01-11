@@ -80,7 +80,7 @@ const LessonPage: React.FC = () => {
     const exercise = topic.exercises[currentExerciseIndex];
 
     return (
-        <div className="min-h-screen bg-background-dark text-white pt-24 pb-12 font-body flex flex-col md:flex-row h-screen">
+        <div className="text-slate-800 pt-24 pb-12 font-body flex flex-col md:flex-row h-screen">
             {/* Sidebar / Instructions */}
             <div className="w-full md:w-1/3 lg:w-1/4 bg-white/5 border-r border-white/10 p-6 flex flex-col">
                 <button onClick={() => navigate('/learn')} className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors">

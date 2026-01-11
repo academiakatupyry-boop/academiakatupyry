@@ -58,8 +58,8 @@ const GamePage: React.FC = () => {
                 },
                 events: {
                     change: () => {
-                         // Actualizar FEN en UI cuando cambie el tablero (opcional, requiere lógica adicional para generar FEN válido desde config)
-                         // Por ahora solo mantenemos el editor visual
+                        // Actualizar FEN en UI cuando cambie el tablero (opcional, requiere lógica adicional para generar FEN válido desde config)
+                        // Por ahora solo mantenemos el editor visual
                     }
                 }
             };
@@ -96,7 +96,7 @@ const GamePage: React.FC = () => {
     };
 
     const copyFen = () => {
-        if(api) {
+        if (api) {
             const currentFen = api.getFen();
             navigator.clipboard.writeText(currentFen + " w - - 0 1");
             alert("FEN copiado al portapapeles");
@@ -106,26 +106,26 @@ const GamePage: React.FC = () => {
     const pieces = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
     return (
-        <div className="min-h-screen bg-[#302e2b] flex items-center justify-center p-4 relative overflow-hidden">
-            
+        <div className="flex items-center justify-center p-4 relative overflow-hidden h-[85vh]">
+
             {/* Header / Navigation Controls */}
             <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50 pointer-events-none">
-                <Link to="/map" className="text-white/50 hover:text-white transition-colors flex items-center gap-2 font-bold text-sm pointer-events-auto bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+                <Link to="/map" className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 font-bold text-sm pointer-events-auto bg-white/50 px-3 py-1.5 rounded-lg backdrop-blur-sm border-2 border-slate-200">
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
                     Salir
                 </Link>
 
                 <div className="flex gap-2 pointer-events-auto">
-                    <button onClick={resetBoard} className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all" title="Posición Inicial">
+                    <button onClick={resetBoard} className="p-2 text-slate-500 hover:text-slate-800 hover:bg-white/50 rounded-lg transition-all border-2 border-transparent hover:border-slate-200" title="Posición Inicial">
                         <span className="material-symbols-outlined">restart_alt</span>
                     </button>
-                     <button onClick={clearBoard} className="p-2 text-white/70 hover:text-red-400 hover:bg-white/10 rounded-lg transition-all" title="Limpiar Tablero">
+                    <button onClick={clearBoard} className="p-2 text-slate-500 hover:text-red-500 hover:bg-white/50 rounded-lg transition-all border-2 border-transparent hover:border-slate-200" title="Limpiar Tablero">
                         <span className="material-symbols-outlined">delete</span>
                     </button>
-                    <button onClick={toggleOrientation} className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all" title="Rotar Tablero">
+                    <button onClick={toggleOrientation} className="p-2 text-slate-500 hover:text-slate-800 hover:bg-white/50 rounded-lg transition-all border-2 border-transparent hover:border-slate-200" title="Rotar Tablero">
                         <span className="material-symbols-outlined">rotate_right</span>
                     </button>
-                     <button onClick={copyFen} className="p-2 text-white/70 hover:text-green-400 hover:bg-white/10 rounded-lg transition-all" title="Copiar FEN">
+                    <button onClick={copyFen} className="p-2 text-slate-500 hover:text-green-600 hover:bg-white/50 rounded-lg transition-all border-2 border-transparent hover:border-slate-200" title="Copiar FEN">
                         <span className="material-symbols-outlined">content_copy</span>
                     </button>
                 </div>
@@ -133,11 +133,11 @@ const GamePage: React.FC = () => {
 
             {/* Layout Container */}
             <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
-                
+
                 {/* Palette: White Pieces */}
                 <div className="flex md:flex-col gap-2 bg-[#262421] p-2 rounded-xl border border-white/5 shadow-xl order-2 md:order-1">
-                     {pieces.map((role) => (
-                        <div 
+                    {pieces.map((role) => (
+                        <div
                             key={`white-${role}`}
                             onMouseDown={(e) => handleDragStart(e, role, 'white')}
                             className="w-10 h-10 md:w-12 md:h-12 hover:bg-white/10 rounded-lg cursor-grab active:cursor-grabbing flex items-center justify-center transition-colors"
@@ -152,15 +152,15 @@ const GamePage: React.FC = () => {
                     <div className="w-[85vw] h-[85vw] max-w-[80vh] max-h-[80vh] aspect-square rounded-md shadow-2xl overflow-hidden bg-[#ebecd0] select-none relative ring-8 ring-[#262421]">
                         {/* Chessground Render Root */}
                         <div ref={boardRef} className="w-full h-full"></div>
-                        
+
                         {/* Custom Coordinates Overlay (Pointer events none allows clicking through to board) */}
                         <div className="absolute inset-0 pointer-events-none z-10 w-full h-full grid grid-cols-8 grid-rows-8">
-                             {[...Array(64)].map((_, i) => {
+                            {[...Array(64)].map((_, i) => {
                                 const row = Math.floor(i / 8);
                                 const col = i % 8;
                                 // Invert coordinates logic based on orientation
                                 const isFlipped = orientation === 'black';
-                                
+
                                 const rank = isFlipped ? row + 1 : 8 - row;
                                 const file = isFlipped ? 7 - col : col; // 0-7
 
@@ -188,8 +188,8 @@ const GamePage: React.FC = () => {
 
                 {/* Palette: Black Pieces */}
                 <div className="flex md:flex-col gap-2 bg-[#262421] p-2 rounded-xl border border-white/5 shadow-xl order-3">
-                     {pieces.map((role) => (
-                        <div 
+                    {pieces.map((role) => (
+                        <div
                             key={`black-${role}`}
                             onMouseDown={(e) => handleDragStart(e, role, 'black')}
                             className="w-10 h-10 md:w-12 md:h-12 hover:bg-white/10 rounded-lg cursor-grab active:cursor-grabbing flex items-center justify-center transition-colors"

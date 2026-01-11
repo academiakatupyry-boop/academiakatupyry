@@ -118,7 +118,7 @@ const ProfilePage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background-sky pt-32 pb-24 font-body flex items-center justify-center relative">
+        <div className="pt-32 pb-24 font-body flex items-center justify-center relative">
             <div className="absolute inset-0 z-0" style={{ backgroundImage: 'radial-gradient(#6dd5ed 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.5 }}></div>
 
             <div className="bg-white p-8 rounded-[2.5rem] shadow-cartoon-lg border-4 border-white max-w-md w-full relative z-10 mx-4">

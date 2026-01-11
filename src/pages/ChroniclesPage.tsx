@@ -38,12 +38,12 @@ const newsItems = [
 
 const ChroniclesPage: React.FC = () => {
     return (
-        <div className="bg-bg-page text-text-main font-body antialiased pb-24 pt-28 min-h-screen">
+        <div className="text-text-main font-body antialiased pb-24 pt-28">
             <main className="flex-1 w-full flex flex-col items-center">
-                
+
                 {/* Hero Section */}
                 <section className="w-full px-4 md:px-10 py-8 max-w-7xl">
-                    <div className="relative w-full rounded-[2.5rem] overflow-hidden min-h-[300px] flex flex-col items-center justify-center text-center p-8 md:p-12 shadow-cartoon-lg group border-4 border-white" style={{backgroundImage: 'linear-gradient(rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMubEKVNnwARolEXP9AbH3xVdkNUl51Vl0UMjLmdzJgkLyj9K-w2UMNPYP05XmwMsKX__PuhGRn72fvZHJwqdovOOKoMfgCLVSdYR86oG8rwmSZqH0ne7P_kyUyIOAfMItWU_ZeSVohxW_Qwi3UmZre_VxTxfFIedRLsEkYLjKs7_t6Tw8QiIMsvc4ikYGdCnP8R0dojGcgjiAWqmLB4M3WnkcJ87-JiOb9eTcJBrIfiQciealZ2SZsbDacoTy1T-yWzHWyxsGkrvU")', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+                    <div className="relative w-full rounded-[2.5rem] overflow-hidden min-h-[300px] flex flex-col items-center justify-center text-center p-8 md:p-12 shadow-cartoon-lg group border-4 border-white" style={{ backgroundImage: 'linear-gradient(rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMubEKVNnwARolEXP9AbH3xVdkNUl51Vl0UMjLmdzJgkLyj9K-w2UMNPYP05XmwMsKX__PuhGRn72fvZHJwqdovOOKoMfgCLVSdYR86oG8rwmSZqH0ne7P_kyUyIOAfMItWU_ZeSVohxW_Qwi3UmZre_VxTxfFIedRLsEkYLjKs7_t6Tw8QiIMsvc4ikYGdCnP8R0dojGcgjiAWqmLB4M3WnkcJ87-JiOb9eTcJBrIfiQciealZ2SZsbDacoTy1T-yWzHWyxsGkrvU")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
                         <div className="flex flex-col gap-5 max-w-3xl relative z-10">
                             <span className="inline-block mx-auto bg-primary-island text-white font-black px-4 py-1.5 rounded-full text-sm uppercase tracking-widest shadow-lg animate-pulse-slow">
                                 Últimas Novedades
@@ -64,7 +64,7 @@ const ChroniclesPage: React.FC = () => {
                         {newsItems.map((item) => (
                             <article key={item.id} className="group flex flex-col bg-white rounded-[2rem] overflow-hidden shadow-card hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300 border-4 border-transparent hover:border-primary-island/20 h-full">
                                 {/* Image Container */}
-                                <div className="h-64 bg-cover bg-center relative overflow-hidden" style={{backgroundImage: `url('${item.image}')`}}>
+                                <div className="h-64 bg-cover bg-center relative overflow-hidden" style={{ backgroundImage: `url('${item.image}')` }}>
                                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
                                     <div className="absolute top-4 left-4 flex gap-2">
                                         <span className="bg-white/90 backdrop-blur-md text-text-dark-fun text-xs font-black px-3 py-1.5 rounded-lg shadow-sm uppercase tracking-wider">
@@ -72,7 +72,7 @@ const ChroniclesPage: React.FC = () => {
                                         </span>
                                     </div>
                                 </div>
-                                
+
                                 {/* Content */}
                                 <div className="p-8 flex flex-col flex-1 relative">
                                     <div className="mb-4 flex items-center gap-2 text-text-muted-light text-xs font-bold uppercase tracking-wider">
@@ -85,7 +85,7 @@ const ChroniclesPage: React.FC = () => {
                                     <p className="text-gray-600 font-bold leading-relaxed mb-6 line-clamp-3">
                                         {item.description}
                                     </p>
-                                    
+
                                     <div className="mt-auto">
                                         <button className="text-primary-island font-black uppercase tracking-wide text-sm flex items-center gap-1 group/btn hover:gap-2 transition-all">
                                             Leer nota completa

@@ -68,7 +68,7 @@ const SchoolFormPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background-sky font-body pt-32 pb-24 relative overflow-x-hidden">
+        <div className="font-body pt-32 pb-24 relative overflow-x-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 z-0" style={{ backgroundImage: 'radial-gradient(#6dd5ed 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.5 }}></div>
 

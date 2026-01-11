@@ -79,38 +79,38 @@ const products = [
 
 const MarketPage: React.FC = () => {
     return (
-        <div className="bg-island-bg font-sans text-gray-800 wood-pattern min-h-screen pb-24 pt-28">
-            
+        <div className="font-sans text-gray-800 pb-24 pt-28">
+
             <section className="relative w-full overflow-hidden pb-12 pt-8 sm:pt-12 px-4">
                 <div className="mx-auto max-w-[1280px]">
-                        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary-island to-primary-dark text-[#181611] shadow-floating border-4 border-white/20 p-8 md:p-16 text-center text-white">
-                            <div className="absolute top-0 right-0 p-10 opacity-10">
-                                <span className="material-symbols-outlined text-9xl">storefront</span>
-                            </div>
-                            <h1 className="font-display text-5xl md:text-6xl font-black leading-none tracking-tight drop-shadow-md mb-4">
-                                Tienda Katupyry
-                            </h1>
-                            <p className="text-xl font-bold text-white/90 uppercase tracking-wide">
-                                ¡Equípate para la gran aventura del saber!
-                            </p>
+                    <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary-island to-primary-dark text-[#181611] shadow-floating border-4 border-white/20 p-8 md:p-16 text-center text-white">
+                        <div className="absolute top-0 right-0 p-10 opacity-10">
+                            <span className="material-symbols-outlined text-9xl">storefront</span>
                         </div>
+                        <h1 className="font-display text-5xl md:text-6xl font-black leading-none tracking-tight drop-shadow-md mb-4">
+                            Tienda Katupyry
+                        </h1>
+                        <p className="text-xl font-bold text-white/90 uppercase tracking-wide">
+                            ¡Equípate para la gran aventura del saber!
+                        </p>
+                    </div>
                 </div>
             </section>
-            
+
             <div className="mx-auto max-w-[1280px] px-4 sm:px-8">
                 <h2 className="text-3xl font-display font-black text-wood-dark flex items-center gap-3 mb-8">
                     <span className="material-symbols-outlined text-secondary-adventure text-4xl filled">auto_awesome</span>
                     Tesoros Disponibles
                 </h2>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {products.map((product) => (
                         <div key={product.id} className="group relative flex flex-col rounded-3xl bg-white p-3 shadow-card hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300 border-4 border-wood-light/30">
-                            
+
                             {/* Product Image */}
                             <div className="relative mb-3 aspect-square overflow-hidden rounded-2xl bg-island-bg border-2 border-wood-light/20">
-                                <div className="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{backgroundImage: `url('${product.image}')`}}></div>
-                                
+                                <div className="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: `url('${product.image}')` }}></div>
+
                                 {product.tag && (
                                     <div className="absolute top-2 left-2 bg-secondary-adventure text-text-dark-fun text-[10px] font-black uppercase px-2 py-1 rounded-md shadow-sm">
                                         {product.tag}
@@ -124,7 +124,7 @@ const MarketPage: React.FC = () => {
                                 <h3 className="text-lg font-display font-black text-text-dark-fun leading-tight mb-auto">
                                     {product.name}
                                 </h3>
-                                
+
                                 <div className="mt-4 flex items-center justify-between border-t-2 border-dashed border-gray-100 pt-3">
                                     <span className="text-xl font-black text-text-dark-fun">{product.price}</span>
                                     <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-island text-white shadow-btn-primary hover:bg-primary-dark transition-colors active:translate-y-1 active:shadow-none">
