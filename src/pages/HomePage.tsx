@@ -47,8 +47,8 @@ const HomePage: React.FC = () => {
                                         Comenzar Misión
                                     </Button>
 
-                                    <Button to="/arena" variant="glass" icon="swords">
-                                        Ir a la Arena
+                                    <Button to="/schools" variant="glass" icon="domain">
+                                        Katupyry en mi escuela
                                     </Button>
                                 </div>
                             </div>

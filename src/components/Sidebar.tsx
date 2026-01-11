@@ -52,15 +52,14 @@ const Sidebar: React.FC = () => {
 
             {/* Footer / CTA (Bottom) */}
             <div className="p-4 border-t-2 border-slate-100">
-                <button
-                    onClick={() => navigate('/school-form')}
-                    className="w-full bg-secondary-adventure hover:bg-yellow-400 text-primary-island font-black py-3 rounded-xl shadow-btn-secondary active:shadow-none active:translate-y-[4px] transition-all flex items-center justify-center gap-2"
-                    title="Premium"
-                >
-                    <span className="material-symbols-outlined">star</span>
-                    <span className="hidden lg:inline">PREMIUM</span>
-                </button>
-            </div>
+                {/* Premium CTA -> Schools */}
+                <div className="mt-auto px-4 py-6">
+                    <Link to="/schools" className="flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-black py-4 px-4 rounded-2xl shadow-lg hover:scale-105 transition-transform group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                        <span className="material-symbols-outlined relative z-10 text-2xl animate-bounce-slow">domain</span>
+                        <span className="relative z-10 text-sm tracking-wide uppercase">Katupyry en mi Escuela</span>
+                    </Link>
+                </div>
         </aside>
     );
 };
