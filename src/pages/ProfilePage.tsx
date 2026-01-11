@@ -6,6 +6,7 @@ const ProfilePage: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleAuth = async (e: React.FormEvent) => {
@@ -31,19 +32,56 @@ const ProfilePage: React.FC = () => {
                     background: '#fff',
                 });
             } else {
-                const { data, error } = await supabase.auth.signUp({
+                // Validación básica de username
+                if (username.length < 3) {
+                    throw new Error("El nombre de usuario debe tener al menos 3 caracteres.");
+                }
+
+                // 1. Verificar si el usuario ya existe (opcional, pero buena UX antes de intentar crear)
+                // Nota: RLS podría bloquear select a profiles de otros, así que confiamos en la restricción UNIQUE de la base de datos al insertar.
+
+                // 2. Crear usuario en Auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
                     email,
                     password,
                     options: {
-                        emailRedirectTo: window.location.origin
+                        emailRedirectTo: window.location.origin,
+                        data: {
+                            username: username // Metadata útil
+                        }
                     }
                 });
-                console.log('Resultado de Registro:', { data, error });
+                console.log('Resultado de Registro Auth:', { authData, authError });
 
-                if (error) throw error;
+                if (authError) throw authError;
+
+                if (authData.user) {
+                    // 3. Insertar perfil en la tabla profiles
+                    // Si falla por 'username', el trigger o constraint saltará.
+                    const { error: profileError } = await supabase
+                        .from('profiles')
+                        .insert([
+                            {
+                                id: authData.user.id,
+                                username: username,
+                                updated_at: new Date().toISOString(),
+                            }
+                        ]);
+
+                    if (profileError) {
+                        // Si falla la creación del perfil (ej: username duplicado), podríamos querer borrar el usuario de Auth para no dejarlo "huérfano" o incompleto,
+                        // pero por ahora solo mostraremos el error.
+                        // El constraint 'profiles_username_key' saltará si está duplicado.
+                        if (profileError.code === '23505') { // Code defines unique violation usually
+                            throw new Error("Este nombre de usuario ya está en uso. Por favor elige otro.");
+                        }
+                        console.error("Error creando perfil:", profileError);
+                        throw new Error("Error guardando el perfil de usuario: " + profileError.message);
+                    }
+                }
 
                 // Caso 1: Se requiere confirmación de email (User creado, Session null)
-                if (data.user && !data.session) {
+                if (authData.user && !authData.session) {
                     Swal.fire({
                         title: '¡Registro Exitoso!',
                         text: 'Revisa tu correo para confirmar tu cuenta. Podrás iniciar sesión una vez confirmado.',
@@ -55,10 +93,10 @@ const ProfilePage: React.FC = () => {
                     });
                 }
                 // Caso 2: Login automático (User creado, Session existe)
-                else if (data.session) {
+                else if (authData.session) {
                     Swal.fire({
-                        title: '¡Cuenta Creada!',
-                        text: 'Tu cuenta ha sido creada y has iniciado sesión.',
+                        title: '¡Aventura Iniciada!',
+                        text: `Bienvenido, ${username}. Tu cuenta ha sido creada.`,
                         icon: 'success',
                         confirmButtonText: '¡Vamos!',
                         confirmButtonColor: '#FBBF24'
@@ -97,6 +135,22 @@ const ProfilePage: React.FC = () => {
                 </div>
 
                 <form className="space-y-4" onSubmit={handleAuth}>
+                    {/* Username Field - Only for Registration */}
+                    {!isLogin && (
+                        <div className="space-y-2 animate-wiggle" style={{ animationDuration: '0.5s', animationIterationCount: 1 }}>
+                            <label className="text-xs font-black uppercase text-gray-400 tracking-wider ml-2">Nombre de Usuario</label>
+                            <input
+                                type="text"
+                                placeholder="MaestroAjedrez99"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required={!isLogin}
+                                minLength={3}
+                                className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3 px-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all"
+                            />
+                        </div>
+                    )}
+
                     <div className="space-y-2">
                         <label className="text-xs font-black uppercase text-gray-400 tracking-wider ml-2">Correo Electrónico</label>
                         <input
