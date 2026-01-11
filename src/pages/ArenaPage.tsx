@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PageTitle from '../components/ui/PageTitle';
 
 const tournaments = [
     {
@@ -59,9 +60,11 @@ const ArenaPage: React.FC = () => {
                         <div className="relative overflow-hidden rounded-[2.5rem] bg-cover bg-center shadow-card group border-4 border-white" style={{ backgroundImage: 'linear-gradient(rgba(74, 59, 50, 0.4) 0%, rgba(74, 59, 50, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9dDS_3pGF_ihpiBA4gMEZn_Di4Csivi7yccejS-qiuBchXutH7A6WMATqrOomT-ZKrD9bTqpo0Fh9yPM5rLvUMEFBkFulneMpZZ-7yWJJvqNQARB4M5A_9kU1YD9RNJpyc-B5uTXO_TBSR1ljjjE1ZWj_fH6vB1OKSoD2-D8RIcgu1ON97e4yLVZvtrbC7Wlaih6hsF1xEOe0HM7v6LVL2c-ZZD061DKluAc8On2CLnUoivX41mElUVE1lYPSVaKVCCClNTzc2ont")' }}>
                             <div className="relative z-10 flex min-h-[250px] md:min-h-[300px] flex-col items-center justify-center gap-5 p-8 text-center">
                                 <span className="material-symbols-outlined text-yellow-300 text-6xl drop-shadow-md animate-bounce-slow">emoji_events</span>
-                                <h1 className="text-white text-5xl sm:text-6xl font-black leading-tight tracking-tight drop-shadow-lg font-display">
-                                    Arena de Torneos
-                                </h1>
+                                <PageTitle
+                                    title="Arena de"
+                                    highlight="Torneos"
+                                    className="!mb-0" // Override margin
+                                />
                                 <p className="text-white/90 text-lg font-bold bg-black/30 px-6 py-2 rounded-full backdrop-blur-sm">
                                     Demuestra tu valor, gana experiencia y premios
                                 </p>

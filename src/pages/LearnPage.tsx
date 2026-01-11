@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { lessons } from '../data/lessons';
 import PathNode from '../components/PathNode';
+import PageTitle from '../components/ui/PageTitle';
 import { supabase } from '../lib/supabase';
 import type { User } from '@supabase/supabase-js';
 
@@ -90,7 +91,7 @@ const LearnPage: React.FC = () => {
 
                 {/* Header (Floating island style) */}
                 <div className="bg-white border-b-4 border-slate-200 rounded-[2rem] p-6 text-center w-full mb-8 shadow-panel">
-                    <h1 className="text-2xl font-black text-slate-700 uppercase tracking-widest mb-2">Ruta de Aprendizaje</h1>
+                    <PageTitle title="Ruta de" highlight="Aprendizaje" className="!mb-4" />
                     <div className="bg-primary-island/10 rounded-xl py-2 px-4 inline-block">
                         <span className="text-primary-island font-bold text-sm">Nivel 1: Conceptos Básicos</span>
                     </div>

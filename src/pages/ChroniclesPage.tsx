@@ -48,9 +48,14 @@ const ChroniclesPage: React.FC = () => {
                             <span className="inline-block mx-auto bg-primary-island text-white font-black px-4 py-1.5 rounded-full text-sm uppercase tracking-widest shadow-lg animate-pulse-slow">
                                 Últimas Novedades
                             </span>
-                            <h1 className="text-white text-4xl md:text-6xl font-display font-black leading-tight tracking-tight drop-shadow-xl">
-                                ¿Qué pasó en el mundo del ajedrez?
-                            </h1>
+                            <div className="text-white drop-shadow-xl">
+                                <h1 className="text-4xl md:text-6xl font-display font-black leading-tight tracking-tight mb-4">
+                                    ¿Qué pasó en el <br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500">
+                                        mundo del ajedrez?
+                                    </span>
+                                </h1>
+                            </div>
                             <p className="text-white/90 text-lg md:text-xl font-bold max-w-2xl mx-auto leading-relaxed">
                                 Mantente al día con los torneos, las estrellas emergentes y los mejores consejos para tu juego.
                             </p>

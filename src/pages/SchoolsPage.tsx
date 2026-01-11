@@ -13,8 +13,12 @@ const SchoolsPage: React.FC = () => {
                             <span className="material-symbols-outlined text-sm filled">school</span>
                             <span className="text-xs font-bold uppercase tracking-wide font-display">Para educadores y escuelas</span>
                         </div>
-                        <h1 className="text-5xl font-display font-black leading-[1.1] tracking-tight text-outline">
-                            Lleva la <span className="text-primary inline-block">aventura</span> del ajedrez a tu escuela
+                        <h1 className="text-5xl font-display font-black leading-[1.1] tracking-tight text-slate-800 drop-shadow-sm">
+                            Lleva la <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 filter drop-shadow-[0_2px_10px_rgba(251,191,36,0.3)]">
+                                aventura
+                            </span> <br />
+                            del ajedrez a tu escuela
                         </h1>
                         <p className="text-lg text-gray-600 font-bold max-w-md leading-relaxed">
                             Transformamos el aula en un tablero donde cada movimiento enseña a pensar, decidir y respetar.
