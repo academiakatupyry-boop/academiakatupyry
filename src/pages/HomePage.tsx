@@ -15,55 +15,19 @@ const HomePage: React.FC = () => {
                         {/* Dark Gradient Overlay for better text contrast */}
                         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-0"></div>
 
-                        <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 relative z-10">
+                        <div className="relative z-10 w-full flex justify-center items-center py-4 md:py-8">
+                            <div className="relative w-full max-w-6xl group-hover:scale-[1.02] transition-transform duration-700 ease-out">
+                                <img
+                                    src="/tarjeta principal.svg"
+                                    alt="Academia Katupyry"
+                                    className="w-full h-auto object-contain drop-shadow-2xl"
+                                />
 
-                            {/* Text Content - "Boom Brutal" Style */}
-                            <div className="flex-1 text-center lg:text-left z-20 max-w-2xl">
-
-                                {/* Badge */}
-                                <div className="inline-flex mb-6 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
-                                    <span className="text-yellow-400 font-black tracking-widest uppercase text-xs md:text-sm flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-sm">bolt</span>
-                                        La aventura comienza aquí
-                                    </span>
-                                </div>
-
-                                {/* Main Title */}
-                                <h1 className="text-6xl sm:text-7xl xl:text-8xl font-black font-display tracking-tight mb-6 leading-none text-white drop-shadow-2xl">
-                                    Academia <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 filter drop-shadow-[0_4px_20px_rgba(251,191,36,0.3)]">
-                                        Katupyry
-                                    </span>
-                                </h1>
-
-                                {/* Slogan */}
-                                <p className="text-2xl md:text-3xl text-slate-200 mb-10 font-bold leading-relaxed tracking-wide shadow-black drop-shadow-md">
-                                    El gimnasio de las mentes estrategas.
-                                </p>
-
-                                {/* Buttons */}
-                                <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
+                                {/* Absolute Button positioned to the left of the character */}
+                                <div className="absolute top-[60%] left-[8%] sm:left-[12%] md:left-[15%] transform -translate-y-1/2 z-20 scale-90 sm:scale-100 md:scale-110 origin-left">
                                     <Button to="/learn" variant="primary" icon="rocket_launch">
                                         Comenzar Misión
                                     </Button>
-
-                                    <Button to="/schools" variant="glass" icon="domain">
-                                        Katupyry en mi escuela
-                                    </Button>
-                                </div>
-                            </div>
-
-                            {/* Mascot / Visual - Cleaner, floaty */}
-                            <div className="relative w-full lg:w-auto flex justify-center lg:justify-end">
-                                <div className="relative w-72 h-72 sm:w-96 sm:h-96 lg:w-[480px] lg:h-[480px] animate-float transition-transform duration-700 hover:scale-105">
-                                    {/* Subtle Glow behind mascot, not messy blobs */}
-                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-blue-500/30 rounded-full blur-[80px]"></div>
-
-                                    <img
-                                        alt="Rooky the Mascot"
-                                        className="relative z-10 w-full h-full object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
-                                        src="/PersonajeSVG.svg"
-                                    />
                                 </div>
                             </div>
                         </div>
