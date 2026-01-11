@@ -96,36 +96,16 @@ const HomePage: React.FC = () => {
                     />
                 </section>
 
-                {/* Footer Section - Home Only */}
-                <footer className="w-full bg-gradient-to-b from-[#6495ED] to-[#30588C] text-white pt-20 pb-10 relative overflow-hidden mt-32">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+                {/* Footer Section - Image Based */}
+                <footer className="w-full mt-24 relative">
+                    {/* Gradient Overlay for smooth transition */}
+                    <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
 
-                    <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col items-center text-center">
-
-                        {/* Huge 'Ahsing' Title */}
-                        <h2 className="font-ahsing text-[18vw] md:text-[15rem] leading-[0.8] text-white drop-shadow-lg mb-8 select-none">
-                            katupyry
-                        </h2>
-
-                        {/* Logo */}
-                        <div className="mb-16 transform -translate-y-10 md:-translate-y-20">
-                            <img
-                                src="/isologo.png"
-                                alt="Academia Katupyry"
-                                className="w-32 h-32 md:w-48 md:h-48 object-contain drop-shadow-2xl mx-auto hover:rotate-3 transition-transform duration-500"
-                            />
-                        </div>
-
-                        {/* Footer Details */}
-                        <div className="w-full flex flex-col md:flex-row items-center justify-between text-blue-100 font-bold text-sm md:text-base border-t border-white/20 pt-8 gap-4">
-                            <span className="flex items-center gap-2">
-                                <span className="material-symbols-outlined text-lg">location_on</span>
-                                Ciudad del Este, Paraguay
-                            </span>
-                            <span>© 2026 Reservados todos los derechos</span>
-                        </div>
-                    </div>
+                    <img
+                        src="/piedewebkatupyry.svg"
+                        alt="Academia Katupyry Footer"
+                        className="w-full h-auto object-cover relative z-0"
+                    />
                 </footer>
             </main>
         </div>
