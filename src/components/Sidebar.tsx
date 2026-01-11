@@ -33,10 +33,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
             </div>
 
             {/* Logo / Header */}
-            <div className="p-6 flex items-center justify-center border-b-2 border-slate-100 h-24">
-                {/* Always show just the Logo, doubled in size */}
-                <div className="flex items-center justify-center">
-                    <img src="/isologo.png" alt="Logo" className="w-20 h-20 object-contain hover:scale-110 transition-transform cursor-pointer" onClick={() => navigate('/')} />
+            <div className={`flex items-center justify-center border-b-2 border-slate-100 ${isCollapsed ? 'p-2 h-20' : 'p-6 h-40'}`}>
+                {/* Logo - Adjusted for size */}
+                <div className="flex items-center justify-center w-full h-full">
+                    <img
+                        src="/isologo.png"
+                        alt="Logo"
+                        className={`object-contain hover:scale-110 transition-transform cursor-pointer ${isCollapsed ? 'w-16 h-16' : 'w-48 h-48 drop-shadow-xl'}`}
+                        onClick={() => navigate('/')}
+                    />
                 </div>
             </div>
 
