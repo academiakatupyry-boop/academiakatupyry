@@ -12,12 +12,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
     // Local state removed, using props
 
     const navItems = [
+        { path: '/schools', label: 'ESCUELAS', icon: 'domain' }, // Schools first
         { path: '/learn', label: 'APRENDER', icon: 'school' },
         { path: '/fundamentals', label: 'FUNDAMENTOS', icon: 'menu_book' }, // Fundamentals below Learn
         { path: '/arena', label: 'JUGAR', icon: 'sports_esports' },
         { path: '/game', label: 'TORNEOS', icon: 'swords' },
         { path: '/market', label: 'TIENDA', icon: 'store' },
-        { path: '/schools', label: 'ESCUELAS', icon: 'apartment' },
         { path: '/profile', label: 'PERFIL', icon: 'person' },
     ];
 
