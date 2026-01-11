@@ -122,7 +122,7 @@ const MarketPage: React.FC = () => {
 
                                 <div className="mt-4 flex items-center justify-between border-t-2 border-dashed border-gray-100 pt-3">
                                     <span className="text-xl font-black text-text-dark-fun">{product.price}</span>
-                                    <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-island text-white shadow-btn-primary hover:bg-primary-dark transition-colors active:translate-y-1 active:shadow-none">
+                                    <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg hover:scale-110 transithover:shadow-xl transition-all active:translate-y-1 active:shadow-inner">
                                         <span className="material-symbols-outlined text-lg">add_shopping_cart</span>
                                     </button>
                                 </div>
