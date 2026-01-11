@@ -27,7 +27,7 @@ const PrototypeNav: React.FC = () => {
                 <div className="flex items-center gap-2 shrink-0 cursor-pointer" onClick={() => navigate('/')}>
                     <div className="relative group">
                         <div className="absolute inset-0 bg-secondary-adventure rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                        <img src="/isologo.png" alt="Katupyry" className="w-12 h-12 md:w-16 md:h-16 relative z-10 transform group-hover:scale-110 transition-transform" />
+                        <img src="/isologosvg.svg" alt="Katupyry" className="w-12 h-12 md:w-16 md:h-16 relative z-10 transform group-hover:scale-110 transition-transform" />
                     </div>
                 </div>
 
@@ -41,8 +41,8 @@ const PrototypeNav: React.FC = () => {
                                 onClick={() => navigate(screen.path)}
                                 aria-label={screen.label}
                                 className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-300 ${isActive
-                                        ? "bg-primary-island text-white shadow-btn-primary transform -translate-y-[1px]"
-                                        : "text-gray-500 hover:bg-gray-100 hover:text-primary-island"
+                                    ? "bg-primary-island text-white shadow-btn-primary transform -translate-y-[1px]"
+                                    : "text-gray-500 hover:bg-gray-100 hover:text-primary-island"
                                     }`}
                             >
                                 <span className={`material-symbols-outlined text-[20px] ${isActive ? "animate-pulse-slow" : ""}`}>{screen.icon}</span>

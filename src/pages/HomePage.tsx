@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
                                     <img
                                         alt="Rooky the Mascot"
                                         className="relative z-10 w-full h-full object-contain filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
-                                        src="/torre_personaje.png"
+                                        src="/PersonajeSVG.svg"
                                     />
                                 </div>
                             </div>
