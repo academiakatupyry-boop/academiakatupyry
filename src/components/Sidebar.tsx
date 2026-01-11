@@ -19,11 +19,10 @@ const Sidebar: React.FC = () => {
         <aside className="fixed left-0 top-0 h-full w-20 lg:w-64 bg-white border-r-2 border-slate-200 flex flex-col z-50 hidden md:flex font-display">
             {/* Logo Area */}
             <div
-                className="p-6 cursor-pointer flex items-center gap-3 hover:opacity-80 transition-opacity"
+                className="p-6 cursor-pointer flex items-center justify-center hover:opacity-90 transition-opacity"
                 onClick={() => navigate('/')}
             >
-                <img src="/isologo.png" alt="Katupyry" className="w-10 h-10 lg:w-12 lg:h-12" />
-                <span className="text-2xl font-black text-primary-island hidden lg:block tracking-tight">Katupyry</span>
+                <img src="/isologo.png" alt="Katupyry" className="w-20 h-20 lg:w-24 lg:h-24 object-contain drop-shadow-md" />
             </div>
 
             {/* Navigation Menu */}
@@ -35,8 +34,8 @@ const Sidebar: React.FC = () => {
                             key={item.path}
                             onClick={() => navigate(item.path)}
                             className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 border-2 border-transparent ${isActive
-                                    ? "bg-blue-100/50 border-blue-200 text-primary-island"
-                                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                                ? "bg-blue-100/50 border-blue-200 text-primary-island"
+                                : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                                 }`}
                         >
                             <span className={`material-symbols-outlined text-[28px] ${isActive ? "fill-current" : ""}`}>
