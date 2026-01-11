@@ -1,4 +1,3 @@
-```typescript
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import Swal from 'sweetalert2';
@@ -12,44 +11,62 @@ const ProfilePage: React.FC = () => {
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        console.log('Iniciando proceso de autenticación:', { isLogin, email, passwordLength: password.length });
 
         try {
             if (isLogin) {
-                const { error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabase.auth.signInWithPassword({
                     email,
                     password,
                 });
+                console.log('Resultado de Login:', { data, error });
                 if (error) throw error;
-                
+
                 Swal.fire({
                     title: '¡Bienvenido!',
                     text: 'Has iniciado sesión correctamente.',
                     icon: 'success',
                     confirmButtonText: 'Genial',
-                    confirmButtonColor: '#FBBF24', // Amber/Yellow theme
+                    confirmButtonColor: '#FBBF24',
                     background: '#fff',
-                    backdrop: `
-rgba(0, 0, 123, 0.4)
-                        left top
-no - repeat
-    `
                 });
             } else {
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        emailRedirectTo: window.location.origin
+                    }
                 });
+                console.log('Resultado de Registro:', { data, error });
+
                 if (error) throw error;
 
-                Swal.fire({
-                    title: '¡Registro Exitoso!',
-                    text: 'Revisa tu correo para confirmar tu cuenta.',
-                    icon: 'success',
-                    confirmButtonText: 'Entendido',
-                    confirmButtonColor: '#FBBF24'
-                });
+                // Caso 1: Se requiere confirmación de email (User creado, Session null)
+                if (data.user && !data.session) {
+                    Swal.fire({
+                        title: '¡Registro Exitoso!',
+                        text: 'Revisa tu correo para confirmar tu cuenta. Podrás iniciar sesión una vez confirmado.',
+                        icon: 'success',
+                        confirmButtonText: 'Ir a Iniciar Sesión',
+                        confirmButtonColor: '#FBBF24'
+                    }).then(() => {
+                        setIsLogin(true); // Cambiar a pestaña de login
+                    });
+                }
+                // Caso 2: Login automático (User creado, Session existe)
+                else if (data.session) {
+                    Swal.fire({
+                        title: '¡Cuenta Creada!',
+                        text: 'Tu cuenta ha sido creada y has iniciado sesión.',
+                        icon: 'success',
+                        confirmButtonText: '¡Vamos!',
+                        confirmButtonColor: '#FBBF24'
+                    });
+                }
             }
         } catch (err: any) {
+            console.error('Error en autenticación:', err);
             Swal.fire({
                 title: '¡Ups!',
                 text: err.message || 'Ha ocurrido un error inesperado.',
@@ -129,4 +146,3 @@ no - repeat
 };
 
 export default ProfilePage;
-```
