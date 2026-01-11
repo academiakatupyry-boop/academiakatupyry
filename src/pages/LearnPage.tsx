@@ -65,9 +65,7 @@ const LearnPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background-light py-12 px-4 relative flex justify-center">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 z-0 opacity-40 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#cbd5e1 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
+        <div className="w-full flex justify-center">
 
             <div className="w-full max-w-md relative z-10 flex flex-col items-center space-y-8 pb-32">
 

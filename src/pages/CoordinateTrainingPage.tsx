@@ -153,24 +153,25 @@ const CoordinateTrainingPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#302e2b] flex flex-col items-center justify-center p-4 relative overflow-hidden font-display">
+    return (
+        <div className="flex flex-col items-center justify-center relative overflow-hidden font-display w-full h-[85vh]">
 
             {/* Navigation */}
             <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50">
-                <Link to="/map" className="text-white/50 hover:text-white transition-colors flex items-center gap-2 font-bold text-sm bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+                <Link to="/fundamentals" className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 font-bold text-sm bg-white/50 px-3 py-1.5 rounded-lg backdrop-blur-sm border-2 border-slate-200">
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
-                    Volver al Mapa
+                    Volver
                 </Link>
-                <div className="bg-black/20 px-4 py-1.5 rounded-lg backdrop-blur-sm text-white font-bold flex items-center gap-2">
-                    <span className="text-yellow-400 material-symbols-outlined text-lg">star</span>
+                <div className="bg-white/50 px-4 py-1.5 rounded-lg backdrop-blur-sm text-slate-700 font-bold flex items-center gap-2 border-2 border-slate-200">
+                    <span className="text-yellow-500 material-symbols-outlined text-lg">star</span>
                     Puntaje: {score}
                 </div>
             </div>
 
             {/* Instruction Area */}
             <div className="mb-8 text-center z-10">
-                <h2 className="text-white/60 text-lg font-bold uppercase tracking-widest mb-2">Encuentra la casilla</h2>
-                <div className={`text-6xl md:text-8xl font-black transition-all duration-300 transform ${status === 'correct' ? 'text-green-400 scale-110' : status === 'wrong' ? 'text-red-400 shake' : 'text-white'}`}>
+                <h2 className="text-slate-400 text-lg font-bold uppercase tracking-widest mb-2">Encuentra la casilla</h2>
+                <div className={`text-6xl md:text-8xl font-black transition-all duration-300 transform ${status === 'correct' ? 'text-green-500 scale-110' : status === 'wrong' ? 'text-red-500 shake' : 'text-slate-800'}`}>
                     {targetSquare}
                 </div>
             </div>
@@ -207,7 +208,7 @@ const CoordinateTrainingPage: React.FC = () => {
 
                 {/* Controls below board */}
                 <div className="mt-6 flex flex-col items-center gap-4">
-                    <button onClick={toggleOrientation} className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all text-sm">
+                    <button onClick={toggleOrientation} className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-bold transition-all text-sm hover:bg-slate-50 shadow-sm">
                         <span className="material-symbols-outlined">rotate_right</span>
                         Rotar Tablero
                     </button>

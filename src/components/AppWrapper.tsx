@@ -30,11 +30,14 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
             {/* Main Content Area */}
             {/* Add margin-left to accommodate fixed sidebar on desktop */}
             {/* Sidebar is w-20 (80px) or w-64 (256px) */}
-            <main className="flex-1 w-full md:pl-20 lg:pl-64 min-h-screen relative">
-                <div className="w-full h-full animate-fade-in-up">
+            <div className="flex-1 ml-0 lg:ml-64 relative bg-background-light min-h-screen">
+                {/* Global Background Pattern */}
+                <div className="absolute inset-0 z-0 opacity-40 pointer-events-none fixed" style={{ backgroundImage: 'radial-gradient(#cbd5e1 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
+
+                <div className="max-w-7xl mx-auto p-4 lg:p-8 relative z-10">
                     {children}
                 </div>
-            </main>
+            </div>
         </div>
     );
 };

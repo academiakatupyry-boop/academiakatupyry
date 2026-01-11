@@ -231,16 +231,17 @@ const PieceLearningPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#302e2b] flex flex-col items-center justify-center p-4 relative overflow-hidden font-display">
+    return (
+        <div className="flex flex-col items-center justify-center relative overflow-hidden font-display w-full h-[85vh]">
 
             {/* Header */}
             <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50">
-                <Link to="/map" className="text-white/50 hover:text-white transition-colors flex items-center gap-2 font-bold text-sm bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+                <Link to="/fundamentals" className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 font-bold text-sm bg-white/50 px-3 py-1.5 rounded-lg backdrop-blur-sm border-2 border-slate-200">
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
                     Salir
                 </Link>
-                <div className="bg-black/20 px-4 py-1.5 rounded-lg backdrop-blur-sm text-white font-bold flex items-center gap-2">
-                    <span className="material-symbols-outlined text-yellow-400">extension</span>
+                <div className="bg-white/50 px-4 py-1.5 rounded-lg backdrop-blur-sm text-slate-700 font-bold flex items-center gap-2 border-2 border-slate-200">
+                    <span className="material-symbols-outlined text-yellow-500">extension</span>
                     Conociendo el Ejército
                 </div>
             </div>
@@ -249,13 +250,13 @@ const PieceLearningPage: React.FC = () => {
             <div className="mb-6 text-center z-10 transition-all duration-500">
                 {mode === 'explore' ? (
                     <>
-                        <h2 className="text-white/60 text-sm font-bold uppercase tracking-widest mb-1">Modo Exploración</h2>
-                        <h1 className="text-3xl md:text-4xl font-black text-white">Toca una pieza</h1>
+                        <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-1">Modo Exploración</h2>
+                        <h1 className="text-3xl md:text-4xl font-black text-slate-800">Toca una pieza</h1>
                     </>
                 ) : (
                     <>
-                        <h2 className="text-white/60 text-sm font-bold uppercase tracking-widest mb-1">Modo Movimiento</h2>
-                        <h1 className="text-3xl md:text-4xl font-black text-white">{PIECE_DATA[selectedPiece!]?.name}</h1>
+                        <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-1">Modo Movimiento</h2>
+                        <h1 className="text-3xl md:text-4xl font-black text-slate-800">{PIECE_DATA[selectedPiece!]?.name}</h1>
                     </>
                 )}
             </div>
@@ -282,7 +283,7 @@ const PieceLearningPage: React.FC = () => {
                     <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 w-full flex justify-center">
                         <button
                             onClick={() => navigate('/learn/coordinates')}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all text-sm backdrop-blur-md"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-secondary-adventure text-white rounded-xl font-bold transition-all text-sm shadow-btn hover:scale-105"
                         >
                             <span className="material-symbols-outlined">grid_on</span>
                             Ir a Coordenadas
