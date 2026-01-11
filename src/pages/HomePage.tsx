@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
 
                                 {/* Buttons */}
                                 <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                                    <Button to="/map" variant="primary" icon="rocket_launch">
+                                    <Button to="/learn" variant="primary" icon="rocket_launch">
                                         Comenzar Misión
                                     </Button>
 
