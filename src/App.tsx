@@ -2,7 +2,7 @@ import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import AppWrapper from './components/AppWrapper';
 import HomePage from './pages/HomePage';
-import MapPage from './pages/MapPage';
+// MapPage removed
 import GamePage from './pages/GamePage';
 import CoordinateTrainingPage from './pages/CoordinateTrainingPage';
 import PieceLearningPage from './pages/PieceLearningPage';
@@ -23,7 +23,7 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/learn" element={<LearnPage />} />
           <Route path="/learn/:topicId" element={<LessonPage />} />
-          <Route path="/map" element={<MapPage />} />
+          {/* Map Route Removed */}
           <Route path="/board" element={<GamePage />} />
           <Route path="/learn/coordinates" element={<CoordinateTrainingPage />} />
           <Route path="/learn/pieces" element={<PieceLearningPage />} />

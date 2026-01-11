@@ -50,7 +50,7 @@ const LearnPage: React.FC = () => {
                             icon={lesson.icon}
                             title={lesson.title}
                             position={getPosition(index)}
-                            onClick={() => navigate(`/ learn / ${lesson.id} `)}
+                            onClick={() => navigate(`/learn/${lesson.id}`)}
                         />
                     ))}
 

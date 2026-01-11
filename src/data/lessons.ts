@@ -10,11 +10,27 @@ export interface LessonTopic {
     title: string;
     description: string;
     icon: string; // Material symbol name or custom SVG url
-    category: 'checkmates' | 'patterns';
+    category: 'checkmates' | 'patterns' | 'basics';
     exercises: Exercise[];
 }
 
 export const lessons: LessonTopic[] = [
+    {
+        id: 'pieces', // Routes to /learn/pieces
+        title: 'Conoce las Piezas',
+        description: 'Aprende cómo se mueve cada pieza del tablero.',
+        icon: 'chess_pawn',
+        category: 'basics',
+        exercises: [] // Handled by special page
+    },
+    {
+        id: 'coordinates', // Routes to /learn/coordinates
+        title: 'Coordenadas',
+        description: 'Domina el lenguaje del tablero.',
+        icon: 'location_on',
+        category: 'basics',
+        exercises: [] // Handled by special page
+    },
     // --- SECTION: MATES ---
     {
         id: 'checkmate',

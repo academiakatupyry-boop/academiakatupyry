@@ -7,7 +7,7 @@ const Sidebar: React.FC = () => {
 
     const menuItems = [
         { path: "/learn", label: "Aprender", icon: "school" },
-        { path: "/map", label: "Mapa", icon: "map" }, // Keeping Map for now as legacy or alternative
+        // Map removed as requested
         { path: "/board", label: "Jugar", icon: "sports_esports" },
         { path: "/arena", label: "Torneos", icon: "swords" },
         { path: "/market", label: "Tienda", icon: "storefront" },
