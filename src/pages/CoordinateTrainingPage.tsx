@@ -154,30 +154,18 @@ const CoordinateTrainingPage: React.FC = () => {
 
     return (
 
-        <div className="flex flex-col items-center justify-center relative overflow-hidden font-display w-full h-[85vh]">
+        <div className="flex flex-col md:flex-row items-center justify-center relative overflow-hidden font-display w-full h-screen md:h-[85vh] gap-8 md:gap-16 pt-16 md:pt-0">
 
-            {/* Navigation */}
-            <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50">
-                <Link to="/fundamentals" className="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-2 font-bold text-sm bg-white/50 px-3 py-1.5 rounded-lg backdrop-blur-sm border-2 border-slate-200">
+            {/* Navigation (Volver only) */}
+            <div className="absolute top-0 left-0 w-full p-4 z-50 pointer-events-none">
+                <Link to="/fundamentals" className="pointer-events-auto text-slate-500 hover:text-slate-800 transition-colors inline-flex items-center gap-2 font-bold text-sm bg-white/50 px-3 py-1.5 rounded-lg backdrop-blur-sm border-2 border-slate-200">
                     <span className="material-symbols-outlined text-lg">arrow_back</span>
                     Volver
                 </Link>
-                <div className="bg-white/50 px-4 py-1.5 rounded-lg backdrop-blur-sm text-slate-700 font-bold flex items-center gap-2 border-2 border-slate-200">
-                    <span className="text-yellow-500 material-symbols-outlined text-lg">star</span>
-                    Puntaje: {score}
-                </div>
-            </div>
-
-            {/* Instruction Area */}
-            <div className="mb-8 text-center z-10">
-                <h2 className="text-slate-400 text-lg font-bold uppercase tracking-widest mb-2">Encuentra la casilla</h2>
-                <div className={`text-6xl md:text-8xl font-black transition-all duration-300 transform ${status === 'correct' ? 'text-green-500 scale-110' : status === 'wrong' ? 'text-red-500 shake' : 'text-slate-800'}`}>
-                    {targetSquare}
-                </div>
             </div>
 
             {/* Board Area */}
-            <div className="relative">
+            <div className="relative order-2 md:order-1">
                 <div className="w-[85vw] h-[85vw] max-w-[65vh] max-h-[65vh] aspect-square rounded-md shadow-2xl overflow-hidden bg-[#ebecd0] select-none relative ring-8 ring-[#262421]">
                     <div ref={boardRef} className="w-full h-full"></div>
 
@@ -205,37 +193,54 @@ const CoordinateTrainingPage: React.FC = () => {
                         })}
                     </div>
                 </div>
+            </div>
 
-                {/* Controls below board */}
-                <div className="mt-6 flex flex-col items-center gap-4">
-                    <button onClick={toggleOrientation} className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-bold transition-all text-sm hover:bg-slate-50 shadow-sm">
+            {/* Sidebar Panel (Prompt & Info) */}
+            <div className="flex flex-col items-center gap-6 order-1 md:order-2 md:items-start min-w-[200px]">
+
+                {/* Score */}
+                <div className="bg-white/80 px-4 py-2 rounded-xl backdrop-blur-sm text-slate-700 font-black flex items-center gap-2 border-2 border-slate-200 shadow-sm">
+                    <span className="text-yellow-500 material-symbols-outlined text-2xl">star</span>
+                    <span className="text-xl">Puntaje: {score}</span>
+                </div>
+
+                {/* Main Instruction / Target */}
+                <div className="text-center md:text-left">
+                    <h2 className="text-slate-400 text-lg font-bold uppercase tracking-widest mb-1">Encuentra</h2>
+                    <div className={`text-7xl md:text-9xl font-black transition-all duration-300 transform leading-none ${status === 'correct' ? 'text-green-500 scale-110' : status === 'wrong' ? 'text-red-500 shake' : 'text-slate-800'}`}>
+                        {targetSquare}
+                    </div>
+                </div>
+
+                {/* Status Feedback */}
+                <div className="h-8">
+                    {status === 'wrong' && (
+                        <span className="text-red-400 font-bold animate-pulse flex items-center gap-2">
+                            <span className="material-symbols-outlined">close</span> ¡Intenta de nuevo!
+                        </span>
+                    )}
+                    {status === 'correct' && (
+                        <span className="text-green-400 font-bold animate-bounce flex items-center gap-2">
+                            <span className="material-symbols-outlined">check</span> ¡Excelente!
+                        </span>
+                    )}
+                </div>
+
+                {/* Controls */}
+                <div className="flex flex-col gap-4 w-full">
+                    <button onClick={toggleOrientation} className="flex items-center justify-center gap-2 px-4 py-3 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-bold transition-all text-sm hover:bg-slate-50 shadow-sm hover:-translate-y-1 w-full">
                         <span className="material-symbols-outlined">rotate_right</span>
                         Rotar Tablero
                     </button>
 
-                    {/* Button to switch to Piece Learning */}
                     <button
                         onClick={() => navigate('/learn/pieces')}
-                        className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-2xl font-black shadow-comic-primary hover:scale-105 transition-transform"
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-2xl font-black shadow-comic-primary hover:scale-105 transition-transform w-full text-sm uppercase tracking-wide"
                     >
-                        <span className="material-symbols-outlined text-2xl">extension</span>
-                        Conocer las Piezas
+                        <span className="material-symbols-outlined text-xl">extension</span>
+                        Aprender Piezas
                     </button>
                 </div>
-            </div>
-
-            {/* Status Feedback Text */}
-            <div className="h-8 mt-4">
-                {status === 'wrong' && (
-                    <span className="text-red-400 font-bold animate-pulse flex items-center gap-2">
-                        <span className="material-symbols-outlined">close</span> ¡Intenta de nuevo!
-                    </span>
-                )}
-                {status === 'correct' && (
-                    <span className="text-green-400 font-bold animate-bounce flex items-center gap-2">
-                        <span className="material-symbols-outlined">check</span> ¡Excelente!
-                    </span>
-                )}
             </div>
 
         </div>
