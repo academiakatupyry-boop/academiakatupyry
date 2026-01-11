@@ -97,7 +97,7 @@ const HomePage: React.FC = () => {
                 </section>
 
                 {/* Footer Section - Image Based */}
-                <footer className="w-full mt-32 relative rounded-t-[3rem] md:rounded-t-[5rem] overflow-hidden shadow-2xl mx-auto max-w-[1920px]">
+                <footer className="w-full mt-32 mb-8 relative rounded-[3rem] md:rounded-[5rem] overflow-hidden shadow-2xl mx-auto max-w-[1920px]">
                     {/* Gradient Overlay for smooth transition */}
                     <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white via-white/50 to-transparent z-10 pointer-events-none"></div>
 
