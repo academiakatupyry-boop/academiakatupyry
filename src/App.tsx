@@ -12,6 +12,8 @@ import MarketPage from './pages/MarketPage';
 import SchoolsPage from './pages/SchoolsPage';
 import SchoolFormPage from './pages/SchoolFormPage';
 import ProfilePage from './pages/ProfilePage';
+import LearnPage from './pages/LearnPage';
+import LessonPage from './pages/LessonPage';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +21,8 @@ const App: React.FC = () => {
       <PrototypeNav />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/learn" element={<LearnPage />} />
+        <Route path="/learn/:topicId" element={<LessonPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/board" element={<GamePage />} />
         <Route path="/learn/coordinates" element={<CoordinateTrainingPage />} />

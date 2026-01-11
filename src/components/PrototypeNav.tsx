@@ -4,14 +4,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const PrototypeNav: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // Si estamos en el tablero o en ejercicios inmersivos, ocultar la navegación
     if (location.pathname === '/board' || location.pathname === '/learn/coordinates' || location.pathname === '/learn/pieces') {
         return null;
     }
 
     const screens = [
-        { path: "/map", label: "Aprender", icon: "map" },
+        { path: "/learn", label: "Aprender", icon: "school" },
         { path: "/board", label: "Tablero", icon: "sports_esports" },
         { path: "/arena", label: "Torneos", icon: "swords" },
         { path: "/chronicles", label: "Noticias", icon: "auto_stories" },
@@ -40,11 +40,10 @@ const PrototypeNav: React.FC = () => {
                                 key={screen.path}
                                 onClick={() => navigate(screen.path)}
                                 aria-label={screen.label}
-                                className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-300 ${
-                                    isActive 
-                                    ? "bg-primary-island text-white shadow-btn-primary transform -translate-y-[1px]" 
-                                    : "text-gray-500 hover:bg-gray-100 hover:text-primary-island"
-                                }`}
+                                className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-300 ${isActive
+                                        ? "bg-primary-island text-white shadow-btn-primary transform -translate-y-[1px]"
+                                        : "text-gray-500 hover:bg-gray-100 hover:text-primary-island"
+                                    }`}
                             >
                                 <span className={`material-symbols-outlined text-[20px] ${isActive ? "animate-pulse-slow" : ""}`}>{screen.icon}</span>
                                 {screen.path !== '/profile' && (
@@ -57,7 +56,7 @@ const PrototypeNav: React.FC = () => {
 
                 {/* Right Side - CTA Button ONLY */}
                 <div className="hidden md:flex items-center shrink-0">
-                    <button 
+                    <button
                         onClick={() => navigate('/school-form')}
                         className="flex items-center gap-1 sm:gap-2 bg-gradient-to-r from-secondary-adventure to-orange-500 text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl shadow-[0_4px_0_rgb(180,83,9)] hover:shadow-[0_2px_0_rgb(180,83,9)] hover:translate-y-[2px] transition-all font-black text-[11px] sm:text-xs uppercase tracking-wide border-2 border-orange-300/50 active:shadow-none active:translate-y-[4px] animate-pulse-slow group hover:scale-105"
                     >
