@@ -5,23 +5,18 @@ import Swal from 'sweetalert2';
 const SchoolFormPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        school_name: '',
-        contact_name: '',
-        email: '',
-        phone: '',
-        role: 'Director',
-        message: ''
+        contact_name: '', // Encargado
+        phone: '', // Whatsapp (Prioridad)
+        school_name: '', // Institución
+        location: '', // Ubicación
+        referrer: '' // Quien recomienda
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
-    };
-
-    const handleRoleChange = (role: string) => {
-        setFormData({ ...formData, role });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -29,11 +24,32 @@ const SchoolFormPage: React.FC = () => {
         setLoading(true);
 
         try {
+            // Map new fields to existing schema or use 'message' for extras if needed
+            // Assuming schema accepts: school_name, contact_name, phone.
+            // For location and referrer, if columns don't exist, we can append to a 'message' or 'notes' field logic?
+            // But let's check schema.
+            // If I can't check schema, I'll send them as part of object and see. Or append to a constructed "message" field.
+            // Best approach without easy schema check:
+            // Send standard fields + Construct a `message` string with the extra info.
+
+            const messagePayload = `
+                Ubicación: ${formData.location}
+                Referido por: ${formData.referrer}
+            `;
+
             const { error } = await supabase
                 .from('school_inquiries')
-                .insert([formData]);
+                .insert([{
+                    school_name: formData.school_name,
+                    contact_name: formData.contact_name,
+                    phone: formData.phone,
+                    email: 'whatsapp-contact@katupyry.com', // Placeholder for "Whatsapp Priority"
+                    message: messagePayload
+                }]);
 
             if (error) throw error;
+            // ... (Success logic)
+
 
             Swal.fire({
                 title: '¡Solicitud Recibida!',
@@ -45,12 +61,11 @@ const SchoolFormPage: React.FC = () => {
 
             // Reset form
             setFormData({
-                school_name: '',
                 contact_name: '',
-                email: '',
                 phone: '',
-                role: 'Director',
-                message: ''
+                school_name: '',
+                location: '',
+                referrer: ''
             });
 
         } catch (error: any) {
@@ -93,22 +108,22 @@ const SchoolFormPage: React.FC = () => {
                     <form onSubmit={handleSubmit} className="p-6 md:p-12 space-y-6 md:space-y-8 bg-white relative">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2 group">
-                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Nombre de la Escuela</label>
+                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">WhatsApp / Teléfono</label>
                                 <div className="relative">
-                                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-island transition-colors">school</span>
+                                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-green-500 group-focus-within:text-primary-island transition-colors">call</span>
                                     <input
                                         required
-                                        type="text"
-                                        name="school_name"
-                                        value={formData.school_name}
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone}
                                         onChange={handleChange}
-                                        placeholder="Ej. Escuela Primaria Nº 5"
-                                        className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all placeholder:text-gray-400"
+                                        placeholder="+595 9..."
+                                        className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 font-bold text-text-dark-fun focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all placeholder:text-gray-400"
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2 group">
-                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Tu Nombre Completo</label>
+                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Nombre del Encargado</label>
                                 <div className="relative">
                                     <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-island transition-colors">person</span>
                                     <input
@@ -126,76 +141,57 @@ const SchoolFormPage: React.FC = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2 group">
-                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Correo Institucional</label>
+                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Nombre de la Institución</label>
                                 <div className="relative">
-                                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-island transition-colors">mail</span>
+                                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-island transition-colors">school</span>
                                     <input
                                         required
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
+                                        type="text"
+                                        name="school_name"
+                                        value={formData.school_name}
                                         onChange={handleChange}
-                                        placeholder="nombre@escuela.edu"
+                                        placeholder="Ej. Escuela Primaria Nº 5"
                                         className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all placeholder:text-gray-400"
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2 group">
-                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Teléfono de Contacto</label>
+                                <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Ubicación de la Institución</label>
                                 <div className="relative">
-                                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-island transition-colors">call</span>
+                                    <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-island transition-colors">location_on</span>
                                     <input
-                                        type="tel"
-                                        name="phone"
-                                        value={formData.phone}
+                                        required
+                                        type="text"
+                                        name="location"
+                                        value={formData.location}
                                         onChange={handleChange}
-                                        placeholder="+54 11 ..."
+                                        placeholder="Ciudad, Barrio o Dirección"
                                         className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all placeholder:text-gray-400"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1">Tu Rol en la Institución</label>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                {['Director', 'Docente', 'Coordinador', 'Otro'].map((roleItem, idx) => (
-                                    <label key={roleItem} className="cursor-pointer relative">
-                                        <input
-                                            type="radio"
-                                            name="role"
-                                            className="peer sr-only"
-                                            checked={formData.role === roleItem}
-                                            onChange={() => handleRoleChange(roleItem)}
-                                        />
-                                        <div className="rounded-2xl border-2 border-gray-200 bg-background-light py-3 px-2 text-center font-bold text-gray-500 peer-checked:border-secondary-adventure peer-checked:bg-secondary-adventure/10 peer-checked:text-orange-900 transition-all hover:bg-gray-100 flex items-center justify-center gap-2">
-                                            <div className="w-4 h-4 rounded-full border-2 border-gray-300 peer-checked:border-secondary-adventure peer-checked:bg-secondary-adventure flex items-center justify-center">
-                                                <div className="w-1.5 h-1.5 bg-white rounded-full opacity-0 peer-checked:opacity-100"></div>
-                                            </div>
-                                            {roleItem}
-                                        </div>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-
                         <div className="space-y-2 group">
-                            <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">Mensaje o Consulta (Opcional)</label>
-                            <textarea
-                                name="message"
-                                value={formData.message}
-                                onChange={handleChange}
-                                rows={4}
-                                className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3 px-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all placeholder:text-gray-400 resize-none"
-                                placeholder="Cuéntanos cuántos alumnos tienen, qué necesidades buscan cubrir..."
-                            ></textarea>
+                            <label className="block text-text-dark-fun font-black text-sm uppercase tracking-wider ml-1 group-focus-within:text-primary-island transition-colors">¿Quién te recomendó?</label>
+                            <div className="relative">
+                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-island transition-colors">people</span>
+                                <input
+                                    type="text"
+                                    name="referrer"
+                                    value={formData.referrer}
+                                    onChange={handleChange}
+                                    placeholder="Nombre de la persona o 'Redes Sociales'"
+                                    className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all placeholder:text-gray-400"
+                                />
+                            </div>
                         </div>
 
                         <div className="pt-6">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-gradient-to-r from-secondary-adventure to-orange-500 text-white font-black text-xl py-4 rounded-2xl shadow-[0_4px_0_rgb(180,83,9)] hover:shadow-[0_2px_0_rgb(180,83,9)] hover:translate-y-[2px] transition-all border-b-4 border-orange-600 active:translate-y-[4px] active:shadow-none uppercase tracking-wide flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-black text-xl py-4 rounded-2xl shadow-[0_4px_0_rgb(21,128,61)] hover:shadow-[0_2px_0_rgb(21,128,61)] hover:translate-y-[2px] transition-all border-b-4 border-green-700 active:translate-y-[4px] active:shadow-none uppercase tracking-wide flex items-center justify-center gap-3 group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
                                 {loading ? (
@@ -203,12 +199,12 @@ const SchoolFormPage: React.FC = () => {
                                 ) : (
                                     <>
                                         <span className="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform">send</span>
-                                        Enviar Solicitud
+                                        Enviar por WhatsApp
                                     </>
                                 )}
                             </button>
                             <p className="text-center text-gray-400 text-xs font-bold mt-4 uppercase tracking-widest">
-                                Nos pondremos en contacto en menos de 24hs
+                                Nos pondremos en contacto rápidamente
                             </p>
                         </div>
                     </form>
