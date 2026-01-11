@@ -97,14 +97,14 @@ const HomePage: React.FC = () => {
                 </section>
 
                 {/* Footer Section - Image Based */}
-                <footer className="w-full mt-24 relative">
+                <footer className="w-full mt-32 relative rounded-t-[3rem] md:rounded-t-[5rem] overflow-hidden shadow-2xl mx-auto max-w-[1920px]">
                     {/* Gradient Overlay for smooth transition */}
-                    <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+                    <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white via-white/50 to-transparent z-10 pointer-events-none"></div>
 
                     <img
                         src="/piedewebkatupyry.svg"
                         alt="Academia Katupyry Footer"
-                        className="w-full h-auto object-cover relative z-0"
+                        className="w-full h-auto object-cover relative z-0 scale-105"
                     />
                 </footer>
             </main>
