@@ -46,10 +46,6 @@ const HomePage: React.FC = () => {
                                     <Button to="/learn" variant="primary" icon="rocket_launch">
                                         Comenzar Misión
                                     </Button>
-
-                                    <Button to="/schools" variant="glass" icon="domain">
-                                        Katupyry en mi escuela
-                                    </Button>
                                 </div>
                             </div>
 
