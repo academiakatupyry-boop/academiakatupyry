@@ -75,8 +75,7 @@ const CoordinateTrainingPage: React.FC = () => {
         }
     }, [api]);
 
-    import { supabase } from '../supabaseClient';
-    import Swal from 'sweetalert2';
+
 
     // ... (inside component)
 
