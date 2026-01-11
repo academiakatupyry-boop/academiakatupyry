@@ -131,4 +131,3 @@ const LearnPage: React.FC = () => {
 };
 
 export default LearnPage;
-```
