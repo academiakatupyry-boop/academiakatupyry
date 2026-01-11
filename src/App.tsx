@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import CoordinateTrainingPage from './pages/CoordinateTrainingPage';
 import PieceLearningPage from './pages/PieceLearningPage';
+import FundamentalsPage from './pages/FundamentalsPage';
 import ArenaPage from './pages/ArenaPage';
 import ChroniclesPage from './pages/ChroniclesPage';
 import MarketPage from './pages/MarketPage';
