@@ -231,7 +231,7 @@ const PieceLearningPage: React.FC = () => {
     };
 
     return (
-    return (
+
         <div className="flex flex-col items-center justify-center relative overflow-hidden font-display w-full h-[85vh]">
 
             {/* Header */}
