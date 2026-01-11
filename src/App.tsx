@@ -23,6 +23,7 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/learn" element={<LearnPage />} />
           <Route path="/learn/:topicId" element={<LessonPage />} />
+          <Route path="/fundamentals" element={<FundamentalsPage />} />
           {/* Map Route Removed */}
           <Route path="/board" element={<GamePage />} />
           <Route path="/learn/coordinates" element={<CoordinateTrainingPage />} />

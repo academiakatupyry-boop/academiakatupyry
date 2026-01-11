@@ -8,7 +8,7 @@ const Sidebar: React.FC = () => {
 
     const menuItems = [
         { path: "/learn", label: "Aprender", icon: "school" },
-        // Map removed as requested
+        { path: "/fundamentals", label: "Fundamentos", icon: "menu_book" }, // New Section
         { path: "/board", label: "Jugar", icon: "sports_esports" },
         { path: "/arena", label: "Torneos", icon: "swords" },
         { path: "/market", label: "Tienda", icon: "storefront" },

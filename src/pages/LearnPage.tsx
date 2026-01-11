@@ -48,7 +48,8 @@ const LearnPage: React.FC = () => {
         // Check if previous lesson is completed (or if it's the first one)
         if (index === 0) return 'current'; // First lesson always unlocked if not completed
 
-        const prevLessonId = lessons[index - 1].id;
+        const pathLessons = lessons.filter(l => l.category !== 'basics');
+        const prevLessonId = pathLessons[index - 1].id;
         if (progressMap[prevLessonId] === 'completed') return 'current';
 
         return 'locked';
@@ -103,7 +104,7 @@ const LearnPage: React.FC = () => {
                     {/* Simplified straight dashed line for prototype. Complex SVG requires calculating coordinates */}
                     <div className="absolute top-12 bottom-12 w-2 border-l-4 border-dashed border-slate-300 z-0 opacity-50"></div>
 
-                    {lessons.map((lesson, index) => (
+                    {lessons.filter(l => l.category !== 'basics').map((lesson, index) => (
                         <PathNode
                             key={lesson.id}
                             status={getStatus(lesson.id, index)}
