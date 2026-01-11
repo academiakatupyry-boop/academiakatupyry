@@ -12,21 +12,13 @@ const HomePage: React.FC = () => {
                     {/* Main Hero Card - "The Portal" Design */}
                     <div className="relative overflow-hidden rounded-[3rem] shadow-2xl border-4 border-white/10 p-8 md:p-16 bg-cover bg-center group" style={{ backgroundImage: 'url("/fondogalaxiachess.svg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
-                        {/* Dark Gradient Overlay - Inverted (From Right) */}
-                        <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/40 to-transparent z-0"></div>
+                        {/* Dark Gradient Overlay - Reduced Opacity (45%) */}
+                        <div className="absolute inset-0 bg-gradient-to-l from-black/40 via-black/20 to-transparent z-0"></div>
 
                         <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 relative z-10">
 
                             {/* Text Content - "Boom Brutal" Style */}
                             <div className="flex-1 text-center lg:text-left z-20 max-w-2xl">
-
-                                {/* Badge - Moved up (3x more) */}
-                                <div className="inline-flex -mt-20 mb-6 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
-                                    <span className="text-yellow-400 font-black tracking-widest uppercase text-xs md:text-sm flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-sm">bolt</span>
-                                        La aventura comienza aquí
-                                    </span>
-                                </div>
 
                                 {/* Spacer to maintain layout distribution */}
                                 <div className="h-48 md:h-64 w-full"></div>
