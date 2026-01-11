@@ -32,9 +32,9 @@ const SchoolsPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Benefits Section with Integrated Image */}
-            <div className="bg-white relative py-20 px-4 md:px-10 border-t-4 border-gray-100">
-                <div className="max-w-[1100px] mx-auto">
+            {/* Benefits Section - Grid Layout */}
+            <div className="bg-white relative py-20 px-4 md:px-10 border-t-4 border-slate-100">
+                <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
                         <span className="text-primary font-black uppercase tracking-widest text-sm mb-2 block">Por qué elegirnos</span>
                         <h2 className="text-4xl md:text-5xl font-display font-black text-text-dark-fun">
@@ -42,67 +42,95 @@ const SchoolsPage: React.FC = () => {
                         </h2>
                     </div>
 
-                    <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
-
-                        {/* IMAGE CONTAINER - Aquí iría la imagen que mencionas */}
-                        <div className="w-full md:w-1/2 relative">
-                            {/* Decorative elements behind image */}
-                            <div className="absolute inset-0 bg-secondary-adventure rounded-[2.5rem] transform rotate-3 translate-x-2 translate-y-2"></div>
-
-                            <div className="relative rounded-[2.5rem] overflow-hidden border-4 border-text-dark-fun shadow-cartoon-lg transform -rotate-2 hover:rotate-0 transition-all duration-500 bg-island-bg">
-                                <img
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9dDS_3pGF_ihpiBA4gMEZn_Di4Csivi7yccejS-qiuBchXutH7A6WMATqrOomT-ZKrD9bTqpo0Fh9yPM5rLvUMEFBkFulneMpZZ-7yWJJvqNQARB4M5A_9kU1YD9RNJpyc-B5uTXO_TBSR1ljjjE1ZWj_fH6vB1OKSoD2-D8RIcgu1ON97e4yLVZvtrbC7Wlaih6hsF1xEOe0HM7v6LVL2c-ZZD061DKluAc8On2CLnUoivX41mElUVE1lYPSVaKVCCClNTzc2ont"
-                                    alt="Beneficios del Ajedrez en el aula"
-                                    className="w-full h-auto object-cover"
-                                />
-                                {/* Overlay gradient for text readability if needed, or aesthetic */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {/* Benefit 1 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-blue-100 text-blue-600">
+                                <span className="material-symbols-outlined text-3xl filled">psychology</span>
                             </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Desarrollo Cognitivo</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Mejora la memoria, la concentración y el pensamiento lógico-matemático de forma lúdica y natural.
+                            </p>
                         </div>
 
-                        {/* Text / Benefits List */}
-                        <div className="w-full md:w-1/2 flex flex-col gap-8">
-
-                            {/* Benefit 1 */}
-                            <div className="flex gap-4 group">
-                                <div className="shrink-0 w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center border-2 border-blue-200 group-hover:scale-110 transition-transform shadow-sm">
-                                    <span className="material-symbols-outlined text-3xl filled">psychology</span>
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-display font-black text-text-dark-fun mb-2">Desarrollo Cognitivo</h3>
-                                    <p className="text-gray-500 font-bold text-sm leading-relaxed">
-                                        Mejora la memoria, la concentración y el pensamiento lógico-matemático de forma lúdica y natural.
-                                    </p>
-                                </div>
+                        {/* Benefit 2 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-green-100 text-green-600">
+                                <span className="material-symbols-outlined text-3xl filled">diversity_3</span>
                             </div>
-
-                            {/* Benefit 2 */}
-                            <div className="flex gap-4 group">
-                                <div className="shrink-0 w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center border-2 border-green-200 group-hover:scale-110 transition-transform shadow-sm">
-                                    <span className="material-symbols-outlined text-3xl filled">diversity_3</span>
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-display font-black text-text-dark-fun mb-2">Habilidades Sociales</h3>
-                                    <p className="text-gray-500 font-bold text-sm leading-relaxed">
-                                        Fomenta el respeto por el oponente, la paciencia y la aceptación de las reglas y consecuencias.
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Benefit 3 */}
-                            <div className="flex gap-4 group">
-                                <div className="shrink-0 w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center border-2 border-orange-200 group-hover:scale-110 transition-transform shadow-sm">
-                                    <span className="material-symbols-outlined text-3xl filled">lightbulb</span>
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-display font-black text-text-dark-fun mb-2">Toma de Decisiones</h3>
-                                    <p className="text-gray-500 font-bold text-sm leading-relaxed">
-                                        Entrena a los estudiantes para analizar situaciones bajo presión y tomar decisiones estratégicas.
-                                    </p>
-                                </div>
-                            </div>
-
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Habilidades Sociales</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Fomenta el respeto por el oponente, la paciencia y la aceptación de las reglas y consecuencias.
+                            </p>
                         </div>
+
+                        {/* Benefit 3 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-amber-100 text-amber-600">
+                                <span className="material-symbols-outlined text-3xl filled">balance</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Toma de Decisiones</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Entrena a los estudiantes para analizar situaciones bajo presión y tomar decisiones estratégicas.
+                            </p>
+                        </div>
+
+                        {/* Benefit 4 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-purple-100 text-purple-600">
+                                <span className="material-symbols-outlined text-3xl filled">manage_search</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Pensamiento Crítico</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Enseña a evaluar objetivamente cada situación antes de actuar, analizando pros y contras.
+                            </p>
+                        </div>
+
+                        {/* Benefit 5 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-red-100 text-red-500">
+                                <span className="material-symbols-outlined text-3xl filled">restart_alt</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Resiliencia</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Ayuda a entender que perder es parte del aprendizaje, convirtiendo los errores en lecciones valiosas.
+                            </p>
+                        </div>
+
+                        {/* Benefit 6 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-indigo-100 text-indigo-600">
+                                <span className="material-symbols-outlined text-3xl filled">visibility</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Visualización</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Ejercita la capacidad de "ver" jugadas en el futuro, fomentando la imaginación espacial.
+                            </p>
+                        </div>
+
+                        {/* Benefit 7 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-teal-100 text-teal-600">
+                                <span className="material-symbols-outlined text-3xl filled">hourglass_empty</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Paciencia</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Entrena la capacidad de esperar el momento oportuno, reduciendo la impulsividad.
+                            </p>
+                        </div>
+
+                        {/* Benefit 8 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-orange-100 text-orange-600">
+                                <span className="material-symbols-outlined text-3xl filled">flag</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Estrategia</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Fomenta la creación de planes a largo plazo, enseñando que los logros requieren pasos coordinados.
+                            </p>
+                        </div>
+
                     </div>
                 </div>
             </div>
