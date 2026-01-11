@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Chessground } from 'chessground';
+import { supabase } from '../supabaseClient';
+import Swal from 'sweetalert2';
 
 // Utility to pick a random square
 const getRandomSquare = (prevSquare?: string) => {
@@ -45,7 +47,7 @@ const CoordinateTrainingPage: React.FC = () => {
                 },
                 events: {
                     select: (key: string) => {
-                         handleSquareClick(key);
+                        handleSquareClick(key);
                     }
                 }
             };
@@ -66,12 +68,36 @@ const CoordinateTrainingPage: React.FC = () => {
                         handleSquareClick(key);
                         // Clear selection immediately so it can be clicked again visually
                         // Using api.set({ selected: undefined }) instead of api.select(null) because api.select might not exist in this version
-                        setTimeout(() => api.set({ selected: undefined }), 50); 
+                        setTimeout(() => api.set({ selected: undefined }), 50);
                     }
                 }
             });
         }
     }, [api]);
+
+    import { supabase } from '../supabaseClient';
+    import Swal from 'sweetalert2';
+
+    // ... (inside component)
+
+    const [isCompleted, setIsCompleted] = useState(false);
+
+    // Save Progress Logic
+    const saveProgress = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const { error } = await supabase
+                .from('user_progress')
+                .upsert({
+                    user_id: user.id,
+                    lesson_id: 'coordinates',
+                    status: 'completed',
+                    score: score + 1 // Save final score
+                }, { onConflict: 'user_id, lesson_id' });
+
+            if (error) console.error('Error saving progress:', error);
+        }
+    };
 
     const handleSquareClick = (clickedSquare: string) => {
         const currentTarget = targetRef.current;
@@ -79,11 +105,28 @@ const CoordinateTrainingPage: React.FC = () => {
         if (clickedSquare === currentTarget) {
             // Correct!
             setStatus('correct');
-            setScore(s => s + 1);
-            
+            const newScore = score + 1;
+            setScore(newScore);
+
+            // Win Condition: 5 points
+            if (newScore >= 5 && !isCompleted) {
+                setIsCompleted(true);
+                saveProgress();
+                Swal.fire({
+                    title: '¡Nivel Completado!',
+                    text: 'Has dominado las coordenadas. ¡Sigue así!',
+                    icon: 'success',
+                    confirmButtonText: 'Continuar',
+                    background: '#302e2b',
+                    color: '#fff'
+                }).then(() => {
+                    navigate('/learn');
+                });
+            }
+
             // Draw Green Circle
             api?.setShapes([{ brush: 'green', orig: clickedSquare }]);
-            
+
             setTimeout(() => {
                 const next = getRandomSquare(currentTarget);
                 setTargetSquare(next);
@@ -91,11 +134,12 @@ const CoordinateTrainingPage: React.FC = () => {
                 api?.setShapes([]); // Clear shapes
             }, 600);
         } else {
+            // ... (wrong logic same as before)
             // Wrong!
             setStatus('wrong');
             // Draw Red Circle
             api?.setShapes([{ brush: 'red', orig: clickedSquare }]);
-            
+
             setTimeout(() => {
                 setStatus('playing');
                 api?.setShapes([]);
@@ -111,7 +155,7 @@ const CoordinateTrainingPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-[#302e2b] flex flex-col items-center justify-center p-4 relative overflow-hidden font-display">
-            
+
             {/* Navigation */}
             <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50">
                 <Link to="/map" className="text-white/50 hover:text-white transition-colors flex items-center gap-2 font-bold text-sm bg-black/20 px-3 py-1.5 rounded-lg backdrop-blur-sm">
@@ -136,14 +180,14 @@ const CoordinateTrainingPage: React.FC = () => {
             <div className="relative">
                 <div className="w-[85vw] h-[85vw] max-w-[65vh] max-h-[65vh] aspect-square rounded-md shadow-2xl overflow-hidden bg-[#ebecd0] select-none relative ring-8 ring-[#262421]">
                     <div ref={boardRef} className="w-full h-full"></div>
-                    
+
                     {/* Custom Coordinates Overlay */}
                     <div className="absolute inset-0 pointer-events-none z-10 w-full h-full grid grid-cols-8 grid-rows-8">
-                            {[...Array(64)].map((_, i) => {
+                        {[...Array(64)].map((_, i) => {
                             const row = Math.floor(i / 8);
                             const col = i % 8;
                             const isFlipped = orientation === 'black';
-                            
+
                             const rank = isFlipped ? row + 1 : 8 - row;
                             const file = isFlipped ? 7 - col : col;
 
@@ -164,13 +208,13 @@ const CoordinateTrainingPage: React.FC = () => {
 
                 {/* Controls below board */}
                 <div className="mt-6 flex flex-col items-center gap-4">
-                     <button onClick={toggleOrientation} className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all text-sm">
+                    <button onClick={toggleOrientation} className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all text-sm">
                         <span className="material-symbols-outlined">rotate_right</span>
                         Rotar Tablero
                     </button>
 
                     {/* Button to switch to Piece Learning */}
-                    <button 
+                    <button
                         onClick={() => navigate('/learn/pieces')}
                         className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-2xl font-black shadow-comic-primary hover:scale-105 transition-transform"
                     >
@@ -187,7 +231,7 @@ const CoordinateTrainingPage: React.FC = () => {
                         <span className="material-symbols-outlined">close</span> ¡Intenta de nuevo!
                     </span>
                 )}
-                 {status === 'correct' && (
+                {status === 'correct' && (
                     <span className="text-green-400 font-bold animate-bounce flex items-center gap-2">
                         <span className="material-symbols-outlined">check</span> ¡Excelente!
                     </span>

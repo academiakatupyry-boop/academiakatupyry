@@ -2,14 +2,55 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { lessons } from '../data/lessons';
 import PathNode from '../components/PathNode';
+import { supabase } from '../supabaseClient';
+import type { User } from '@supabase/supabase-js';
 
 const LearnPage: React.FC = () => {
     const navigate = useNavigate();
+    const [progressMap, setProgressMap] = React.useState<Record<string, string>>({});
+    const [loading, setLoading] = React.useState(true);
+    const [user, setUser] = React.useState<User | null>(null);
 
-    // Mock progress: First 2 unlocked, 1 completed
-    const getStatus = (index: number) => {
-        if (index === 0) return 'completed';
-        if (index === 1) return 'current';
+    // Fetch Progress
+    React.useEffect(() => {
+        const fetchProgress = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+            if (!user) {
+                setLoading(false);
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('user_progress')
+                .select('lesson_id, status')
+                .eq('user_id', user.id);
+
+            if (data) {
+                const map: Record<string, string> = {};
+                data.forEach((item: any) => {
+                    map[item.lesson_id] = item.status;
+                });
+                setProgressMap(map);
+            }
+            setLoading(false);
+        };
+        fetchProgress();
+    }, []);
+
+    // Determine Status
+    const getStatus = (lessonId: string, index: number) => {
+        if (loading) return 'locked';
+
+        // If user finished this lesson
+        if (progressMap[lessonId] === 'completed') return 'completed';
+
+        // Check if previous lesson is completed (or if it's the first one)
+        if (index === 0) return 'current'; // First lesson always unlocked if not completed
+
+        const prevLessonId = lessons[index - 1].id;
+        if (progressMap[prevLessonId] === 'completed') return 'current';
+
         return 'locked';
     };
 
@@ -29,6 +70,25 @@ const LearnPage: React.FC = () => {
 
             <div className="w-full max-w-md relative z-10 flex flex-col items-center space-y-8 pb-32">
 
+                {/* Registration Card (Upsell) */}
+                {!loading && !user && (
+                    <div className="w-full bg-gradient-to-r from-purple-600 to-blue-600 rounded-[2rem] p-6 text-white shadow-comic-primary mb-4 transform hover:scale-105 transition-transform cursor-pointer relative overflow-hidden" onClick={() => navigate('/profile')}>
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-2xl"></div>
+                        <div className="relative z-10">
+                            <h2 className="text-xl font-black uppercase mb-1 flex items-center gap-2">
+                                <span className="material-symbols-outlined">save</span>
+                                ¡No pierdas tu racha!
+                            </h2>
+                            <p className="font-bold text-white/90 text-sm mb-4">
+                                Regístrate gratis para guardar tu progreso y ganar insignias.
+                            </p>
+                            <button className="bg-white text-primary-island font-black py-2 px-6 rounded-xl shadow-btn hover:shadow-btn-hover active:translate-y-[2px] active:shadow-none transition-all w-full">
+                                Crear Cuenta
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Header (Floating island style) */}
                 <div className="bg-white border-b-4 border-slate-200 rounded-[2rem] p-6 text-center w-full mb-8 shadow-panel">
                     <h1 className="text-2xl font-black text-slate-700 uppercase tracking-widest mb-2">Ruta de Aprendizaje</h1>
@@ -46,11 +106,16 @@ const LearnPage: React.FC = () => {
                     {lessons.map((lesson, index) => (
                         <PathNode
                             key={lesson.id}
-                            status={getStatus(index)}
+                            status={getStatus(lesson.id, index)}
                             icon={lesson.icon}
                             title={lesson.title}
                             position={getPosition(index)}
-                            onClick={() => navigate(`/learn/${lesson.id}`)}
+                            onClick={() => {
+                                const s = getStatus(lesson.id, index);
+                                if (s !== 'locked') {
+                                    navigate(`/learn/${lesson.id}`)
+                                }
+                            }}
                         />
                     ))}
 
