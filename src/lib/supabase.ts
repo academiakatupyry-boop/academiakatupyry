@@ -7,4 +7,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
     console.error('CRITICAL ERROR: Faltan las variables de entorno de Supabase. El sistema de autenticación no funcionará.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Usar valores placeholder para evitar que la aplicación "crashee" al iniciar si faltan variables
+const safeUrl = supabaseUrl || 'https://placeholder.supabase.co';
+const safeKey = supabaseAnonKey || 'placeholder';
+
+export const supabase = createClient(safeUrl, safeKey);
