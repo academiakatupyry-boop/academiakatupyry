@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { lessons } from '../data/lessons';
+import PageTitle from '../components/ui/PageTitle';
 
 const FundamentalsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -13,8 +14,12 @@ const FundamentalsPage: React.FC = () => {
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-black text-slate-700 uppercase tracking-widest mb-2">Fundamentos</h1>
-                    <p className="text-slate-500 font-bold">Domina lo esencial antes de ir a la batalla.</p>
+                    <PageTitle
+                        title="Conceptos"
+                        highlight="Fundamentales"
+                        description="Domina lo esencial antes de ir a la batalla."
+                        className="!text-left !items-start"
+                    />
                 </div>
 
                 {/* Grid of Cards */}

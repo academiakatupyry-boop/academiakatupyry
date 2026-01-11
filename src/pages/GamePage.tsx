@@ -106,7 +106,7 @@ const GamePage: React.FC = () => {
     const pieces = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
     return (
-        <div className="flex items-center justify-center p-4 relative overflow-hidden h-[85vh]">
+        <div className="flex flex-col items-center justify-center p-4 relative overflow-hidden h-[85vh]">
 
             {/* Header / Navigation Controls */}
             <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-50 pointer-events-none">

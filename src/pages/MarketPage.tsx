@@ -1,4 +1,5 @@
 import React from 'react';
+import PageTitle from '../components/ui/PageTitle';
 
 const products = [
     {
@@ -83,17 +84,11 @@ const MarketPage: React.FC = () => {
 
             <section className="relative w-full overflow-hidden pb-12 pt-8 sm:pt-12 px-4">
                 <div className="mx-auto max-w-[1280px]">
-                    <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary-island to-primary-dark text-[#181611] shadow-floating border-4 border-white/20 p-8 md:p-16 text-center text-white">
-                        <div className="absolute top-0 right-0 p-10 opacity-10">
-                            <span className="material-symbols-outlined text-9xl">storefront</span>
-                        </div>
-                        <h1 className="font-display text-5xl md:text-6xl font-black leading-none tracking-tight drop-shadow-md mb-4">
-                            Tienda Katupyry
-                        </h1>
-                        <p className="text-xl font-bold text-white/90 uppercase tracking-wide">
-                            ¡Equípate para la gran aventura del saber!
-                        </p>
-                    </div>
+                    <PageTitle
+                        title="Tienda"
+                        highlight="Katupyry"
+                        description="¡Equípate para la gran aventura del saber!"
+                    />
                 </div>
             </section>
 
