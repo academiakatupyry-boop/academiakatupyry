@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Chessground } from 'chessground';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabase';
 import Swal from 'sweetalert2';
 
 // Data for the pieces

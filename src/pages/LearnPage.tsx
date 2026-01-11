@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { lessons } from '../data/lessons';
 import PathNode from '../components/PathNode';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../lib/supabase';
 import type { User } from '@supabase/supabase-js';
 
 const LearnPage: React.FC = () => {
