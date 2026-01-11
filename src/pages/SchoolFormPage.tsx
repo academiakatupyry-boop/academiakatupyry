@@ -199,7 +199,7 @@ const SchoolFormPage: React.FC = () => {
                                 ) : (
                                     <>
                                         <span className="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform">send</span>
-                                        Enviar por WhatsApp
+                                        Enviar recomendación
                                     </>
                                 )}
                             </button>
