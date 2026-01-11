@@ -20,26 +20,16 @@ const HomePage: React.FC = () => {
                             {/* Text Content - "Boom Brutal" Style */}
                             <div className="flex-1 text-center lg:text-left z-20 max-w-2xl">
 
-                                {/* Badge */}
-                                <div className="inline-flex mb-6 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
+                                {/* Badge - Moved up */}
+                                <div className="inline-flex -mt-6 mb-6 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
                                     <span className="text-yellow-400 font-black tracking-widest uppercase text-xs md:text-sm flex items-center gap-2">
                                         <span className="material-symbols-outlined text-sm">bolt</span>
                                         La aventura comienza aquí
                                     </span>
                                 </div>
 
-                                {/* Main Title */}
-                                <h1 className="text-6xl sm:text-7xl xl:text-8xl font-black font-display tracking-tight mb-6 leading-none text-white drop-shadow-2xl">
-                                    Academia <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 filter drop-shadow-[0_4px_20px_rgba(251,191,36,0.3)]">
-                                        Katupyry
-                                    </span>
-                                </h1>
-
-                                {/* Slogan */}
-                                <p className="text-2xl md:text-3xl text-slate-200 mb-10 font-bold leading-relaxed tracking-wide shadow-black drop-shadow-md">
-                                    El gimnasio de las mentes estrategas.
-                                </p>
+                                {/* Spacer to maintain layout distribution */}
+                                <div className="h-48 md:h-64 w-full"></div>
 
                                 {/* Buttons */}
                                 <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
