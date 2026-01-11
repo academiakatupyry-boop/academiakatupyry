@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import SidebarToggle from './SidebarToggle';
 
-const Sidebar: React.FC = () => {
-    const navigate = useNavigate();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+interface SidebarProps {
+    isCollapsed: boolean;
+    toggleSidebar: () => void;
+}
 
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
-    };
+const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
+    const navigate = useNavigate();
+    // Local state removed, using props
 
     const navItems = [
         { path: '/learn', label: 'APRENDER', icon: 'school' },
@@ -26,21 +27,17 @@ const Sidebar: React.FC = () => {
             {/* Toggle Button */}
             <div className="absolute -right-4 top-8 z-50">
                 <SidebarToggle
-                    isOpen={!isCollapsed}
-                    toggleSidebar={toggleSidebar}
+                    collapsed={isCollapsed}
+                    onToggle={toggleSidebar}
                 />
             </div>
 
             {/* Logo / Header */}
             <div className="p-6 flex items-center justify-center border-b-2 border-slate-100 h-24">
-                {isCollapsed ? (
-                    <img src="/isologo.png" alt="K" className="w-10 h-10 object-contain" />
-                ) : (
-                    <div className="flex items-center gap-3">
-                        <img src="/isologo.png" alt="Logo" className="w-10 h-10 object-contain" />
-                        <span className="font-display font-black text-xl text-primary-island tracking-tight">Katupyry</span>
-                    </div>
-                )}
+                {/* Always show just the Logo, doubled in size */}
+                <div className="flex items-center justify-center">
+                    <img src="/isologo.png" alt="Logo" className="w-20 h-20 object-contain hover:scale-110 transition-transform cursor-pointer" onClick={() => navigate('/')} />
+                </div>
             </div>
 
             {/* Navigation */}

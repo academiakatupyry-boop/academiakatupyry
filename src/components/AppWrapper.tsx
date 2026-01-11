@@ -12,25 +12,24 @@ interface AppWrapperProps {
 
 const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
     const location = useLocation();
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
-    // Pages where we might want full screen (no sidebar)? e.g. Game Board?
-    // User requested "Layout que mantenga el Sidebar fijo".
-    // Usually Game Board needs full space. Let's keep it consistent for now.
+    const toggleSidebar = () => {
+        setIsSidebarCollapsed(!isSidebarCollapsed);
+    };
 
     return (
         <div className="min-h-screen bg-background-light font-body transition-colors duration-500 flex">
             {/* Sidebar (Desktop) */}
-            <Sidebar />
+            <Sidebar isCollapsed={isSidebarCollapsed} toggleSidebar={toggleSidebar} />
 
-            {/* Mobile Nav (Temporary reuse of PrototypeNav or new BottomBar) */}
+            {/* Mobile Nav */}
             <div className="md:hidden">
                 <PrototypeNav />
             </div>
 
             {/* Main Content Area */}
-            {/* Add margin-left to accommodate fixed sidebar on desktop */}
-            {/* Sidebar is w-20 (80px) or w-64 (256px) */}
-            <div className="flex-1 ml-0 lg:ml-64 relative bg-background-light min-h-screen">
+            <div className={`flex-1 transition-all duration-300 relative bg-background-light min-h-screen ${isSidebarCollapsed ? 'ml-0 lg:ml-20' : 'ml-0 lg:ml-64'}`}>
                 {/* Global Background Pattern */}
                 <div className="absolute inset-0 z-0 opacity-40 pointer-events-none fixed" style={{ backgroundImage: 'radial-gradient(#cbd5e1 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
 
