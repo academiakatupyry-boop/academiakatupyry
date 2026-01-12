@@ -6,7 +6,10 @@ const PrototypeNav: React.FC = () => {
     const location = useLocation();
 
     // Si estamos en el tablero o en ejercicios inmersivos, ocultar la navegación
-    if (location.pathname === '/board' || location.pathname === '/learn/coordinates' || location.pathname === '/learn/pieces') {
+    // Hide on: /board, and any sub-route of /learn (e.g. /learn/mate-in-1, /learn/coordinates)
+    const isLearnSubPage = location.pathname.startsWith('/learn/') && location.pathname !== '/learn';
+
+    if (location.pathname === '/board' || isLearnSubPage) {
         return null;
     }
 
