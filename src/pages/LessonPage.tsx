@@ -74,21 +74,56 @@ const LessonPage: React.FC = () => {
                 'hook': 'hookMate'
             };
 
+            // STRICT FILTERING MAP using move counts
+            // Mate in 1 = 2 moves (Opponent -> User Mate)
+            // Mate in 2 = 4 moves (Opp -> Us -> Opp -> Us Mate)
+            const lengthMap: Record<string, number> = {
+                'mate-in-1': 2,
+                'mate-in-2': 4
+            };
+
             let searchTag = themeMap[topic.id] || topic.id;
             console.log(`[PuzzleFetch] Searching for tag: ${searchTag}`);
 
+            // Fetch MORE to allow strict filtering
             const { data, error } = await supabase
                 .from('puzzles')
                 .select('*')
                 .contains('temas', [searchTag])
-                .limit(30);
+                .limit(60);
 
             if (error) {
                 console.error("Error fetching puzzles:", error);
                 Swal.fire('Error', 'No se pudieron cargar los ejercicios. Verifica tu conexión.', 'error');
             } else if (data && data.length > 0) {
-                const shuffled = data.sort(() => 0.5 - Math.random()).slice(0, 5);
-                setPuzzles(shuffled);
+                let validPuzzles = data;
+
+                // Apply Strict Length Filter if applicable
+                if (lengthMap[topic.id]) {
+                    const expectedLength = lengthMap[topic.id];
+                    validPuzzles = data.filter(p => {
+                        const movesCount = p.moves.trim().split(' ').length;
+                        return movesCount === expectedLength;
+                    });
+                    console.log(`[PuzzleFetch] Filtered by length ${expectedLength}. Raw: ${data.length} -> Valid: ${validPuzzles.length}`);
+                }
+
+                if (validPuzzles.length === 0 && data.length > 0) {
+                    // Fallback if strict filtering removed everything (unlikely but safe)
+                    console.warn("[PuzzleFetch] Strict filter removed all puzzles. Showing mixed fallback.");
+                    validPuzzles = data;
+                }
+
+                if (validPuzzles.length === 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Sin Ejercicios',
+                        text: `No hay ejercicios válidos para "${topic.title}".`,
+                    });
+                } else {
+                    const shuffled = validPuzzles.sort(() => 0.5 - Math.random()).slice(0, 5);
+                    setPuzzles(shuffled);
+                }
             } else {
                 Swal.fire({
                     icon: 'info',
@@ -194,29 +229,18 @@ const LessonPage: React.FC = () => {
         const expectedMove = allMoves[currentIndex];
 
         // 1. Attempt move in engine (Rules of Chess check)
-        // We detect promotion automatically to Queen for simplicity in puzzles usually
         let moveAttempt = null;
         try {
             moveAttempt = engine.move({ from: orig, to: dest, promotion: 'q' });
         } catch (e) {
-            // Illegal move (shouldn't happen with dests, but safe guard)
-            // api.set({ fen: engine.fen() }); // Snap back
             return;
         }
 
-        if (!moveAttempt) return; // Logic failed
+        if (!moveAttempt) return;
 
         const playedMoveUCI = `${moveAttempt.from}${moveAttempt.to}${moveAttempt.promotion ? moveAttempt.promotion : ''}`;
 
         // 2. Validate against Puzzle Solution
-        // We compare the UCI strings (engine normalized matches puzzle UCI usually)
-        // Puzzle UCI might be 'e7e8q', engine might give 'e7e8q'.
-
-        // We ignore promotion char if puzzle doesn't have it, but for mates it matters.
-        // Let's use flexible startsWith to allow 'a7a8' == 'a7a8q' loose matching if needed,
-        // BUT for strict puzzles, exact is better. Lichess moves are exact.
-
-        // If played move matches expected OR expected starts with played (e.g. without promo char? unlikely)
         const isCorrectParams = playedMoveUCI === expectedMove || (playedMoveUCI.slice(0, 4) === expectedMove.slice(0, 4));
 
         if (isCorrectParams) {
