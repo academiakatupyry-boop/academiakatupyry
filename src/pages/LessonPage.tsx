@@ -5,7 +5,6 @@ import { getLessonById } from '../data/lessons';
 import { supabase } from '../lib/supabase';
 import Swal from 'sweetalert2';
 import '../index.css';
-import '../assets/chess-board.css'; // Assuming we might add specific styles or use inline
 
 // Interface for our Supabase puzzle
 interface Puzzle {
