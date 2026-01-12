@@ -4,6 +4,7 @@ import { Chessground } from 'chessground';
 import { Chess, Move } from 'chess.js'; // Import Chess Engine
 import { getLessonById } from '../data/lessons';
 import { supabase } from '../lib/supabase';
+import { playAudio } from '../lib/sounds'; // Import Sound Utility
 import Swal from 'sweetalert2';
 import '../index.css';
 // Import Consolidated Chessground Styles
@@ -137,11 +138,6 @@ const LessonPage: React.FC = () => {
         fetchPuzzles();
     }, [topic]);
 
-    // Simple Sound Effects
-    const playSound = (type: 'move' | 'capture' | 'success') => {
-        // Placeholder
-    };
-
     // Handle board logic
     useEffect(() => {
         if (boardRef.current && puzzles.length > 0 && !loading) {
@@ -208,7 +204,7 @@ const LessonPage: React.FC = () => {
                     }
                 });
 
-                playSound('move');
+                playAudio('move');
                 setStatus('user');
             }, 800);
 
@@ -244,7 +240,7 @@ const LessonPage: React.FC = () => {
         const isCorrectParams = playedMoveUCI === expectedMove || (playedMoveUCI.slice(0, 4) === expectedMove.slice(0, 4));
 
         if (isCorrectParams) {
-            playSound('move');
+            playAudio('move');
             moveProgress.current++;
 
             // Visual update
@@ -278,7 +274,7 @@ const LessonPage: React.FC = () => {
                             }
                         });
 
-                        playSound('move');
+                        playAudio('move');
                         moveProgress.current++;
 
                         if (moveProgress.current >= allMoves.length) {
@@ -306,7 +302,7 @@ const LessonPage: React.FC = () => {
     };
 
     const handleSuccess = async () => {
-        playSound('success');
+        playAudio('success');
         await Swal.fire({
             icon: 'success',
             title: '¡Correcto!',
@@ -369,10 +365,10 @@ const LessonPage: React.FC = () => {
                         className={`
                             cg-wrap
                             shadow-xl rounded-sm
-                            bg-white 
+                            bg-white
                             ${status === 'fail' ? 'ring-4 ring-red-400' : 'ring-8 ring-white'}
                         `}
-                        // Essential: This forces the board to respect standard logical sizing 
+                        // Essential: This forces the board to respect standard logical sizing
                         // and Lichess-like responsiveness.
                         style={{
                             width: 'min(90vw, 85vh)',
@@ -416,9 +412,9 @@ const LessonPage: React.FC = () => {
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     {/* Mission Card */}
-                    <div className="bg-blue-50 p-5 rounded-xl border border-blue-100 flex gap-4">
+                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
                             <span className="material-symbols-outlined">psychology</span>
                         </div>
@@ -445,7 +441,7 @@ const LessonPage: React.FC = () => {
                                 <div
                                     key={i}
                                     className={`h-2.5 flex-1 rounded-full transition-all duration-300 ${i < currentPuzzleIndex ? 'bg-green-500' :
-                                            i === currentPuzzleIndex ? 'bg-blue-500 scale-110 shadow-blue-200 shadow-lg' : 'bg-slate-200'
+                                        i === currentPuzzleIndex ? 'bg-blue-500 scale-110 shadow-blue-200 shadow-lg' : 'bg-slate-200'
                                         }`}
                                 ></div>
                             ))}
@@ -457,7 +453,7 @@ const LessonPage: React.FC = () => {
                 <div className="p-4 border-t border-slate-100 bg-slate-50">
                     <button
                         onClick={() => navigate('/learn')}
-                        className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-red-500 py-3 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 shadow-sm">
+                        className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-red-500 py-2.5 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 shadow-sm uppercase tracking-wide">
                         <span className="material-symbols-outlined text-lg">flag</span>
                         Rendirse
                     </button>
