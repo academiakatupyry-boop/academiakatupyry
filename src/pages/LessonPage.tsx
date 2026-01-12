@@ -60,19 +60,20 @@ const LessonPage: React.FC = () => {
 
             setLoading(true);
 
-            // Comprehensive mapping
-            const themeMap: Record<string, string> = {
-                'mate-in-1': 'mateIn1',
-                'mate-in-2': 'mateIn2',
-                'checkmate': 'mate',
-                'anastasia-mate': 'anastasiaMate',
-                'arabian-mate': 'arabianMate',
-                'back-rank': 'backRankMate',
-                'smothered': 'smotheredMate',
-                'bodens': 'bodenMate',
-                'double-bishop': 'doubleBishopMate',
-                'dovetail': 'dovetailMate',
-                'hook': 'hookMate'
+            // Comprehensive mapping using ARRAYS for exact multi-tag matching
+            // User requirement: 'mate-in-1' must have BOTH 'mate' AND 'mateIn1'
+            const themeMap: Record<string, string[]> = {
+                'mate-in-1': ['mate', 'mateIn1'],
+                'mate-in-2': ['mate', 'mateIn2'],
+                'checkmate': ['mate'],
+                'anastasia-mate': ['mate', 'anastasiaMate'],
+                'arabian-mate': ['mate', 'arabianMate'],
+                'back-rank': ['mate', 'backRankMate'],
+                'smothered': ['mate', 'smotheredMate'],
+                'bodens': ['mate', 'bodenMate'],
+                'double-bishop': ['mate', 'doubleBishopMate'],
+                'dovetail': ['mate', 'dovetailMate'],
+                'hook': ['mate', 'hookMate']
             };
 
             // STRICT FILTERING MAP using move counts
@@ -83,14 +84,15 @@ const LessonPage: React.FC = () => {
                 'mate-in-2': 4
             };
 
-            let searchTag = themeMap[topic.id] || topic.id;
-            console.log(`[PuzzleFetch] Searching for tag: ${searchTag}`);
+            // Default to topic.id if not in map, wrapped in array
+            let searchTags = themeMap[topic.id] || [topic.id];
+            console.log(`[PuzzleFetch] Searching for tags: ${JSON.stringify(searchTags)}`);
 
             // Fetch MORE to allow strict filtering
             const { data, error } = await supabase
                 .from('puzzles')
                 .select('*')
-                .contains('temas', [searchTag])
+                .contains('temas', searchTags) // Checks if 'temas' array includes ALL searchTags
                 .limit(60);
 
             if (error) {
@@ -129,7 +131,7 @@ const LessonPage: React.FC = () => {
                 Swal.fire({
                     icon: 'info',
                     title: 'Sin Ejercicios',
-                    text: `No encontramos ejercicios para "${topic.title}" (tag: ${searchTag}).`,
+                    text: `No encontramos ejercicios para "${topic.title}" (tags: ${searchTags.join(', ')}).`,
                 });
             }
             setLoading(false);
