@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
     ];
 
     return (
-        <aside className={`fixed left-0 top-0 h-full bg-white border-r-2 border-slate-100 shadow-xl z-50 transition-all duration-300 flex flex-col ${isCollapsed ? 'w-20' : 'w-64'}`}>
+        <aside className={`hidden md:flex fixed left-0 top-0 h-full bg-white border-r-2 border-slate-100 shadow-xl z-50 transition-all duration-300 flex-col ${isCollapsed ? 'w-20' : 'w-64'}`}>
 
             {/* Toggle Button */}
             <div className="absolute -right-4 top-8 z-50">
