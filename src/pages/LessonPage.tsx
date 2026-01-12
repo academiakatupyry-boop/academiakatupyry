@@ -303,20 +303,29 @@ const LessonPage: React.FC = () => {
 
     const handleSuccess = async () => {
         playAudio('success');
-        await Swal.fire({
+
+        // Non-blocking Toast notification for better flow
+        Swal.fire({
+            toast: true,
+            position: 'top',
             icon: 'success',
             title: '¡Correcto!',
-            text: 'Has encontrado el movimiento ganador.',
-            timer: 1500,
+            timer: 1000,
             showConfirmButton: false,
-            backdrop: `rgba(0,0,0,0.2)`
+            background: '#ffffff',
+            customClass: {
+                popup: 'rounded-xl shadow-lg border border-slate-100'
+            }
         });
 
-        if (currentPuzzleIndex < puzzles.length - 1) {
-            setCurrentPuzzleIndex(prev => prev + 1);
-        } else {
-            handleLessonComplete();
-        }
+        // Delay slighty to let user see the final move, then advance
+        setTimeout(() => {
+            if (currentPuzzleIndex < puzzles.length - 1) {
+                setCurrentPuzzleIndex(prev => prev + 1);
+            } else {
+                handleLessonComplete();
+            }
+        }, 1200);
     };
 
     const handleLessonComplete = async () => {
