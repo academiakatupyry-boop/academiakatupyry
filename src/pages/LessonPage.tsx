@@ -5,10 +5,8 @@ import { getLessonById } from '../data/lessons';
 import { supabase } from '../lib/supabase';
 import Swal from 'sweetalert2';
 import '../index.css';
-// Import Chessground CORE styles (Essential for pieces to show up!)
-import 'chessground/assets/chessground.base.css';
-import 'chessground/assets/chessground.brown.css'; // Theme
-import 'chessground/assets/chessground.cburnett.css'; // Piece set
+// Import Consolidated Chessground Styles
+import '../assets/chessground.css';
 
 // Interface for our Supabase puzzle
 interface Puzzle {
@@ -339,7 +337,7 @@ const LessonPage: React.FC = () => {
                                 <div
                                     key={i}
                                     className={`h-2 flex-1 rounded-sm transition-colors ${i < currentPuzzleIndex ? 'bg-[#629924]' :
-                                            i === currentPuzzleIndex ? 'bg-white animate-pulse' : 'bg-[#302e2c]'
+                                        i === currentPuzzleIndex ? 'bg-white animate-pulse' : 'bg-[#302e2c]'
                                         }`}
                                 ></div>
                             ))}
