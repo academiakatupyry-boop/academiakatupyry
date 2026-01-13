@@ -42,35 +42,21 @@ export default {
                 float: "float 6s ease-in-out infinite",
                 "bounce-slow": "bounce 3s infinite",
                 wiggle: "wiggle 1s ease-in-out infinite",
-                "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-                "fade-in-up": "fade-in-up 0.5s ease-out forwards"
+                "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite"
             },
             keyframes: {
                 float: { "0%, 100%": { transform: "translateY(0)" }, "50%": { transform: "translateY(-20px)" } },
-                wiggle: { "0%, 100%": { transform: "rotate(-3deg)" }, "50%": { transform: "rotate(3deg)" } },
-                "fade-in-up": {
-                    "0%": { opacity: "0", transform: "translateY(20px)" },
-                    "100%": { opacity: "1", transform: "translateY(0)" }
-                }
+                wiggle: { "0%, 100%": { transform: "rotate(-3deg)" }, "50%": { transform: "rotate(3deg)" } }
             },
             boxShadow: {
                 cartoon: "4px 4px 0px rgba(45, 55, 72, 1)",
                 "cartoon-lg": "8px 8px 0px rgba(45, 55, 72, 0.15)",
                 "cartoon-hover": "2px 2px 0px rgba(45, 55, 72, 1)",
-                // 3D Button Shadows (Solid bottom border effect)
-                "btn-primary": "0 4px 0 #059669", // emerald-600
-                "btn-primary-hover": "0 6px 0 #059669",
-                "btn-primary-active": "0 0 0 #059669",
-
-                "btn-secondary": "0 4px 0 #ca8a04", // yellow-600
-                "btn-danger": "0 4px 0 #dc2626",
-                "btn-neutral": "0 4px 0 #9ca3af",
-
-                "panel": "0 8px 0 rgba(0,0,0,0.1)", // For cards/sidebar
-
                 comic: "4px 4px 0px 0px rgba(0,0,0,0.15)",
                 "comic-hover": "6px 6px 0px 0px rgba(0,0,0,0.15)",
-                "game": "0 4px 0 0 rgba(0,0,0,0.1)",
+                "comic-primary": "4px 4px 0px 0px #0284c7",
+                "comic-accent": "4px 4px 0px 0px #d97706",
+                game: "0 4px 0 0 rgba(0,0,0,0.1)",
                 "game-hover": "0 2px 0 0 rgba(0,0,0,0.1)",
                 "game-active": "0 0 0 0 rgba(0,0,0,0.1), inset 0 2px 0 0 rgba(0,0,0,0.1)",
                 card: "0 8px 20px -6px rgba(0, 0, 0, 0.05)",

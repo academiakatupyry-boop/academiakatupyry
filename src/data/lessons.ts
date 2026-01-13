@@ -33,21 +33,6 @@ export const lessons: LessonTopic[] = [
     },
     // --- SECTION: MATES ---
     {
-        id: 'checkmate',
-        title: 'Jaque Mate',
-        description: 'Gana la partida con estilo.',
-        icon: 'emoji_events',
-        category: 'checkmates',
-        exercises: [
-            {
-                id: 'ex1',
-                fen: '4k3/8/4K3/4Q3/8/8/8/8 w - - 0 1',
-                solution: ['e5b8'], // Simple checkmate
-                instruction: 'Mueve la dama para dar Jaque Mate.'
-            }
-        ]
-    },
-    {
         id: 'mate-in-1',
         title: 'Mate en 1',
         description: 'Dar mate en un movimiento.',
