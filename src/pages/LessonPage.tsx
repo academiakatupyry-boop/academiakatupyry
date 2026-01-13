@@ -44,6 +44,7 @@ const LessonPage: React.FC = () => {
     const [status, setStatus] = useState<'agent' | 'user' | 'success' | 'fail'>('agent');
 
     const boardRef = useRef<HTMLDivElement>(null);
+    const apiRef = useRef<any>(null); // Ref for API to avoid stale closures
 
     // Initial load check
     useEffect(() => {
@@ -188,6 +189,7 @@ const LessonPage: React.FC = () => {
 
             const chessgroundApi = Chessground(boardRef.current, config as any);
             setApi(chessgroundApi);
+            apiRef.current = chessgroundApi;
 
             // Initial Opponent Move (Auto-play)
             setTimeout(() => {
@@ -246,11 +248,14 @@ const LessonPage: React.FC = () => {
             moveProgress.current++;
 
             // Visual update
-            api.set({
-                fen: engine.fen(),
-                check: engine.inCheck(),
-                movable: { dests: new Map() } // Lock board while opponent thinks
-            });
+            // Visual update
+            if (apiRef.current) {
+                apiRef.current.set({
+                    fen: engine.fen(),
+                    check: engine.inCheck(),
+                    movable: { dests: new Map() } // Lock board while opponent thinks
+                });
+            }
 
             if (moveProgress.current >= allMoves.length) {
                 setTimeout(handleSuccess, 500);
@@ -290,14 +295,16 @@ const LessonPage: React.FC = () => {
             setStatus('fail');
             setTimeout(() => {
                 engine.undo(); // Revert engine state
-                api.set({
-                    fen: engine.fen(), // Snap visual back
-                    check: engine.inCheck(),
-                    movable: {
-                        color: userTurn,
-                        dests: toDests(engine)
-                    }
-                });
+                if (apiRef.current) {
+                    apiRef.current.set({
+                        fen: engine.fen(), // Snap visual back
+                        check: engine.inCheck(),
+                        movable: {
+                            color: userTurn,
+                            dests: toDests(engine)
+                        }
+                    });
+                }
                 setStatus('user');
             }, 500);
         }
