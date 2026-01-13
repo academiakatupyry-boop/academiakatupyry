@@ -204,7 +204,7 @@ const LessonPage: React.FC = () => {
                     movable: {
                         free: false,
                         color: userSide,
-                        dests: toDests(newChess) // Update legal moves for USER response
+                        dests: toDests(newChess) as any // Update legal moves for USER response
                     }
                 });
 

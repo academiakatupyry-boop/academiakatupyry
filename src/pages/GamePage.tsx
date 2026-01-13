@@ -63,7 +63,7 @@ const GamePage: React.FC = () => {
                     }
                 }
             };
-            const cg = Chessground(boardRef.current, config);
+            const cg = Chessground(boardRef.current, config as any);
             setApi(cg);
         }
     }, [api]);

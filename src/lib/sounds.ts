@@ -1,84 +1,108 @@
-// Standard Chess Sounds (Base64 encoded for zero-latency & offline support)
-// Source: Standard Lichess-style sounds compressed
+// Synthesized Sounds using Web Audio API
+// Helps avoid dependency on external files or CDNs that might be blocked.
 
-const MOVE_SOUND = 'data:audio/mp3;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAG1xUAA5CAAIAAeF8AAUSB923AAAAAAHgAAAABLFMILTGCVFoAAADtGL5pueAAAAA8D//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAG1xUAA5CAAIAAeF8AAUSB923AAAAAAHgAAAABLFMILTGCVFoAAADtGL5pueAAAAA8D';
-// Note: These are short placeholders. For a real premium feel, we'd use longer base64 strings. 
-// However, since I cannot browse to get the actual binary of a specific sound file easily, 
-// I will use a reliable, publicly hosting URL fallback if these short strings fail or I'll implement a simple beep generator using Web Audio API if I can't find good base64 strings in my training data.
-// BETTER APPROACH: Use reliable CDNs for now.
+class AudioSynthesizer {
+    private ctx: AudioContext | null = null;
+    private masterGain: GainNode | null = null;
 
-// Fallback beep using Web Audio API
-const playBeep = (type: 'move' | 'capture' | 'success' | 'failure') => {
-    try {
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-        if (!AudioContext) return;
+    constructor() {
+        try {
+            const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+            if (AudioContextClass) {
+                this.ctx = new AudioContextClass();
+                this.masterGain = this.ctx.createGain();
+                this.masterGain.gain.value = 0.3; // Global volume
+                this.masterGain.connect(this.ctx.destination);
+            }
+        } catch (e) {
+            console.warn("Web Audio API not supported", e);
+        }
+    }
 
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+    private getContext(): AudioContext | null {
+        if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+        return this.ctx;
+    }
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+    play(type: 'move' | 'capture' | 'success' | 'failure') {
+        const ctx = this.getContext();
+        if (!ctx || !this.masterGain) return;
 
-        const now = ctx.currentTime;
+        const t = ctx.currentTime;
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(this.masterGain);
 
         if (type === 'move') {
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-            osc.start(now);
-            osc.stop(now + 0.1);
-        } else if (type === 'capture') {
-            osc.frequency.setValueAtTime(600, now);
-            osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-            osc.start(now);
-            osc.stop(now + 0.1);
-        } else if (type === 'success') {
-            osc.index = "success"; // Custom property for debugging
-            // Arpeggio
-            osc.frequency.setValueAtTime(440, now);
-            osc.frequency.setValueAtTime(554, now + 0.1); // C#
-            osc.frequency.setValueAtTime(659, now + 0.2); // E
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
-            osc.start(now);
-            osc.stop(now + 0.4);
-        } else {
-            // Failure / Illegal
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(200, now);
-            osc.frequency.linearRampToValueAtTime(150, now + 0.2);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
-            osc.start(now);
-            osc.stop(now + 0.2);
+            // Soft wood-like thud
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(180, t);
+            oscillator.frequency.exponentialRampToValueAtTime(100, t + 0.1);
+
+            gainNode.gain.setValueAtTime(0.5, t);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+
+            oscillator.start(t);
+            oscillator.stop(t + 0.1);
         }
-    } catch (e) {
-        console.warn("Audio fallback failed", e);
+        else if (type === 'capture') {
+            // Sharp snap
+            oscillator.type = 'square'; // More harmonic content
+            oscillator.frequency.setValueAtTime(400, t);
+            oscillator.frequency.exponentialRampToValueAtTime(100, t + 0.15);
+
+            gainNode.gain.setValueAtTime(0.4, t);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+
+            oscillator.start(t);
+            oscillator.stop(t + 0.15);
+        }
+        else if (type === 'success') {
+            // Uplifting major chord arpeggio
+            this.playNote(523.25, t, 0.2); // C5
+            this.playNote(659.25, t + 0.1, 0.2); // E5
+            this.playNote(783.99, t + 0.2, 0.4); // G5
+        }
+        else if (type === 'failure') {
+            // Low error buzz
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(150, t);
+            oscillator.frequency.linearRampToValueAtTime(100, t + 0.3);
+
+            gainNode.gain.setValueAtTime(0.5, t);
+            gainNode.gain.linearRampToValueAtTime(0.01, t + 0.3);
+
+            oscillator.start(t);
+            oscillator.stop(t + 0.3);
+        }
     }
-};
+
+    private playNote(freq: number, time: number, duration: number) {
+        if (!this.ctx || !this.masterGain) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+
+        gain.gain.setValueAtTime(0.2, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+
+        osc.start(time);
+        osc.stop(time + duration);
+    }
+}
+
+// Singleton instance
+const synth = new AudioSynthesizer();
 
 export const playAudio = (type: 'move' | 'capture' | 'success' | 'failure') => {
-    const sounds = {
-        move: 'https://images.chesscomfiles.com/chess-themes/sounds/_common/default/move-self.mp3',
-        capture: 'https://images.chesscomfiles.com/chess-themes/sounds/_common/default/capture.mp3',
-        success: 'https://images.chesscomfiles.com/chess-themes/sounds/_common/default/notify.mp3',
-        failure: 'https://images.chesscomfiles.com/chess-themes/sounds/_common/default/illegal.mp3',
-    };
-
-    const audio = new Audio(sounds[type]);
-    audio.volume = 0.5;
-
-    // Attempt play, if it fails (e.g. strict browser policy or network error), use fallback
-    const playPromise = audio.play();
-
-    if (playPromise !== undefined) {
-        playPromise.catch(error => {
-            console.warn(`Audio file play blocked/failed (${error.message}). Using fallback.`);
-            playBeep(type);
-        });
-    }
+    synth.play(type);
 };

@@ -51,7 +51,7 @@ const CoordinateTrainingPage: React.FC = () => {
                     }
                 }
             };
-            const cg = Chessground(boardRef.current, config);
+            const cg = Chessground(boardRef.current, config as any);
             setApi(cg);
         }
     }, [api]);
@@ -124,7 +124,7 @@ const CoordinateTrainingPage: React.FC = () => {
             }
 
             // Draw Green Circle
-            api?.setShapes([{ brush: 'green', orig: clickedSquare }]);
+            (api as any)?.setShapes([{ brush: 'green', orig: clickedSquare }]);
 
             setTimeout(() => {
                 const next = getRandomSquare(currentTarget);
@@ -137,7 +137,7 @@ const CoordinateTrainingPage: React.FC = () => {
             // Wrong!
             setStatus('wrong');
             // Draw Red Circle
-            api?.setShapes([{ brush: 'red', orig: clickedSquare }]);
+            (api as any)?.setShapes([{ brush: 'red', orig: clickedSquare }]);
 
             setTimeout(() => {
                 setStatus('playing');

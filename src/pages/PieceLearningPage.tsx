@@ -121,7 +121,7 @@ const PieceLearningPage: React.FC = () => {
                 },
                 // We do NOT bind events here to avoid stale closures. We do it in the next effect.
             };
-            const cg = Chessground(boardRef.current, config);
+            const cg = Chessground(boardRef.current, config as any);
             setApi(cg);
         }
     }, [api]);
