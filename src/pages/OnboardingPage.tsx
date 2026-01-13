@@ -35,6 +35,52 @@ const MISSIONS: Mission[] = [
         goalMove: "c1h6",
         hint: "Mueve en diagonal hacia la esquina superior derecha.",
         pieceToMove: 'white'
+    },
+    {
+        id: 3,
+        title: "La Dama Todopoderosa",
+        description: "La Dama combina los poderes de la Torre y el Alfil. ¡Es la pieza más fuerte!",
+        fen: "4k3/8/8/7p/8/8/8/3QK3 w - - 0 1", // Queen d1, King e1, Pawn h5, King e8
+        goalMove: "d1h5",
+        hint: "Cruza todo el tablero en diagonal para capturar.",
+        pieceToMove: 'white'
+    },
+    {
+        id: 4,
+        title: "El Caballo Saltarín",
+        description: "El Caballo es la única pieza que puede saltar sobre otras. Se mueve en forma de 'L'.",
+        fen: "4k3/8/8/8/8/5p2/8/4K1N1 w - - 0 1", // Knight g1, Pawn f3. (f3 is rank 3. a8=rank8). 
+        // Logic check: 
+        // 8 
+        // 7
+        // 6
+        // 5
+        // 4
+        // 3       p (f3)
+        // 2
+        // 1       K N (e1, g1)
+        // FEN: 8/8/8/8/8/5p2/8/4K1N1 
+        goalMove: "g1f3",
+        hint: "Salta dos casillas hacia arriba y una al costado.",
+        pieceToMove: 'white'
+    },
+    {
+        id: 5,
+        title: "El Peón Valiente",
+        description: "El Peón avanza hacia adelante, pero captura en diagonal. ¡Inténtalo!",
+        fen: "4k3/8/8/3p4/4P3/8/8/4K3 w - - 0 1", // Pawn e4, Pawn d5
+        goalMove: "e4d5",
+        hint: "Come al peón negro moviéndote en diagonal.",
+        pieceToMove: 'white'
+    },
+    {
+        id: 6,
+        title: "El Rey (El Jefe)",
+        description: "El Rey es lento pero importante. Solo puede dar un paso a la vez en cualquier dirección.",
+        fen: "8/8/8/3p4/4K3/8/8/4k3 w - - 0 1", // King e4, Pawn d5
+        goalMove: "e4d5",
+        hint: "Da un paso y captura al peón.",
+        pieceToMove: 'white'
     }
 ];
 
