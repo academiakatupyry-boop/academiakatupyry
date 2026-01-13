@@ -29,6 +29,220 @@ function toDests(chess: Chess): Map<string, string[]> {
     return dests;
 }
 
+// --- SUB-COMPONENT: ACTIVE PUZZLE (Handles logic for ONE specific puzzle) ---
+// This ensures a complete "hard reset" of state/refs when the puzzle changes.
+const ActivePuzzle: React.FC<{
+    puzzle: Puzzle;
+    onSuccess: () => void;
+    onFail: () => void;
+}> = ({ puzzle, onSuccess, onFail }) => {
+    const boardRef = useRef<HTMLDivElement>(null);
+    const apiRef = useRef<any>(null);
+    const moveProgress = useRef(1); // Track user moves (start at 1 because 0 is opponent's opening)
+
+    // Local State
+    const [chess] = useState(() => new Chess(puzzle.fen)); // Instance per component mount
+    const [userTurn, setUserTurn] = useState<'white' | 'black'>('white');
+    const [status, setStatus] = useState<'agent' | 'user' | 'success' | 'fail'>('agent');
+
+    // Setup Board & Game Logic
+    useEffect(() => {
+        if (!boardRef.current) return;
+
+        // 1. Parse Data
+        // Robust moves parsing: remove whitespace
+        const allMoves = puzzle.moves.trim().split(/\s+/);
+        const opponentMove = allMoves[0];
+
+        // Safety check: if puzzle has no moves
+        if (!opponentMove || opponentMove.length < 4) {
+            console.error("Puzzle has invalid moves data:", puzzle.moves);
+            return;
+        }
+
+        const opponentFrom = opponentMove.substring(0, 2);
+        const opponentTo = opponentMove.substring(2, 4);
+
+        // Determine User Side (Opposite of first mover in FEN)
+        const fenParts = puzzle.fen.split(' ');
+        const firstMover = fenParts[1];
+        const userSide = firstMover === 'w' ? 'black' : 'white';
+        setUserTurn(userSide);
+
+        // 2. Configure Chessground
+        const config = {
+            fen: puzzle.fen,
+            orientation: userSide,
+            movable: {
+                free: false,
+                color: userSide,
+                dests: toDests(chess), // Use chess.js legal moves
+            },
+            highlight: {
+                lastMove: true,
+                check: true
+            },
+            animation: {
+                enabled: true,
+                duration: 300
+            },
+            events: {
+                move: (orig: string, dest: string) => {
+                    handleUserMove(orig, dest, allMoves, chess, userSide);
+                }
+            }
+        };
+
+        // 3. Initialize Board
+        boardRef.current.innerHTML = '';
+        const cg = Chessground(boardRef.current, config as any);
+        apiRef.current = cg;
+
+        // 4. Initial Opponent Move (Auto-play sequence)
+        const timer = setTimeout(() => {
+            try {
+                // Apply move to engine
+                chess.move({ from: opponentFrom, to: opponentTo });
+
+                // Update Visuals
+                cg.set({
+                    fen: chess.fen(),
+                    lastMove: [opponentFrom, opponentTo],
+                    movable: {
+                        free: false,
+                        color: userSide,
+                        dests: toDests(chess) as any
+                    }
+                });
+
+                playAudio('move');
+                setStatus('user'); // Unlock for user
+            } catch (e) {
+                console.error("Error executing initial opponent move:", e);
+            }
+        }, 800);
+
+        // Cleanup
+        return () => {
+            clearTimeout(timer);
+            cg.destroy();
+        };
+    }, []); // Empty dependency array! We depend on 'key' from parent to re-mount.
+
+    const handleUserMove = (orig: string, dest: string, allMoves: string[], engine: Chess, playerColor: 'white' | 'black') => {
+        const currentIndex = moveProgress.current;
+        const expectedMove = allMoves[currentIndex];
+
+        // 1. Attempt move in engine
+        let moveAttempt = null;
+        try {
+            moveAttempt = engine.move({ from: orig, to: dest, promotion: 'q' });
+        } catch (e) { return; } // Illegal move caught by engine
+
+        if (!moveAttempt) return;
+
+        // 2. Check if it matches solution
+        const playedMoveUCI = `${moveAttempt.from}${moveAttempt.to}${moveAttempt.promotion ? moveAttempt.promotion : ''}`;
+        const isCorrect = playedMoveUCI === expectedMove || (playedMoveUCI.slice(0, 4) === expectedMove.slice(0, 4));
+
+        if (isCorrect) {
+            playAudio('move');
+            moveProgress.current++;
+
+            // Lock board temporarily
+            apiRef.current?.set({
+                fen: engine.fen(),
+                check: engine.inCheck(),
+                movable: { dests: new Map() }
+            });
+
+            // Check if user finished
+            if (moveProgress.current >= allMoves.length) {
+                setTimeout(() => {
+                    setStatus('success');
+                    onSuccess();
+                }, 500);
+            } else {
+                // Opponent Response
+                setTimeout(() => {
+                    const responseStr = allMoves[moveProgress.current];
+                    if (responseStr) {
+                        const from = responseStr.substring(0, 2);
+                        const to = responseStr.substring(2, 4);
+                        const promo = responseStr.length > 4 ? responseStr[4] : undefined;
+
+                        try {
+                            engine.move({ from, to, promotion: promo });
+
+                            apiRef.current?.set({
+                                fen: engine.fen(),
+                                lastMove: [from, to],
+                                check: engine.inCheck(),
+                                movable: {
+                                    free: false,
+                                    color: playerColor, // CRITICAL: Explicit color
+                                    dests: toDests(engine)
+                                }
+                            });
+
+                            playAudio('move');
+                            moveProgress.current++; // Advance index for next user turn
+
+                            // Check if puzzle ended after opponent move (unlikely but possible)
+                            if (moveProgress.current >= allMoves.length) {
+                                setTimeout(() => {
+                                    setStatus('success');
+                                    onSuccess();
+                                }, 500);
+                            }
+                        } catch (e) {
+                            console.error("Opponent move error:", e);
+                        }
+                    }
+                }, 500);
+            }
+        } else {
+            // Wrong Move
+            setStatus('fail');
+            onFail(); // Notify parent for shake effect or sound
+
+            setTimeout(() => {
+                engine.undo(); // Rollback
+                apiRef.current?.set({
+                    fen: engine.fen(),
+                    check: engine.inCheck(),
+                    movable: {
+                        color: playerColor,
+                        dests: toDests(engine)
+                    }
+                });
+                setStatus('user');
+            }, 500);
+        }
+    };
+
+    return (
+        <div className="w-full h-full flex items-center justify-center">
+            <div
+                ref={boardRef}
+                className={`
+                    cg-wrap
+                    shadow-xl rounded-sm
+                    bg-white
+                    ${status === 'fail' ? 'ring-4 ring-red-400' : 'ring-8 ring-white'}
+                `}
+                style={{
+                    width: 'min(90vw, 85vh)',
+                    height: 'min(90vw, 85vh)',
+                    display: 'block'
+                }}
+            ></div>
+        </div>
+    );
+};
+
+
+// --- MAIN PARENT COMPONENT ---
 const LessonPage: React.FC = () => {
     const { topicId } = useParams<{ topicId: string }>();
     const navigate = useNavigate();
@@ -38,13 +252,6 @@ const LessonPage: React.FC = () => {
     const [puzzles, setPuzzles] = useState<Puzzle[]>([]);
     const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [api, setApi] = useState<any>(null);
-    const [chess, setChess] = useState<Chess>(new Chess()); // Chess Engine Instance
-    const [userTurn, setUserTurn] = useState<'white' | 'black'>('white');
-    const [status, setStatus] = useState<'agent' | 'user' | 'success' | 'fail'>('agent');
-
-    const boardRef = useRef<HTMLDivElement>(null);
-    const apiRef = useRef<any>(null); // Ref for API to avoid stale closures
 
     // Initial load check
     useEffect(() => {
@@ -61,8 +268,7 @@ const LessonPage: React.FC = () => {
 
             setLoading(true);
 
-            // Comprehensive mapping using ARRAYS for exact multi-tag matching
-            // User requirement: 'mate-in-1' must have BOTH 'mate' AND 'mateIn1'
+            // Mapping Logic (Kept same as before)
             const themeMap: Record<string, string[]> = {
                 'mate-in-1': ['mate', 'mateIn1'],
                 'mate-in-2': ['mate', 'mateIn2'],
@@ -76,64 +282,42 @@ const LessonPage: React.FC = () => {
                 'dovetail': ['mate', 'dovetailMate'],
                 'hook': ['mate', 'hookMate']
             };
-
-            // STRICT FILTERING MAP using move counts
-            // Mate in 1 = 2 moves (Opponent -> User Mate)
-            // Mate in 2 = 4 moves (Opp -> Us -> Opp -> Us Mate)
             const lengthMap: Record<string, number> = {
                 'mate-in-1': 2,
                 'mate-in-2': 4
             };
 
-            // Default to topic.id if not in map, wrapped in array
             let searchTags = themeMap[topic.id] || [topic.id];
-            console.log(`[PuzzleFetch] Searching for tags: ${JSON.stringify(searchTags)}`);
 
-            // Fetch MORE to allow strict filtering
             const { data, error } = await supabase
                 .from('puzzles')
                 .select('*')
-                .contains('temas', searchTags) // Checks if 'temas' array includes ALL searchTags
+                .contains('temas', searchTags)
                 .limit(60);
 
             if (error) {
                 console.error("Error fetching puzzles:", error);
-                Swal.fire('Error', 'No se pudieron cargar los ejercicios. Verifica tu conexión.', 'error');
+                Swal.fire('Error', 'No se pudieron cargar los ejercicios.', 'error');
             } else if (data && data.length > 0) {
                 let validPuzzles = data;
-
-                // Apply Strict Length Filter if applicable
                 if (lengthMap[topic.id]) {
                     const expectedLength = lengthMap[topic.id];
                     validPuzzles = data.filter(p => {
-                        const movesCount = p.moves.trim().split(' ').length;
+                        const movesCount = p.moves.trim().split(/\s+/).length;
                         return movesCount === expectedLength;
                     });
-                    console.log(`[PuzzleFetch] Filtered by length ${expectedLength}. Raw: ${data.length} -> Valid: ${validPuzzles.length}`);
                 }
+                // Fallback
+                if (validPuzzles.length === 0) validPuzzles = data;
 
-                if (validPuzzles.length === 0 && data.length > 0) {
-                    // Fallback if strict filtering removed everything (unlikely but safe)
-                    console.warn("[PuzzleFetch] Strict filter removed all puzzles. Showing mixed fallback.");
-                    validPuzzles = data;
-                }
-
-                if (validPuzzles.length === 0) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Sin Ejercicios',
-                        text: `No hay ejercicios válidos para "${topic.title}".`,
-                    });
-                } else {
+                if (validPuzzles.length > 0) {
                     const shuffled = validPuzzles.sort(() => 0.5 - Math.random()).slice(0, 5);
                     setPuzzles(shuffled);
+                } else {
+                    Swal.fire('Info', `No hay ejercicios válidos para "${topic.title}".`, 'info');
                 }
             } else {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Sin Ejercicios',
-                    text: `No encontramos ejercicios para "${topic.title}" (tags: ${searchTags.join(', ')}).`,
-                });
+                Swal.fire('Info', `No encontramos ejercicios para "${topic.title}".`, 'info');
             }
             setLoading(false);
         };
@@ -141,194 +325,14 @@ const LessonPage: React.FC = () => {
         fetchPuzzles();
     }, [topic]);
 
-    // Handle board logic
-    useEffect(() => {
-        if (boardRef.current && puzzles.length > 0 && !loading) {
-            const puzzle = puzzles[currentPuzzleIndex];
-            if (!puzzle) return;
-
-            // Robust moves parsing: remove whitespace garbage
-            const allMoves = puzzle.moves.trim().split(/\s+/);
-            const opponentMove = allMoves[0];
-            const opponentFrom = opponentMove.substring(0, 2);
-            const opponentTo = opponentMove.substring(2, 4);
-
-            // Initialize Chess Engine with FEN
-            const newChess = new Chess(puzzle.fen);
-            setChess(newChess);
-
-            const fenParts = puzzle.fen.split(' ');
-            const firstMover = fenParts[1];
-            const userSide = firstMover === 'w' ? 'black' : 'white';
-
-            setUserTurn(userSide);
-
-            const config = {
-                fen: puzzle.fen,
-                orientation: userSide,
-                movable: {
-                    free: false,
-                    color: userSide,
-                    dests: toDests(newChess), // Use chess.js legal moves!
-                },
-                highlight: {
-                    lastMove: true,
-                    check: true
-                },
-                animation: {
-                    enabled: true,
-                    duration: 300
-                },
-                events: {
-                    move: (orig: string, dest: string) => {
-                        handleUserMove(orig, dest, allMoves, newChess, userSide); // Pass engine AND correct color
-                    }
-                }
-            };
-
-            if (boardRef.current) boardRef.current.innerHTML = '';
-
-            const chessgroundApi = Chessground(boardRef.current, config as any);
-            setApi(chessgroundApi);
-            apiRef.current = chessgroundApi;
-
-            // Initial Opponent Move (Auto-play)
-            setTimeout(() => {
-                // Update engine state
-                try {
-                    newChess.move({ from: opponentFrom, to: opponentTo });
-                } catch (e) { console.error("Opponent move invalid in engine", e); }
-
-                // Update board visual
-                chessgroundApi.set({
-                    fen: newChess.fen(),
-                    movable: {
-                        free: false,
-                        color: userSide,
-                        dests: toDests(newChess) as any // Update legal moves for USER response
-                    }
-                });
-
-                playAudio('move');
-                setStatus('user');
-            }, 800);
-
-            return () => {
-                chessgroundApi.destroy();
-            }
-        }
-    }, [puzzles, currentPuzzleIndex, loading]);
-
-    // Move Tracking
-    const moveProgress = useRef(1);
-    useEffect(() => {
-        moveProgress.current = 1;
-    }, [currentPuzzleIndex]);
-
-    const handleUserMove = (orig: string, dest: string, allMoves: string[], engine: Chess, playerColor: 'white' | 'black') => {
-        const currentIndex = moveProgress.current;
-        const expectedMove = allMoves[currentIndex];
-
-        // 1. Attempt move in engine (Rules of Chess check)
-        let moveAttempt = null;
-        try {
-            moveAttempt = engine.move({ from: orig, to: dest, promotion: 'q' });
-        } catch (e) {
-            return;
-        }
-
-        if (!moveAttempt) return;
-
-        const playedMoveUCI = `${moveAttempt.from}${moveAttempt.to}${moveAttempt.promotion ? moveAttempt.promotion : ''}`;
-
-        // 2. Validate against Puzzle Solution
-        const isCorrectParams = playedMoveUCI === expectedMove || (playedMoveUCI.slice(0, 4) === expectedMove.slice(0, 4));
-
-        if (isCorrectParams) {
-            playAudio('move');
-            moveProgress.current++;
-
-            // Visual update
-            // Visual update
-            if (apiRef.current) {
-                apiRef.current.set({
-                    fen: engine.fen(),
-                    check: engine.inCheck(),
-                    movable: { dests: new Map() } // Lock board while opponent thinks
-                });
-            }
-
-            if (moveProgress.current >= allMoves.length) {
-                setTimeout(handleSuccess, 500);
-            } else {
-                // Opponent Response
-                setTimeout(() => {
-                    const responseMoveStr = allMoves[moveProgress.current];
-                    if (responseMoveStr) {
-                        const from = responseMoveStr.substring(0, 2);
-                        const to = responseMoveStr.substring(2, 4);
-                        const promo = responseMoveStr.length > 4 ? responseMoveStr[4] : undefined;
-
-                        engine.move({ from, to, promotion: promo });
-
-                        apiRef.current?.set({
-                            fen: engine.fen(),
-                            lastMove: [from, to],
-                            check: engine.inCheck(),
-                            movable: {
-                                free: false,
-                                color: playerColor,
-                                dests: toDests(engine) // Unlock for next user move
-                            }
-                        });
-
-                        playAudio('move');
-                        moveProgress.current++;
-
-                        if (moveProgress.current >= allMoves.length) {
-                            setTimeout(handleSuccess, 500);
-                        }
-                    }
-                }, 500);
-            }
-        } else {
-            // WRONG MOVE but legal in chess
-            setStatus('fail');
-            setTimeout(() => {
-                engine.undo(); // Revert engine state
-                if (apiRef.current) {
-                    apiRef.current.set({
-                        fen: engine.fen(), // Snap visual back
-                        check: engine.inCheck(),
-                        movable: {
-                            color: playerColor,
-                            dests: toDests(engine)
-                        }
-                    });
-                }
-                setStatus('user');
-            }, 500);
-        }
-    };
-
-    const handleSuccess = async () => {
+    const handleSuccess = () => {
         playAudio('success');
-
-        // Non-blocking Toast notification for better flow
         Swal.fire({
-            toast: true,
-            position: 'top',
-            icon: 'success',
-            title: '¡Correcto!',
-            timer: 1000,
-            showConfirmButton: false,
-            background: '#ffffff',
-            customClass: {
-                popup: 'rounded-xl shadow-lg border border-slate-100'
-            }
+            toast: true, position: 'top', icon: 'success', title: '¡Correcto!',
+            timer: 1000, showConfirmButton: false, background: '#ffffff',
+            customClass: { popup: 'rounded-xl shadow-lg border border-slate-100' }
         });
 
-        // Delay slighty to let user see the final move, then advance
         setTimeout(() => {
             if (currentPuzzleIndex < puzzles.length - 1) {
                 setCurrentPuzzleIndex(prev => prev + 1);
@@ -336,6 +340,10 @@ const LessonPage: React.FC = () => {
                 handleLessonComplete();
             }
         }, 1200);
+    };
+
+    const handleFail = () => {
+        playAudio('failure');
     };
 
     const handleLessonComplete = async () => {
@@ -350,7 +358,6 @@ const LessonPage: React.FC = () => {
                     updated_at: new Date().toISOString()
                 });
         }
-
         Swal.fire({
             title: '¡Lección Completada!',
             html: `
@@ -362,64 +369,36 @@ const LessonPage: React.FC = () => {
             confirmButtonText: 'Volver al Mapa',
             confirmButtonColor: '#3080e3',
             background: '#fff',
-            customClass: {
-                popup: 'rounded-2xl shadow-xl font-body'
-            }
-        }).then(() => {
-            navigate('/learn');
-        });
+            customClass: { popup: 'rounded-2xl shadow-xl font-body' }
+        }).then(() => navigate('/learn'));
     };
 
     if (!topic) return null;
 
     return (
         <div className="w-full h-screen bg-slate-50 flex flex-col md:flex-row overflow-hidden font-body text-slate-800">
-
-            {/* 1. Main Content Area (Board) - Order 1 on Mobile (Top) */}
+            {/* 1. Main Content Area (Board) */}
             <div className="flex-1 order-1 md:order-2 flex items-center justify-center p-2 md:p-0 relative bg-slate-100">
-                {/* Board Container: constrained aspect ratio */}
-                <div className="w-full h-full flex items-center justify-center">
-                    <div
-                        ref={boardRef}
-                        className={`
-                            cg-wrap
-                            shadow-xl rounded-sm
-                            bg-white
-                            ${status === 'fail' ? 'ring-4 ring-red-400' : 'ring-8 ring-white'}
-                        `}
-                        // Essential: This forces the board to respect standard logical sizing
-                        // and Lichess-like responsiveness.
-                        style={{
-                            width: 'min(90vw, 85vh)',
-                            height: 'min(90vw, 85vh)',
-                            display: 'block'
-                        }}
-                    >
-                        {/* Loading Overlay */}
-                        {loading && (
-                            <div className="absolute inset-0 bg-slate-50/90 z-50 flex items-center justify-center text-primary-island flex-col gap-4 rounded-sm">
-                                <div className="w-12 h-12 border-4 border-primary-island border-t-transparent rounded-full animate-spin"></div>
-                                <span className="font-bold">Cargando tablero...</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Mobile: Turn Indicator Overlay (Bottom of board) */}
-                {!loading && (
-                    <div className="absolute bottom-4 left-0 right-0 flex justify-center md:hidden pointer-events-none">
-                        <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-slate-800 text-xs font-bold border border-slate-200 shadow-lg flex items-center gap-2">
-                            <div className={`w-3 h-3 rounded-full ${userTurn === 'white' ? 'bg-white border-2 border-slate-800' : 'bg-slate-800 border-slate-800'}`}></div>
-                            {userTurn === 'white' ? 'Juegan Blancas' : 'Juegan Negras'}
-                        </div>
+                {/* ACTIVE PUZZLE RENDERING - THE KEY IS THE MAGIC */}
+                {!loading && puzzles[currentPuzzleIndex] ? (
+                    <ActivePuzzle
+                        key={puzzles[currentPuzzleIndex].id} // FORCE REMOUNT ON INDEX CHANGE
+                        puzzle={puzzles[currentPuzzleIndex]}
+                        onSuccess={handleSuccess}
+                        onFail={handleFail}
+                    />
+                ) : (
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="w-12 h-12 border-4 border-primary-island border-t-transparent rounded-full animate-spin"></div>
+                        <span className="font-bold text-slate-500">
+                            {loading ? 'Cargando tablero...' : 'Preparando ejercicios...'}
+                        </span>
                     </div>
                 )}
             </div>
 
-            {/* 2. Sidebar (Info) - Order 2 on Mobile (Bottom) */}
+            {/* 2. Sidebar (Info) */}
             <div className="w-full md:w-[350px] lg:w-[400px] h-[35vh] md:h-full order-2 md:order-1 bg-white flex flex-col border-t md:border-t-0 md:border-r border-slate-200 relative z-20 shadow-lg">
-
-                {/* Header */}
                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                     <button onClick={() => navigate('/learn')} className="text-slate-400 hover:text-primary-island transition-colors">
                         <span className="material-symbols-outlined">close</span>
@@ -430,7 +409,6 @@ const LessonPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     {/* Mission Card */}
                     <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3">
@@ -438,12 +416,9 @@ const LessonPage: React.FC = () => {
                             <span className="material-symbols-outlined">psychology</span>
                         </div>
                         <div>
-                            <h3 className="text-blue-900 font-bold text-sm mb-1">
-                                Tu Misión
-                            </h3>
+                            <h3 className="text-blue-900 font-bold text-sm mb-1">Tu Misión</h3>
                             <p className="text-sm text-blue-700 leading-relaxed">
-                                {userTurn === 'white' ? 'Las Blancas' : 'Las Negras'} buscan la victoria.
-                                <br />
+                                Juegas para ganar. <br />
                                 <span className="opacity-80 text-xs mt-1 block font-medium">{topic.description}</span>
                             </p>
                         </div>
@@ -460,7 +435,7 @@ const LessonPage: React.FC = () => {
                                 <div
                                     key={i}
                                     className={`h-2.5 flex-1 rounded-full transition-all duration-300 ${i < currentPuzzleIndex ? 'bg-green-500' :
-                                        i === currentPuzzleIndex ? 'bg-blue-500 scale-110 shadow-blue-200 shadow-lg' : 'bg-slate-200'
+                                            i === currentPuzzleIndex ? 'bg-blue-500 scale-110 shadow-blue-200 shadow-lg' : 'bg-slate-200'
                                         }`}
                                 ></div>
                             ))}
@@ -468,24 +443,13 @@ const LessonPage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Footer Actions */}
                 <div className="p-4 border-t border-slate-100 bg-slate-50">
-                    <button
-                        onClick={() => navigate('/learn')}
-                        className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-red-500 py-2.5 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 shadow-sm uppercase tracking-wide">
+                    <button onClick={() => navigate('/learn')} className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-red-500 py-2.5 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 shadow-sm uppercase tracking-wide">
                         <span className="material-symbols-outlined text-lg">flag</span>
                         Rendirse
                     </button>
-                    {/* Turn Indicator Desktop */}
-                    <div className="mt-4 flex justify-center md:flex hidden">
-                        <div className="bg-white px-6 py-2 rounded-full text-slate-800 text-sm font-bold border border-slate-200 shadow-sm flex items-center gap-3">
-                            <div className={`w-4 h-4 rounded-full border-2 ${userTurn === 'white' ? 'bg-white border-slate-800' : 'bg-slate-800 border-slate-800'}`}></div>
-                            {userTurn === 'white' ? 'Juegan Blancas' : 'Juegan Negras'}
-                        </div>
-                    </div>
                 </div>
             </div>
-
         </div>
     );
 };
