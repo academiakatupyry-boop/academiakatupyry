@@ -180,7 +180,7 @@ const LessonPage: React.FC = () => {
                 },
                 events: {
                     move: (orig: string, dest: string) => {
-                        handleUserMove(orig, dest, allMoves, newChess); // Pass engine instance
+                        handleUserMove(orig, dest, allMoves, newChess, userSide); // Pass engine AND correct color
                     }
                 }
             };
@@ -224,7 +224,7 @@ const LessonPage: React.FC = () => {
         moveProgress.current = 1;
     }, [currentPuzzleIndex]);
 
-    const handleUserMove = (orig: string, dest: string, allMoves: string[], engine: Chess) => {
+    const handleUserMove = (orig: string, dest: string, allMoves: string[], engine: Chess, playerColor: 'white' | 'black') => {
         const currentIndex = moveProgress.current;
         const expectedMove = allMoves[currentIndex];
 
@@ -276,7 +276,7 @@ const LessonPage: React.FC = () => {
                             check: engine.inCheck(),
                             movable: {
                                 free: false,
-                                color: userTurn,
+                                color: playerColor,
                                 dests: toDests(engine) // Unlock for next user move
                             }
                         });
@@ -300,7 +300,7 @@ const LessonPage: React.FC = () => {
                         fen: engine.fen(), // Snap visual back
                         check: engine.inCheck(),
                         movable: {
-                            color: userTurn,
+                            color: playerColor,
                             dests: toDests(engine)
                         }
                     });
