@@ -22,7 +22,7 @@ const MISSIONS: Mission[] = [
         id: 1,
         title: "La Torre Tanque",
         description: "La Torre se mueve en línea recta, tantas casillas como quiera. ¡Captura al peón enemigo!",
-        fen: "8/8/8/p7/8/8/8/R7 w - - 0 1", // Rook a1, Pawn a5
+        fen: "4k3/8/8/p7/8/8/8/R3K3 w - - 0 1", // Rook a1, King e1, Pawn a5, King e8
         goalMove: "a1a5",
         hint: "Arrastra la torre (R) hacia arriba hasta chocar con el peón.",
         pieceToMove: 'white'
@@ -31,7 +31,7 @@ const MISSIONS: Mission[] = [
         id: 2,
         title: "El Alfil Francotirador",
         description: "El Alfil es un experto a larga distancia. Solo se mueve en diagonal.",
-        fen: "8/8/7p/8/8/8/8/2B5 w - - 0 1", // Bishop c1, Pawn h6
+        fen: "4k3/8/7p/8/8/8/8/2B1K3 w - - 0 1", // Bishop c1, King e1, Pawn h6, King e8
         goalMove: "c1h6",
         hint: "Mueve en diagonal hacia la esquina superior derecha.",
         pieceToMove: 'white'
