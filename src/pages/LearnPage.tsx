@@ -89,6 +89,28 @@ const LearnPage: React.FC = () => {
                     </div>
                 )}
 
+                {/* Beginner Help Card (New Feature) */}
+                <div
+                    onClick={() => navigate('/onboarding')}
+                    className="w-full bg-slate-900 rounded-[2rem] p-6 text-white shadow-xl mb-6 transform hover:scale-105 transition-transform cursor-pointer relative overflow-hidden group border border-slate-700"
+                >
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    <div className="relative z-10 flex items-center justify-between">
+                        <div>
+                            <h2 className="text-lg font-black uppercase text-yellow-400 mb-1 flex items-center gap-2">
+                                <span className="material-symbols-outlined">help</span>
+                                ¿Aún no sabes jugar?
+                            </h2>
+                            <p className="font-medium text-slate-300 text-xs">
+                                Aprende lo básico en 1 minuto interactivo.
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 shadow-lg group-hover:rotate-12 transition-transform">
+                            <span className="material-symbols-outlined font-bold">arrow_forward</span>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Header (Floating island style) */}
                 <div className="bg-white border-b-4 border-slate-200 rounded-[2rem] p-6 text-center w-full mb-8 shadow-panel">
                     <PageTitle title="Ruta de" highlight="Aprendizaje" className="!mb-4" />

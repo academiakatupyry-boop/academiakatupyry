@@ -15,6 +15,7 @@ import SchoolFormPage from './pages/SchoolFormPage';
 import ProfilePage from './pages/ProfilePage';
 import LearnPage from './pages/LearnPage';
 import LessonPage from './pages/LessonPage';
+import OnboardingPage from './pages/OnboardingPage';
 
 const App: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
       <AppWrapper>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/onboarding" element={<OnboardingPage />} />
           <Route path="/learn" element={<LearnPage />} />
           <Route path="/learn/:topicId" element={<LessonPage />} />
           <Route path="/fundamentals" element={<FundamentalsPage />} />
