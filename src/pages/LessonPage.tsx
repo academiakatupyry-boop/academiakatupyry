@@ -147,7 +147,8 @@ const LessonPage: React.FC = () => {
             const puzzle = puzzles[currentPuzzleIndex];
             if (!puzzle) return;
 
-            const allMoves = puzzle.moves.split(' ');
+            // Robust moves parsing: remove whitespace garbage
+            const allMoves = puzzle.moves.trim().split(/\s+/);
             const opponentMove = allMoves[0];
             const opponentFrom = opponentMove.substring(0, 2);
             const opponentTo = opponentMove.substring(2, 4);
