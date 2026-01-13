@@ -270,7 +270,7 @@ const LessonPage: React.FC = () => {
 
                         engine.move({ from, to, promotion: promo });
 
-                        api.set({
+                        apiRef.current?.set({
                             fen: engine.fen(),
                             lastMove: [from, to],
                             check: engine.inCheck(),
