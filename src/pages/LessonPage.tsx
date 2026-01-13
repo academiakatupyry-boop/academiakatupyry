@@ -75,8 +75,8 @@ const ActivePuzzle: React.FC<{
             orientation: userSide,
             movable: {
                 free: false,
-                color: userSide,
-                dests: toDests(chess), // Use chess.js legal moves
+                color: undefined, // LOCKED initially. User must wait for opponent move.
+                dests: new Map(),
             },
             highlight: {
                 lastMove: true,
@@ -435,7 +435,7 @@ const LessonPage: React.FC = () => {
                                 <div
                                     key={i}
                                     className={`h-2.5 flex-1 rounded-full transition-all duration-300 ${i < currentPuzzleIndex ? 'bg-green-500' :
-                                            i === currentPuzzleIndex ? 'bg-blue-500 scale-110 shadow-blue-200 shadow-lg' : 'bg-slate-200'
+                                        i === currentPuzzleIndex ? 'bg-blue-500 scale-110 shadow-blue-200 shadow-lg' : 'bg-slate-200'
                                         }`}
                                 ></div>
                             ))}
