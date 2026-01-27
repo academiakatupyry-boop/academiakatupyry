@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Swal from 'sweetalert2';
 
 // --- Interfaces ---
@@ -8,6 +9,15 @@ interface UserProfile {
     username: string;
     avatar_url?: string;
     joined_at?: string;
+    subscription_level?: string;
+}
+
+interface UserStats {
+    total_xp: number;
+    lessons_completed: number;
+    puzzles_solved: number;
+    streak: number; // Placeholder for now
+    league: string; // Calculated based on XP
 }
 
 interface ProfilePageProps {
@@ -15,10 +25,21 @@ interface ProfilePageProps {
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general' }) => {
+    const navigate = useNavigate(); // Hook for navigation
+
     // Auth State
     const [session, setSession] = useState<any>(null);
     const [loadingAuth, setLoadingAuth] = useState(true);
     const [profile, setProfile] = useState<UserProfile | null>(null);
+
+    // Stats State
+    const [stats, setStats] = useState<UserStats>({
+        total_xp: 0,
+        lessons_completed: 0,
+        puzzles_solved: 0,
+        streak: 0,
+        league: 'Bronce'
+    });
 
     // UI State
     const [activeTab, setActiveTab] = useState(initialTab);
@@ -39,8 +60,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
         // Check active session
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
-            if (session) fetchProfile(session.user.id);
-            else setLoadingAuth(false);
+            if (session) {
+                fetchProfile(session.user.id);
+                fetchStats(session.user.id);
+            } else {
+                setLoadingAuth(false);
+            }
         });
 
         // Listen for auth changes
@@ -48,8 +73,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
             data: { subscription },
         } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
-            if (session) fetchProfile(session.user.id);
-            else {
+            if (session) {
+                fetchProfile(session.user.id);
+                fetchStats(session.user.id);
+            } else {
                 setProfile(null);
                 setLoadingAuth(false);
             }
@@ -66,17 +93,48 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
                 .eq('id', userId)
                 .single();
 
-            if (error) {
-                console.error('Error fetching profile:', error);
-            } else {
-                setProfile(data);
-            }
+            if (data) setProfile(data);
+            if (error) console.error('Error fetching profile:', error);
         } catch (error) {
             console.error('Unexpected error:', error);
         } finally {
             setLoadingAuth(false);
         }
     };
+
+    const fetchStats = async (userId: string) => {
+        try {
+            // 1. Get Progress Data (Lessons & Puzzles together usually)
+            const { data: progressData, error } = await supabase
+                .from('user_progress')
+                .select('*')
+                .eq('user_id', userId);
+
+            if (error) throw error;
+
+            if (progressData) {
+                const totalXP = progressData.reduce((acc, curr) => acc + (curr.score || 0), 0);
+                const lessonsCount = progressData.filter(p => p.status === 'completed').length;
+
+                // Determine League
+                let league = 'Bronce';
+                if (totalXP > 500) league = 'Plata';
+                if (totalXP > 1000) league = 'Oro';
+                if (totalXP > 2000) league = 'Diamante';
+
+                setStats({
+                    total_xp: totalXP,
+                    lessons_completed: lessonsCount,
+                    puzzles_solved: 0, // Need separate tracking for this later if distinct from lessons
+                    streak: 1, // Mock streak for now
+                    league: league
+                });
+            }
+        } catch (err) {
+            console.error("Error fetching stats:", err);
+        }
+    };
+
 
     // --- Handlers ---
     const handleAuth = async (e: React.FormEvent) => {
@@ -99,32 +157,22 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
                     email,
                     password,
                     options: {
-                        data: { username }, // Helper for meta
+                        data: { username },
                     }
                 });
 
                 if (authError) throw authError;
 
                 if (authData.user) {
-                    // Create Profile
-                    const { error: profileError } = await supabase
-                        .from('profiles')
-                        .insert([{
-                            id: authData.user.id,
-                            username: username,
-                            updated_at: new Date().toISOString(),
-                        }]);
-
-                    if (profileError) {
-                        if (profileError.code === '23505') {
-                            throw new Error("Este nombre de usuario ya está en uso.");
-                        }
-                        throw profileError;
-                    }
+                    await supabase.from('profiles').insert([{
+                        id: authData.user.id,
+                        username: username,
+                        updated_at: new Date().toISOString(),
+                    }]);
 
                     Swal.fire({
-                        title: '¡Bienvenido a la Academia!',
-                        text: `Tu cuenta ha sido creada con éxito, ${username}.`,
+                        title: '¡Bienvenido!',
+                        text: `Cuenta creada para ${username}.`,
                         icon: 'success',
                         confirmButtonText: '¡A jugar!',
                         confirmButtonColor: '#FBBF24'
@@ -134,9 +182,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
         } catch (err: any) {
             Swal.fire({
                 title: 'Error',
-                text: err.message || 'Ocurrió un error inesperado.',
+                text: err.message || 'Error inesperado.',
                 icon: 'error',
-                confirmButtonText: 'Entendido',
+                confirmButtonText: 'Ok',
                 confirmButtonColor: '#EF4444'
             });
         } finally {
@@ -153,152 +201,148 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
 
     if (loadingAuth) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-900">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-400"></div>
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-blue-500"></div>
             </div>
         );
     }
 
-    // 1. Authenticated View (The New Profile)
+    // 1. Authenticated View (Redesigned)
     if (session) {
         return (
-            <div className="min-h-screen bg-[#1b1b1b] text-gray-200 font-sans pb-20 pt-20">
+            <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-20 pt-8 md:pt-12">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
                     {/* Header Section */}
-                    <div className="bg-[#262626] rounded-lg p-6 flex flex-col md:flex-row items-center md:items-start gap-6 shadow-lg mb-8 relative">
+                    <div className="flex flex-col md:flex-row items-center gap-8 mb-10">
                         {/* Avatar */}
-                        <div className="relative">
-                            <div className="w-32 h-32 md:w-36 md:h-36 rounded-xl overflow-hidden border-4 border-[#333]">
+                        <div className="relative group">
+                            <div className="w-40 h-40 rounded-3xl overflow-hidden border-4 border-white shadow-xl transform group-hover:rotate-3 transition duration-300">
                                 <img
                                     src={profile?.avatar_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + (profile?.username || 'user')}
                                     alt="Avatar"
-                                    className="w-full h-full object-cover bg-slate-700"
+                                    className="w-full h-full object-cover bg-blue-100"
                                 />
                             </div>
-                            <div className="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-[#262626]" title="En línea"></div>
+                            <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-white shadow-sm flex items-center justify-center">
+                                <span className="material-symbols-outlined text-white text-xs font-bold">bolt</span>
+                            </div>
                         </div>
 
                         {/* Info */}
-                        <div className="flex-1 text-center md:text-left space-y-2">
-                            <div className="flex flex-col md:flex-row items-center gap-3">
-                                <h1 className="text-3xl font-bold text-white">{profile?.username || 'Jugador'}</h1>
-                                <span className="bg-slate-700 text-xs text-gray-300 px-2 py-1 rounded border border-slate-600">
-                                    🇲🇽 México
+                        <div className="text-center md:text-left flex-1">
+                            <h1 className="text-4xl font-black text-slate-800 mb-2 tracking-tight">{profile?.username || 'Jugador'}</h1>
+                            <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-4">
+                                <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-xl text-xs font-black uppercase tracking-wider">
+                                    {profile?.subscription_level !== 'none' ? 'Premium' : 'Básico'}
                                 </span>
-                                <button className="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded transition">
-                                    Añadir distintivo
+                                <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-xl text-xs font-black uppercase tracking-wider">
+                                    Liga {stats.league}
+                                </span>
+                                <span className="px-3 py-1 bg-slate-200 text-slate-600 rounded-xl text-xs font-bold">
+                                    Se unió {new Date(profile?.joined_at || Date.now()).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })}
+                                </span>
+                            </div>
+
+                            <div className="flex gap-3 justify-center md:justify-start">
+                                <button className="px-4 py-2 bg-white border-2 border-slate-200 border-b-4 text-slate-500 font-bold rounded-2xl hover:bg-slate-50 hover:border-slate-300 active:border-b-2 active:translate-y-[2px] transition-all text-sm uppercase tracking-wide">
+                                    Editar Perfil
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className="px-4 py-2 bg-white border-2 border-red-100 border-b-4 text-red-400 font-bold rounded-2xl hover:bg-red-50 hover:border-red-200 active:border-b-2 active:translate-y-[2px] transition-all text-sm uppercase tracking-wide"
+                                >
+                                    Salir
                                 </button>
                             </div>
-
-                            <p className="text-gray-400 italic text-sm">
-                                "Aprendiz de Katupyry" <span className="text-slate-600 cursor-pointer ml-1 text-xs">✏️</span>
-                            </p>
-
-                            <div className="flex items-center justify-center md:justify-start gap-4 text-xs text-gray-500 mt-2">
-                                <span>Se unió el {new Date(profile?.joined_at || Date.now()).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                                <span>• 0 amigos</span>
-                                <span>• 0 visualizaciones</span>
-                            </div>
-                        </div>
-
-                        {/* Edit / Logout Actions */}
-                        <div className="flex flex-col gap-2 absolute top-4 right-4">
-                            <button className="bg-slate-700 hover:bg-slate-600 text-gray-300 px-4 py-2 rounded text-sm font-semibold transition">
-                                Editar perfil
-                            </button>
-                            <button
-                                onClick={handleLogout}
-                                className="bg-red-900/20 hover:bg-red-900/40 text-red-400 px-4 py-2 rounded text-sm font-semibold transition"
-                            >
-                                Cerrar Sesión
-                            </button>
                         </div>
                     </div>
 
-                    {/* Stats & Content Grid */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Content Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                        {/* Main Stats Column (Left - 2cols wide on large) */}
-                        <div className="lg:col-span-2 space-y-6">
+                        {/* LEFT COLUMN (Stats) */}
+                        <div className="lg:col-span-2 space-y-8">
 
-                            {/* Tabs */}
-                            <div className="flex border-b border-gray-700 mb-4 overflow-x-auto">
-                                {['Visión general', 'Partidas', 'Estadísticas', 'Amigos', 'Premios'].map((tab) => (
+                            {/* Stats Overview */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <StatCard icon="local_fire_department" value={stats.streak.toString()} label="Racha Días" color="text-orange-500" />
+                                <StatCard icon="electric_bolt" value={stats.total_xp.toString()} label="Experiencia" color="text-yellow-500" />
+                                <StatCard icon="emoji_events" value={stats.league} label="Liga" color="text-purple-500" />
+                                <StatCard icon="school" value={stats.lessons_completed.toString()} label="Lecciones" color="text-blue-500" />
+                            </div>
+
+                            {/* Tabs (Simplified) */}
+                            <div className="border-b-2 border-slate-200 flex gap-6">
+                                {['Visión general', 'Partidas'].map(tab => (
                                     <button
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
-                                        className={`px-4 py-3 text-sm font-medium ${activeTab === tab ? 'text-green-400 border-b-2 border-green-500' : 'text-gray-400 hover:text-white transition'}`}
+                                        className={`pb-4 px-2 font-black text-sm uppercase tracking-wide transition-colors ${activeTab === tab
+                                                ? 'text-blue-500 border-b-2 border-blue-500 -mb-[2px]'
+                                                : 'text-slate-400 hover:text-slate-600'
+                                            }`}
                                     >
                                         {tab}
                                     </button>
                                 ))}
                             </div>
 
-                            {/* Banner: Solve / Repeat */}
-                            <div className="bg-gradient-to-r from-orange-900/20 to-orange-800/10 border border-orange-500/20 rounded-lg p-6 flex items-center justify-between relative overflow-hidden group">
-                                <div className="z-10 relative">
-                                    <h2 className="text-2xl font-black text-white mb-1">¡Entrena tu mente!</h2>
-                                    <p className="text-orange-200/60 mb-4 text-sm">Resuelve rompecabezas para mejorar.</p>
-                                    <button className="bg-orange-500 hover:bg-orange-400 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition transform hover:scale-105">
-                                        Resolver Puzzles
-                                    </button>
+                            {/* Detailed List (Placeholder for now) */}
+                            <div className="bg-white rounded-2xl border-2 border-slate-200 p-6">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h3 className="font-black text-slate-700 text-lg">Actividad Reciente</h3>
+                                    <button className="text-blue-500 font-bold text-sm hover:underline">Ver todo</button>
                                 </div>
-                                <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-[url('https://www.transparenttextures.com/patterns/chess.png')] opacity-10"></div>
-                                <span className="material-symbols-outlined text-[100px] absolute -right-4 -bottom-8 text-orange-500/10 rotate-12 group-hover:rotate-0 transition duration-700">extension</span>
-                            </div>
-
-                            {/* Stats Cards */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-[#262626] p-6 rounded-lg text-center hover:bg-[#2a2a2a] transition">
-                                    <span className="material-symbols-outlined text-4xl text-gray-500 mb-2">pawn</span>
-                                    <div className="text-3xl font-black text-white">0</div>
-                                    <div className="text-sm text-gray-500 uppercase font-bold tracking-wider">Partidas</div>
-                                </div>
-                                <div className="bg-[#262626] p-6 rounded-lg text-center hover:bg-[#2a2a2a] transition">
-                                    <span className="material-symbols-outlined text-4xl text-orange-500 mb-2">extension</span>
-                                    <div className="text-3xl font-black text-white">0</div>
-                                    <div className="text-sm text-gray-500 uppercase font-bold tracking-wider">Problemas</div>
+                                <div className="space-y-4">
+                                    {/* Mock Activities */}
+                                    <ActivityItem
+                                        icon="check_circle"
+                                        color="bg-green-100 text-green-600"
+                                        title="Lección Completada"
+                                        desc="Movimiento del Alfil"
+                                        xp="+10 XP"
+                                    />
+                                    <ActivityItem
+                                        icon="emoji_events"
+                                        color="bg-yellow-100 text-yellow-600"
+                                        title="Nuevo Logro"
+                                        desc="Primeros pasos"
+                                        xp=""
+                                    />
                                 </div>
                             </div>
-
-                            {/* Detailed Stats Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <StatItem icon="sunny" value="898" label="Correspondencia" color="text-yellow-400" />
-                                <StatItem icon="bolt" value="1683" label="Blitz" color="text-yellow-400" />
-                                <StatItem icon="rocket_launch" value="1508" label="Bala" color="text-yellow-400" />
-                                <StatItem icon="timer" value="1683" label="Rápida" color="text-green-400" />
-                                <StatItem icon="chess" value="1491" label="960 en vivo" color="text-orange-400" />
-                                <StatItem icon="extension" value="1491" label="Pasapiezas" color="text-green-500" />
-                            </div>
-
                         </div>
 
-                        {/* Sidebar Column (Right) */}
-                        <div className="space-y-4">
+                        {/* RIGHT COLUMN (Sidebar) */}
+                        <div className="space-y-6">
 
-                            {/* Sidebar Stats List */}
-                            <div className="bg-[#1f1f1f] rounded-lg p-4 font-mono text-sm">
-                                <h3 className="text-gray-400 font-bold mb-4 uppercase text-xs">Estadísticas</h3>
-                                <ul className="space-y-3">
-                                    <RightStatRow icon="bolt" label="Blitz" value="1683" />
-                                    <RightStatRow icon="rocket_launch" label="Bala" value="1508" />
-                                    <RightStatRow icon="extension" label="Puzzle Rush" value="21" />
-                                    <RightStatRow icon="sunny" label="Por corresp..." value="898" />
-                                    <li className="flex justify-between items-center pt-2 border-t border-gray-700 text-gray-500 hover:text-white cursor-pointer transition">
-                                        <span className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">layers</span> Aperturas</span>
-                                        <span className="material-symbols-outlined text-sm">chevron_right</span>
-                                    </li>
-                                </ul>
+                            {/* Premium Card */}
+                            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white text-center relative overflow-hidden shadow-lg transform transition hover:scale-[1.02]">
+                                <div className="relative z-10">
+                                    <span className="material-symbols-outlined text-5xl mb-3 block drop-shadow-md">diamond</span>
+                                    <h3 className="text-xl font-black mb-1">Katupyry Premium</h3>
+                                    <p className="text-indigo-100 text-sm mb-4 font-medium">Desbloquea análisis ilimitado y ejercicios exclusivos.</p>
+                                    <button
+                                        onClick={() => navigate('/subscription')}
+                                        className="w-full bg-white text-indigo-600 font-black py-3 rounded-xl shadow-lg border-b-4 border-indigo-100 active:border-b-0 active:translate-y-[4px] transition-all uppercase tracking-wide text-sm"
+                                    >
+                                        Mejorar Plan
+                                    </button>
+                                </div>
+                                {/* Decorative Circles */}
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full translate-x-10 -translate-y-10"></div>
+                                <div className="absolute bottom-0 left-0 w-20 h-20 bg-white opacity-10 rounded-full -translate-x-5 translate-y-5"></div>
                             </div>
 
-                            {/* Ad Placeholder */}
-                            <div className="bg-[#0f172a] rounded-lg p-6 border border-slate-800 text-center">
-                                <p className="text-blue-400 font-bold mb-2">Katupyry Premium</p>
-                                <p className="text-slate-400 text-sm mb-4">Sube de nivel sin límites. Análisis ilimitado.</p>
-                                <button className="w-full bg-blue-600 hover:bg-blue-500 text-white rounded py-2 font-bold text-sm transition">
-                                    Prueba Gratis
-                                </button>
+                            {/* Friends / Ranking Placeholder */}
+                            <div className="bg-white rounded-3xl border-2 border-slate-200 p-6">
+                                <h3 className="font-black text-slate-700 mb-4">Amigos</h3>
+                                <div className="text-center py-6 text-slate-400">
+                                    <span className="material-symbols-outlined text-4xl mb-2">person_add</span>
+                                    <p className="text-sm font-bold">Aún no sigues a nadie.</p>
+                                    <button className="mt-4 text-blue-500 font-bold text-sm uppercase tracking-wide hover:underline">Buscar amigos</button>
+                                </div>
                             </div>
 
                         </div>
@@ -309,79 +353,74 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
         );
     }
 
-    // 2. Unauthenticated View (Login/Register Form) - Kept mostly same as before but wrapped clean
+    // 2. Unauthenticated View (Login Form - Simplified Style)
     return (
-        <div className="pt-32 pb-24 font-body flex items-center justify-center relative min-h-screen">
-            <div className="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
-
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-cartoon-lg border-4 border-white max-w-md w-full relative z-10 mx-4">
+        <div className="pt-24 pb-12 min-h-screen bg-slate-50 flex items-center justify-center p-4">
+            <div className="bg-white p-8 rounded-[2rem] shadow-xl border-2 border-slate-100 max-w-md w-full relative">
                 <div className="text-center mb-8">
-                    <div className="w-20 h-20 bg-primary-island rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg transform -rotate-3">
-                        <span className="material-symbols-outlined text-4xl text-white">person</span>
+                    <div className="w-20 h-20 bg-blue-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg rotate-3">
+                        <span className="material-symbols-outlined text-4xl text-white">castle</span>
                     </div>
-                    <h1 className="text-3xl font-black font-display text-text-dark-fun mb-2">
-                        {isLogin ? '¡Hola de nuevo!' : 'Únete a la Aventura'}
+                    <h1 className="text-2xl font-black text-slate-800 mb-2">
+                        {isLogin ? '¡Hola Maestro!' : 'Únete a la Academia'}
                     </h1>
-                    <p className="text-gray-500 font-bold text-sm">
-                        {isLogin ? 'Ingresa para continuar tu entrenamiento.' : 'Crea tu cuenta y empieza a aprender.'}
+                    <p className="text-slate-500 font-bold text-sm">
+                        {isLogin ? 'Ingresa para seguir aprendiendo.' : 'Empieza tu camino hacia la maestría.'}
                     </p>
                 </div>
 
                 <form className="space-y-4" onSubmit={handleAuth}>
                     {!isLogin && (
-                        <div className="space-y-2 animate-wiggle">
-                            <label className="text-xs font-black uppercase text-gray-400 tracking-wider ml-2">Nombre de Usuario</label>
+                        <div className="space-y-1">
+                            <label className="text-xs font-black uppercase text-slate-400 ml-2">Usuario</label>
                             <input
                                 type="text"
-                                placeholder="MaestroAjedrez99"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                required={!isLogin}
-                                minLength={3}
-                                className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3 px-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all"
+                                className="w-full bg-slate-100 border-2 border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-700 focus:outline-none focus:border-blue-400 focus:bg-white transition-all"
+                                placeholder="Tu nombre"
+                                required
                             />
                         </div>
                     )}
-
-                    <div className="space-y-2">
-                        <label className="text-xs font-black uppercase text-gray-400 tracking-wider ml-2">Correo Electrónico</label>
+                    <div className="space-y-1">
+                        <label className="text-xs font-black uppercase text-slate-400 ml-2">Email</label>
                         <input
                             type="email"
-                            placeholder="tu@email.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-slate-100 border-2 border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-700 focus:outline-none focus:border-blue-400 focus:bg-white transition-all"
+                            placeholder="hola@ejemplo.com"
                             required
-                            className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3 px-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all"
                         />
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-xs font-black uppercase text-gray-400 tracking-wider ml-2">Contraseña</label>
+                    <div className="space-y-1">
+                        <label className="text-xs font-black uppercase text-slate-400 ml-2">Contraseña</label>
                         <input
                             type="password"
-                            placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            className="w-full bg-slate-100 border-2 border-slate-200 rounded-xl py-3 px-4 font-bold text-slate-700 focus:outline-none focus:border-blue-400 focus:bg-white transition-all"
+                            placeholder="••••••••"
                             required
-                            className="w-full bg-background-light border-2 border-gray-200 rounded-2xl py-3 px-4 font-bold text-text-dark-fun focus:outline-none focus:border-primary-island focus:ring-4 focus:ring-primary-island/10 transition-all"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={loadingAction}
-                        className="w-full bg-secondary-adventure hover:bg-yellow-400 text-primary-island font-black py-4 rounded-2xl shadow-[0_4px_0_rgb(180,130,0)] hover:shadow-[0_2px_0_rgb(180,130,0)] hover:translate-y-[2px] transition-all border-2 border-yellow-400 active:translate-y-[4px] active:shadow-none text-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-blue-500 hover:bg-blue-400 text-white font-black py-4 rounded-xl shadow-lg border-b-4 border-blue-700 active:border-b-0 active:translate-y-[4px] transition-all uppercase tracking-wide text-sm mt-4"
                     >
-                        {loadingAction ? 'Procesando...' : (isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')}
+                        {loadingAction ? 'Cargando...' : (isLogin ? 'ENTRAR' : 'CREAR CUENTA')}
                     </button>
                 </form>
 
                 <div className="mt-6 text-center">
                     <button
-                        type="button"
                         onClick={() => setIsLogin(!isLogin)}
-                        className="text-sm font-bold text-gray-400 hover:text-primary-island transition-colors underline decoration-2 decoration-transparent hover:decoration-primary-island"
+                        className="text-slate-400 font-bold text-sm hover:text-blue-500 transition-colors uppercase tracking-wide"
                     >
-                        {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'}
+                        {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Ingresa'}
                     </button>
                 </div>
             </div>
@@ -391,22 +430,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ initialTab = 'Visión general
 
 // --- Helper Components ---
 
-const StatItem = ({ icon, value, label, color }: { icon: string, value: string, label: string, color: string }) => (
-    <div className="bg-[#262626] p-4 rounded-lg flex flex-col items-center justify-center hover:bg-[#2a2a2a] transition cursor-pointer">
+const StatCard = ({ icon, value, label, color }: { icon: string, value: string, label: string, color: string }) => (
+    <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center shadow-sm">
         <span className={`material-symbols-outlined text-3xl mb-2 ${color}`}>{icon}</span>
-        <span className="text-2xl font-black text-white">{value}</span>
-        <span className="text-xs text-gray-500 font-bold uppercase text-center mt-1">{label}</span>
+        <span className="text-2xl font-black text-slate-700">{value}</span>
+        <span className="text-[10px] text-slate-400 font-black uppercase tracking-wider">{label}</span>
     </div>
 );
 
-const RightStatRow = ({ icon, label, value }: { icon: string, label: string, value: string }) => (
-    <li className="flex justify-between items-center text-gray-400">
-        <span className="flex items-center gap-2">
-            <span className={`material-symbols-outlined text-sm text-yellow-500`}>{icon}</span>
-            {label}
-        </span>
-        <span className="font-bold text-white">{value}</span>
-    </li>
+const ActivityItem = ({ icon, color, title, desc, xp }: { icon: string, color: string, title: string, desc: string, xp: string }) => (
+    <div className="flex items-center gap-4 p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
+            <span className="material-symbols-outlined text-xl">{icon}</span>
+        </div>
+        <div className="flex-1">
+            <h4 className="font-bold text-slate-700 text-sm">{title}</h4>
+            <p className="text-xs text-slate-400 font-medium">{desc}</p>
+        </div>
+        {xp && <span className="text-xs font-black text-amber-500 bg-amber-50 px-2 py-1 rounded-lg">{xp}</span>}
+    </div>
 );
 
 export default ProfilePage;
