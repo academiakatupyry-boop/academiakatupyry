@@ -18,6 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
         { path: '/board', label: 'JUGAR', icon: 'sports_esports' },
         { path: '/arena', label: 'TORNEOS', icon: 'swords' },
         { path: '/market', label: 'TIENDA', icon: 'store' },
+        { path: '/stats', label: 'ESTADÍSTICAS', icon: 'monitoring' },
+        { path: '/subscription', label: 'SUSCRIPCIÓN', icon: 'card_membership' }, // Added Subscription
         { path: '/profile', label: 'PERFIL', icon: 'person' },
     ];
 

@@ -16,6 +16,7 @@ import ProfilePage from './pages/ProfilePage';
 import LearnPage from './pages/LearnPage';
 import LessonPage from './pages/LessonPage';
 import OnboardingPage from './pages/OnboardingPage';
+import SubscriptionPage from './pages/SubscriptionPage';
 
 const App: React.FC = () => {
   return (
@@ -36,7 +37,9 @@ const App: React.FC = () => {
           <Route path="/market" element={<MarketPage />} />
           <Route path="/schools" element={<SchoolsPage />} />
           <Route path="/school-form" element={<SchoolFormPage />} />
+          <Route path="/subscription" element={<SubscriptionPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/stats" element={<ProfilePage initialTab="Estadísticas" />} />
         </Routes>
       </AppWrapper>
     </HashRouter>
