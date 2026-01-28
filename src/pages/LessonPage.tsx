@@ -135,7 +135,7 @@ const ActivePuzzle: React.FC<{
                 const validDests = toDests(engine);
                 console.log(`[Puzzle ${puzzle.id}] Opponent moved. New FEN: ${engine.fen()}`);
                 console.log(`[Puzzle ${puzzle.id}] UserSide: ${userSide}, EngineTurn: ${engine.turn()}`);
-                console.log(`[Puzzle ${puzzle.id}] Legal moves: ${validDests.size} keys`);
+                console.log(`[Puzzle ${puzzle.id}] Legal moves keys:`, Array.from(validDests.keys()));
 
                 if (validDests.size === 0) {
                     console.error(`[Puzzle ${puzzle.id}] NO LEGAL MOVES! Game might be over or engine state invalid.`);
@@ -144,6 +144,7 @@ const ActivePuzzle: React.FC<{
                 cg.set({
                     fen: engine.fen(), // Use engine.fen()
                     orientation: userSide, // FORCE ORIENTATION UPDATE
+                    viewOnly: false, // EXPLICITLY ENABLE INTERACTION
                     lastMove: [opponentFrom, opponentTo],
                     movable: {
                         free: false,
@@ -154,7 +155,7 @@ const ActivePuzzle: React.FC<{
 
                 playAudio('move');
                 setStatus('user'); // Unlock for user
-                console.log(`[Puzzle ${puzzle.id}] Status set to 'user'. Board unlocked.`);
+                console.log(`[Puzzle ${puzzle.id}] Status set to 'user'. Board unlocked. Dests set.`);
             } catch (e) {
                 console.error(`[Puzzle ${puzzle.id}] CRITICAL ERROR executing opponent move:`, e);
                 setStatus('error'); // Show error UI instead of freezing
@@ -173,6 +174,7 @@ const ActivePuzzle: React.FC<{
     }, [puzzle.id]); // CRITICAL: Reset when puzzle ID changes
 
     const handleUserMove = (orig: string, dest: string, allMoves: string[], engine: Chess, playerColor: 'white' | 'black') => {
+        console.log(`[Puzzle] User attempt: ${orig} -> ${dest}`);
         const currentIndex = moveProgress.current;
         const expectedMove = allMoves[currentIndex];
 
@@ -180,9 +182,15 @@ const ActivePuzzle: React.FC<{
         let moveAttempt = null;
         try {
             moveAttempt = engine.move({ from: orig, to: dest, promotion: 'q' });
-        } catch (e) { return; } // Illegal move caught by engine
+        } catch (e) {
+            console.warn(`[Puzzle] Illegal move rejected by engine: ${e}`);
+            return;
+        } // Illegal move caught by engine
 
-        if (!moveAttempt) return;
+        if (!moveAttempt) {
+            console.warn(`[Puzzle] Move attempt valid but returned null?`);
+            return;
+        }
 
         // 2. Check if it matches solution
         const playedMoveUCI = `${moveAttempt.from}${moveAttempt.to}${moveAttempt.promotion ? moveAttempt.promotion : ''}`;
