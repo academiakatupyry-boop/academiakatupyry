@@ -105,7 +105,8 @@ const ActivePuzzle: React.FC<{
                     // Use 'engine' from local scope, not 'chess' state which might be stale/null in closure
                     handleUserMove(orig, dest, allMoves, engine, userSide);
                 }
-            }
+            },
+            coordinates: true // ENABLE COORDINATES FOR DEBUGGING
         };
 
         // 3. Initialize Board
@@ -142,6 +143,7 @@ const ActivePuzzle: React.FC<{
 
                 cg.set({
                     fen: engine.fen(), // Use engine.fen()
+                    orientation: userSide, // FORCE ORIENTATION UPDATE
                     lastMove: [opponentFrom, opponentTo],
                     movable: {
                         free: false,
