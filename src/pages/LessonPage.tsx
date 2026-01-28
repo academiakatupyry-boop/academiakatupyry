@@ -41,13 +41,25 @@ const ActivePuzzle: React.FC<{
     const moveProgress = useRef(1); // Track user moves (start at 1 because 0 is opponent's opening)
 
     // Local State
-    const [chess] = useState(() => new Chess(puzzle.fen)); // Instance per component mount
+    const [chess, setChess] = useState<Chess | null>(null);
     const [userTurn, setUserTurn] = useState<'white' | 'black'>('white');
-    const [status, setStatus] = useState<'agent' | 'user' | 'success' | 'fail'>('agent');
+    const [status, setStatus] = useState<'agent' | 'user' | 'success' | 'fail' | 'error'>('agent');
+    const [errorMsg, setErrorMsg] = useState<string>('');
 
     // Setup Board & Game Logic
     useEffect(() => {
         if (!boardRef.current) return;
+
+        let engine: Chess;
+        try {
+            engine = new Chess(puzzle.fen);
+            setChess(engine);
+        } catch (e) {
+            console.error("Invalid FEN:", puzzle.fen);
+            setStatus('error');
+            setErrorMsg('Error: Posición de ajedrez inválida.');
+            return;
+        }
 
         // 1. Parse Data
         // Robust moves parsing: remove whitespace
@@ -57,6 +69,8 @@ const ActivePuzzle: React.FC<{
         // Safety check: if puzzle has no moves
         if (!opponentMove || opponentMove.length < 4) {
             console.error("Puzzle has invalid moves data:", puzzle.moves);
+            setStatus('error');
+            setErrorMsg('Error: Datos de movimientos inválidos.');
             return;
         }
 
@@ -88,7 +102,8 @@ const ActivePuzzle: React.FC<{
             },
             events: {
                 move: (orig: string, dest: string) => {
-                    handleUserMove(orig, dest, allMoves, chess, userSide);
+                    // Use 'engine' from local scope, not 'chess' state which might be stale/null in closure
+                    handleUserMove(orig, dest, allMoves, engine, userSide);
                 }
             }
         };
@@ -101,17 +116,17 @@ const ActivePuzzle: React.FC<{
         // 4. Initial Opponent Move (Auto-play sequence)
         const timer = setTimeout(() => {
             try {
-                // Apply move to engine
-                chess.move({ from: opponentFrom, to: opponentTo });
+                // Apply move to engine (use local variable)
+                engine.move({ from: opponentFrom, to: opponentTo });
 
                 // Update Visuals
                 cg.set({
-                    fen: chess.fen(),
+                    fen: engine.fen(), // Use engine.fen()
                     lastMove: [opponentFrom, opponentTo],
                     movable: {
                         free: false,
                         color: userSide,
-                        dests: toDests(chess) as any
+                        dests: toDests(engine) as any // Use toDests(engine)
                     }
                 });
 
@@ -223,20 +238,28 @@ const ActivePuzzle: React.FC<{
 
     return (
         <div className="w-full h-full flex items-center justify-center">
-            <div
-                ref={boardRef}
-                className={`
+            {status === 'error' ? (
+                <div className="text-center p-6 bg-red-50 rounded-xl border border-red-200">
+                    <span className="material-symbols-outlined text-4xl text-red-500 mb-2">error</span>
+                    <p className="text-red-700 font-bold">{errorMsg}</p>
+                    <p className="text-xs text-red-500 mt-1 font-mono">{puzzle.id}</p>
+                </div>
+            ) : (
+                <div
+                    ref={boardRef}
+                    className={`
                     cg-wrap
                     shadow-xl rounded-sm
                     bg-white
                     ${status === 'fail' ? 'ring-4 ring-red-400' : 'ring-8 ring-white'}
                 `}
-                style={{
-                    width: 'min(90vw, 85vh)',
-                    height: 'min(90vw, 85vh)',
-                    display: 'block'
-                }}
-            ></div>
+                    style={{
+                        width: 'min(90vw, 85vh)',
+                        height: 'min(90vw, 85vh)',
+                        display: 'block'
+                    }}
+                ></div>
+            )}
         </div>
     );
 };
@@ -304,6 +327,9 @@ const LessonPage: React.FC = () => {
                     const expectedLength = lengthMap[topic.id];
                     validPuzzles = data.filter(p => {
                         const movesCount = p.moves.trim().split(/\s+/).length;
+                        if (movesCount !== expectedLength) {
+                            console.warn(`[DEBUG] Puzzle ${p.id} filtered. Expected ${expectedLength} moves, got ${movesCount}. Moves: ${p.moves}`);
+                        }
                         return movesCount === expectedLength;
                     });
                 }
@@ -311,7 +337,9 @@ const LessonPage: React.FC = () => {
                 if (validPuzzles.length === 0) validPuzzles = data;
 
                 if (validPuzzles.length > 0) {
-                    const shuffled = validPuzzles.sort(() => 0.5 - Math.random()).slice(0, 5);
+                    // [MODIFIED] Removed .slice(0, 5) to allow all loaded puzzles
+                    const shuffled = validPuzzles.sort(() => 0.5 - Math.random());
+                    console.log(`[DEBUG] Loaded ${shuffled.length} puzzles for topic ${topic.id}`);
                     setPuzzles(shuffled);
                 } else {
                     Swal.fire('Info', `No hay ejercicios válidos para "${topic.title}".`, 'info');
