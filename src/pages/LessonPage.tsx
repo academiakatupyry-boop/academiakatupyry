@@ -1,12 +1,15 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BaseBoard } from '../features/learning/components/BaseBoard';
-import { useCurrentPuzzle } from '../features/learning/hooks/useCurrentPuzzle';
+import { usePuzzles } from '../hooks/usePuzzles';
 
 const LessonPage: React.FC = () => {
     const { topicId } = useParams<{ topicId: string }>();
     const navigate = useNavigate();
-    const { puzzle, loading, error } = useCurrentPuzzle();
+    const { puzzles, loading, error } = usePuzzles();
+
+    // Take the first puzzle if available
+    const activePuzzle = puzzles.length > 0 ? puzzles[0] : null;
 
     return (
         <div className="w-full h-screen bg-slate-50 flex flex-col md:flex-row overflow-hidden font-body text-slate-800">
@@ -17,11 +20,15 @@ const LessonPage: React.FC = () => {
                         <div className="absolute inset-0 flex items-center justify-center bg-red-50 rounded-sm">
                             <p className="text-red-500 font-bold">{error}</p>
                         </div>
+                    ) : !loading && !activePuzzle ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-slate-50 rounded-sm">
+                            <p className="text-slate-500 font-bold">No hay ejercicios disponibles</p>
+                        </div>
                     ) : (
                         <BaseBoard
-                            fen={puzzle?.fen}
+                            fen={activePuzzle?.fen}
                             isLoading={loading}
-                            orientation="white" // We'll fix this dynamic orientation later
+                            orientation="white"
                         />
                     )}
                 </div>
