@@ -15,7 +15,7 @@ const LessonPage: React.FC = () => {
 
     // Phase 3: Game Logic (The Judge)
     // Key is crucial: Force re-initialization of hook and logic when puzzle changes
-    const { fen, dests, status, handleUserMove, turn } = useGameLogic(activePuzzle);
+    const { fen, dests, status, handleUserMove, turn, feedback } = useGameLogic(activePuzzle);
 
     const userColor = turn === 'w' ? 'white' : 'black';
 
@@ -40,6 +40,21 @@ const LessonPage: React.FC = () => {
                             <div className="bg-green-500 text-white px-6 py-3 rounded-full font-bold shadow-xl text-xl flex items-center gap-2">
                                 <span className="material-symbols-outlined">check_circle</span>
                                 ¡Correcto!
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Feedback/Error Toast */}
+                    {feedback?.type === 'error' && status !== 'solved' && (
+                        <div className="absolute top-10 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300 w-3/4 md:w-auto">
+                            <div className="bg-red-500 text-white px-6 py-4 rounded-xl shadow-2xl flex flex-col items-center text-center gap-1 border-2 border-red-400">
+                                <div className="flex items-center gap-2 font-bold text-lg">
+                                    <span className="material-symbols-outlined">error</span>
+                                    <span>{feedback.message}</span>
+                                </div>
+                                {feedback.hint && (
+                                    <span className="text-red-100 text-sm italic bg-red-600/30 px-3 py-1 rounded-full">{feedback.hint}</span>
+                                )}
                             </div>
                         </div>
                     )}
