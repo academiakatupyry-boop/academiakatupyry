@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-interface Puzzle {
+export interface Puzzle {
     id: string;
     fen: string;
     moves: string;

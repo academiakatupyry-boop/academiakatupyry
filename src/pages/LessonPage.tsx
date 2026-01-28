@@ -15,7 +15,9 @@ const LessonPage: React.FC = () => {
 
     // Phase 3: Game Logic (The Judge)
     // Key is crucial: Force re-initialization of hook and logic when puzzle changes
-    const { fen, dests, status, handleUserMove } = useGameLogic(activePuzzle);
+    const { fen, dests, status, handleUserMove, turn } = useGameLogic(activePuzzle);
+
+    const userColor = turn === 'w' ? 'white' : 'black';
 
     // Phase 4: Progression Handler
     const handleNextPuzzle = () => {
