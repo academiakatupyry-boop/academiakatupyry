@@ -18,6 +18,7 @@ const LessonPage: React.FC = () => {
     const { fen, dests, status, handleUserMove, turn } = useGameLogic(activePuzzle);
 
     const userColor = turn === 'w' ? 'white' : 'black';
+    console.log("LESSON PAGE:", { turn, userColor, status });
 
     // Phase 4: Progression Handler
     const handleNextPuzzle = () => {

@@ -26,39 +26,27 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
 
             // If API exists, update it
             if (apiRef.current) {
+                console.log("BOARD UPDATE:", { fen, orientation, turnColor: orientation, destsSize: dests?.size });
                 apiRef.current.set({
-                    fen: fen,
-                    dests: dests,
-                    orientation: orientation, // Fix: Explicitly update board rotation
-                    turnColor: orientation === 'white' ? 'white' : 'black',
-                    movable: {
-                        color: orientation === 'white' ? 'white' : 'black',
-                        free: false,
-                        dests: dests
-                    }
-                });
-            } else {
-                // First initialization
-                const api = Chessground(boardRef.current, {
-                    fen: fen,
-                    orientation: orientation,
-                    coordinates: true,
-                    movable: {
-                        free: false,
-                        color: undefined,
+                    apiRef.current.set({
+                        fen: fen,
                         dests: dests,
-                        showDests: true
-                    },
-                    events: {
-                        move: (orig, dest) => {
-                            if (onMove) onMove(orig, dest);
+                        orientation: orientation, // Fix: Explicitly update board rotation
+                        turnColor: orientation === 'white' ? 'white' : 'black',
+                        movable: {
+                            color: orientation === 'white' ? 'white' : 'black',
+                            showDests: true
+                        },
+                        events: {
+                            move: (orig, dest) => {
+                                if (onMove) onMove(orig, dest);
+                            }
                         }
-                    }
-                });
-                apiRef.current = api;
-            }
+                    });
+                    apiRef.current = api;
+                }
         }
-    }, [fen, orientation, isLoading, dests]);
+        }, [fen, orientation, isLoading, dests]);
 
     // Clean up on unmount ONLY
     useEffect(() => {

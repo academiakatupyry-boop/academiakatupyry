@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Chess } from 'chess.js';
+import { Chess, Color } from 'chess.js';
 import { Puzzle } from '../../../hooks/usePuzzles';
 
 // Helper to convert chess.js moves to Chessground dests
@@ -12,11 +12,13 @@ const toDests = (chess: Chess) => {
     return dests;
 };
 
+import { Color } from 'chess.js';
+
 export const useGameLogic = (puzzle: Puzzle | null) => {
     const [game, setGame] = useState(new Chess());
     const [fen, setFen] = useState('start');
     const [dests, setDests] = useState(new Map());
-    const [turn, setTurn] = useState<"white" | "black">('white');
+    const [turn, setTurn] = useState<Color>('w'); // 'w' | 'b'
     const [status, setStatus] = useState<'idle' | 'playing' | 'solved' | 'failed'>('idle');
 
     // Refs for mutable state not needing re-renders (loop control)
