@@ -42,7 +42,6 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                     }
                 });
             } else {
-            } else {
                 // First initialization
                 const api = Chessground(boardRef.current, {
                     fen: fen,
