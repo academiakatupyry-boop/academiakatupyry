@@ -26,12 +26,33 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
 
             // If API exists, update it
             if (apiRef.current) {
-                console.log("BOARD UPDATE:", { fen, orientation, turnColor: orientation, destsSize: dests?.size });
                 apiRef.current.set({
                     apiRef.current.set({
                         fen: fen,
                         dests: dests,
                         orientation: orientation, // Fix: Explicitly update board rotation
+                        turnColor: orientation === 'white' ? 'white' : 'black',
+                        movable: {
+                            fen: fen,
+                            dests: dests,
+                            orientation: orientation,
+                            turnColor: orientation === 'white' ? 'white' : 'black',
+                            movable: {
+                                color: orientation === 'white' ? 'white' : 'black',
+                                showDests: true
+                            },
+                            events: {
+                                move: (orig, dest) => {
+                                    if (onMove) onMove(orig, dest);
+                                }
+                            }
+                        });
+                } else {
+                    // First initialization
+                    const api = Chessground(boardRef.current, {
+                        fen: fen,
+                        dests: dests,
+                        orientation: orientation,
                         turnColor: orientation === 'white' ? 'white' : 'black',
                         movable: {
                             color: orientation === 'white' ? 'white' : 'black',
