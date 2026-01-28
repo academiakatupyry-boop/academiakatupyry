@@ -249,6 +249,7 @@ const ActivePuzzle: React.FC<{
                 </div>
             ) : (
                 <div
+                    key={puzzle.id} // Extra safety: Force DOM element recreation
                     ref={boardRef}
                     className={`
                     cg-wrap
@@ -413,7 +414,7 @@ const LessonPage: React.FC = () => {
                 {/* ACTIVE PUZZLE RENDERING - THE KEY IS THE MAGIC */}
                 {!loading && puzzles[currentPuzzleIndex] ? (
                     <ActivePuzzle
-                        key={puzzles[currentPuzzleIndex].id} // FORCE REMOUNT ON INDEX CHANGE
+                        key={`${puzzles[currentPuzzleIndex].id}-${currentPuzzleIndex}`} // FORCE COMPONENT DESTRUCTION & REMOUNT
                         puzzle={puzzles[currentPuzzleIndex]}
                         onSuccess={handleSuccess}
                         onFail={handleFail}
