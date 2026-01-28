@@ -1,17 +1,29 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BaseBoard } from '../features/learning/components/BaseBoard';
+import { useCurrentPuzzle } from '../features/learning/hooks/useCurrentPuzzle';
 
 const LessonPage: React.FC = () => {
     const { topicId } = useParams<{ topicId: string }>();
     const navigate = useNavigate();
+    const { puzzle, loading, error } = useCurrentPuzzle();
 
     return (
         <div className="w-full h-screen bg-slate-50 flex flex-col md:flex-row overflow-hidden font-body text-slate-800">
             {/* 1. Main Content Area (Board) */}
             <div className="flex-1 order-1 md:order-2 flex items-center justify-center p-2 md:p-0 relative bg-slate-100">
-                <div className="w-[min(90vw,85vh)] aspect-square shadow-xl rounded-sm">
-                    <BaseBoard />
+                <div className="w-[min(90vw,85vh)] aspect-square shadow-xl rounded-sm relative">
+                    {error ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-red-50 rounded-sm">
+                            <p className="text-red-500 font-bold">{error}</p>
+                        </div>
+                    ) : (
+                        <BaseBoard
+                            fen={puzzle?.fen}
+                            isLoading={loading}
+                            orientation="white" // We'll fix this dynamic orientation later
+                        />
+                    )}
                 </div>
             </div>
 
