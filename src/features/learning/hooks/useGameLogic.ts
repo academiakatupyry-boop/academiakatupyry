@@ -21,6 +21,8 @@ export const useGameLogic = (puzzle: Puzzle | null) => {
     const [turn, setTurn] = useState<Color>('w'); // 'w' | 'b'
     const [status, setStatus] = useState<'idle' | 'playing' | 'solved' | 'failed'>('idle');
 
+    const [feedback, setFeedback] = useState<{ type: 'success' | 'error' | 'info'; message: string; hint?: string } | null>(null);
+
     // Refs for mutable state not needing re-renders (loop control)
     const solutionMoves = useRef<string[]>([]);
     const currentMoveIndex = useRef(0);
@@ -36,6 +38,7 @@ export const useGameLogic = (puzzle: Puzzle | null) => {
         setFen(newGame.fen());
         setTurn(newGame.turn());
         setStatus('idle');
+        setFeedback(null); // Reset feedback
 
         solutionMoves.current = puzzle.moves.split(' ');
         currentMoveIndex.current = 0;
@@ -74,17 +77,23 @@ export const useGameLogic = (puzzle: Puzzle | null) => {
         }
     };
 
+    // Generate Contextual Hint
+    const generateHint = (tempGame: Chess): string => {
+        if (tempGame.isCheck()) return "¡Cuidado! Eso da jaque, pero no es mate en 1.";
+        if (tempGame.isStalemate()) return "¡Ahogado! Has dejado al rey sin movimientos legales.";
+        if (tempGame.isDraw()) return "Esa jugada forzaría tablas.";
+        // Generic hints
+        return "Esa pieza no da mate en 1. Busca ataques directos al Rey.";
+    };
+
     // Handle User Interaction
     const handleUserMove = useCallback((orig: string, dest: string) => {
         if (status !== 'playing') return false;
 
         // 1. Check if move is valid in chess rules
-        const potentialMove = { from: orig, to: dest, promotion: 'q' }; // Always promote to queen for simplicity for now
+        const potentialMove = { from: orig, to: dest, promotion: 'q' };
 
-        // We clone the game to test the move without modifying the actual game state yet
-        // actually chess.js .move() returns null if invalid, so we can just try it.
-        // But for "correctness" check, we need to convert to UCI (e2e4) and compare with solution string.
-
+        // Test move validity without modifying main game
         const tempGame = new Chess(gameRef.current.fen());
         const moveObject = tempGame.move(potentialMove);
 
@@ -100,40 +109,41 @@ export const useGameLogic = (puzzle: Puzzle | null) => {
             // CORRECT MOVE
             makeMoveInEngine(potentialMove); // Apply to real game
             updateGameState();
+            setFeedback({ type: 'success', message: '¡Excelente!' }); // Immediate positive feedback
             currentMoveIndex.current++; // Advance index
 
             // Check if solved
             if (currentMoveIndex.current >= solutionMoves.current.length) {
                 setStatus('solved');
             } else {
-                // Play Opponent Response (if any)
+                // Play Opponent Response
                 setTimeout(() => {
                     const responseMove = solutionMoves.current[currentMoveIndex.current];
                     if (responseMove) {
-                        makeMoveInEngine(responseMove); // UCI string works directly usually? No, chess.js move() takes string or object.
-                        // chess.js .move('e2e4', {loose: true}) doesn't accept UCI directly easily in strict mode sometimes.
-                        // Ideally we parse UCI: from=e2, to=e4, promo=...
-                        const from = responseMove.substring(0, 2);
-                        const to = responseMove.substring(2, 4);
-                        const promotion = responseMove.length > 4 ? responseMove[4] : undefined;
-
-                        makeMoveInEngine({ from, to, promotion });
+                        makeMoveInEngine({ from: responseMove.substring(0, 2), to: responseMove.substring(2, 4), promotion: responseMove[4] });
                         currentMoveIndex.current++;
                         updateGameState();
                     } else {
-                        setStatus('solved'); // No response left, solved?
+                        setStatus('solved');
                     }
                 }, 500);
             }
             return true;
         } else {
-            // INCORRECT MOVE
-            // Do not apply to game.
-            // Maybe handle failed state or just let user retry?
-            // User requested: "Devuelve la pieza a su lugar y muestra mensaje"
-            // So we return false (chessground will snapback often if we control fen)
-            // or we just don't update state.
-            console.log("Incorrect move. Expected:", expectedMove, "Got:", uciMove);
+            // INCORRECT MOVE (but legal chess move)
+            // Generate hint based on the resulting board state if that move *were* played (using tempGame)
+            const hint = generateHint(tempGame);
+
+            setFeedback({
+                type: 'error',
+                message: 'Jugada incorrecta',
+                hint: hint
+            });
+
+            // Clear feedback after a few seconds? Or keep it until next attempt?
+            // Let's keep it until next attempt or make it transient in LessonPage.
+
+            // Return false ensures Chessground snaps back the piece (visual reset)
             return false;
         }
 
@@ -144,6 +154,7 @@ export const useGameLogic = (puzzle: Puzzle | null) => {
         turn,
         dests,
         status,
+        feedback,
         handleUserMove
     };
 };
