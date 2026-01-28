@@ -1,21 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BaseBoard } from '../features/learning/components/BaseBoard';
 import { usePuzzles } from '../hooks/usePuzzles';
+import { useGameLogic } from '../features/learning/hooks/useGameLogic';
 
 const LessonPage: React.FC = () => {
     const { topicId } = useParams<{ topicId: string }>();
     const navigate = useNavigate();
     const { puzzles, loading, error } = usePuzzles();
 
-    // Take the first puzzle if available
-    const activePuzzle = puzzles.length > 0 ? puzzles[0] : null;
+    // Phase 4: Progression State
+    const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
+    const activePuzzle = puzzles.length > 0 ? puzzles[currentPuzzleIndex] : null;
+
+    // Phase 3: Game Logic (The Judge)
+    // Key is crucial: Force re-initialization of hook and logic when puzzle changes
+    const { fen, dests, status, handleUserMove } = useGameLogic(activePuzzle);
+
+    // Phase 4: Progression Handler
+    const handleNextPuzzle = () => {
+        if (currentPuzzleIndex < puzzles.length - 1) {
+            setCurrentPuzzleIndex(prev => prev + 1);
+        } else {
+            console.log("Lesson Complete!");
+            // TODO: Show Completion Modal
+        }
+    };
 
     return (
         <div className="w-full h-screen bg-slate-50 flex flex-col md:flex-row overflow-hidden font-body text-slate-800">
             {/* 1. Main Content Area (Board) */}
             <div className="flex-1 order-1 md:order-2 flex items-center justify-center p-2 md:p-0 relative bg-slate-100">
                 <div className="w-[min(90vw,85vh)] aspect-square shadow-xl rounded-sm relative">
+                    {/* Success Overlay */}
+                    {status === 'solved' && (
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 animate-bounce">
+                            <div className="bg-green-500 text-white px-6 py-3 rounded-full font-bold shadow-xl text-xl flex items-center gap-2">
+                                <span className="material-symbols-outlined">check_circle</span>
+                                ¡Correcto!
+                            </div>
+                        </div>
+                    )}
+
                     {error ? (
                         <div className="absolute inset-0 flex items-center justify-center bg-red-50 rounded-sm">
                             <p className="text-red-500 font-bold">{error}</p>
@@ -26,9 +52,15 @@ const LessonPage: React.FC = () => {
                         </div>
                     ) : (
                         <BaseBoard
-                            fen={activePuzzle?.fen}
+                            // CRITICAL: Key ensures full reset on puzzle change
+                            key={activePuzzle?.id}
+                            fen={fen}
                             isLoading={loading}
                             orientation="white"
+                            dests={dests}
+                            onMove={(orig, dest) => {
+                                handleUserMove(orig, dest);
+                            }}
                         />
                     )}
                 </div>
@@ -55,8 +87,7 @@ const LessonPage: React.FC = () => {
                         <div>
                             <h3 className="text-blue-900 font-bold text-sm mb-1">Tu Misión</h3>
                             <p className="text-sm text-blue-700 leading-relaxed">
-                                Juegas para ganar. <br />
-                                <span className="opacity-80 text-xs mt-1 block font-medium">Reconstruyendo...</span>
+                                Encuentra el mejor movimiento para ganar.
                             </p>
                         </div>
                     </div>
@@ -64,14 +95,16 @@ const LessonPage: React.FC = () => {
                     {/* Progress */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <div className="flex justify-between text-xs font-bold mb-3 uppercase text-slate-400">
-                            <span>Progreso</span>
-                            <span className="text-slate-600">0 / 5</span>
+                            <span>Ejercicio {currentPuzzleIndex + 1} de {puzzles.length || '?'}</span>
+                            <span className="text-slate-600">{currentPuzzleIndex} / {puzzles.length || '?'}</span>
                         </div>
                         <div className="flex gap-2.5">
-                            {Array.from({ length: 5 }).map((_, i) => (
+                            {Array.from({ length: Math.min(puzzles.length || 5, 10) }).map((_, i) => (
                                 <div
                                     key={i}
-                                    className="h-2.5 flex-1 rounded-full bg-slate-200 transition-all duration-300"
+                                    className={`h-2.5 flex-1 rounded-full transition-all duration-300 ${i < currentPuzzleIndex ? 'bg-green-500' :
+                                            i === currentPuzzleIndex ? 'bg-blue-500' : 'bg-slate-200'
+                                        }`}
                                 ></div>
                             ))}
                         </div>
@@ -79,10 +112,20 @@ const LessonPage: React.FC = () => {
                 </div>
 
                 <div className="p-4 border-t border-slate-100 bg-slate-50">
-                    <button onClick={() => navigate('/learn')} className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-red-500 py-2.5 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 shadow-sm uppercase tracking-wide">
-                        <span className="material-symbols-outlined text-lg">flag</span>
-                        Rendirse
-                    </button>
+                    {status === 'solved' ? (
+                        <button
+                            onClick={handleNextPuzzle}
+                            className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md uppercase tracking-wide animate-pulse"
+                        >
+                            <span>Siguiente Ejercicio</span>
+                            <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                        </button>
+                    ) : (
+                        <button onClick={() => navigate('/learn')} className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-red-500 py-2.5 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2 shadow-sm uppercase tracking-wide">
+                            <span className="material-symbols-outlined text-lg">flag</span>
+                            Rendirse
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

@@ -6,42 +6,65 @@ interface BaseBoardProps {
     fen?: string;
     orientation?: 'white' | 'black';
     isLoading?: boolean;
+    dests?: Map<string, string[]>;
+    onMove?: (orig: string, dest: string) => void;
 }
 
 export const BaseBoard: React.FC<BaseBoardProps> = ({
     fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
     orientation = 'white',
-    isLoading = false
+    isLoading = false,
+    dests,
+    onMove
 }) => {
     const boardRef = useRef<HTMLDivElement>(null);
     const apiRef = useRef<any>(null);
 
+    // Initialize & Update Board
     useEffect(() => {
-        if (boardRef.current && !isLoading) { // Only initialize if not loading
-            console.log("Initialize BaseBoard");
-            const api = Chessground(boardRef.current, {
-                fen: fen,
-                orientation: orientation,
-                coordinates: true, // Requested feature
-                movable: {
-                    free: true,
-                    color: 'both' as any, // Force 'both' to allow moving any piece
-                    dests: undefined // Allow all destinations
-                },
-                viewOnly: false, // Explicitly enable interaction
-                events: {
-                    move: (orig, dest) => {
-                        console.log(`Pieza movida: ${orig} -> ${dest}`);
-                    }
-                }
-            });
-            apiRef.current = api;
+        if (boardRef.current && !isLoading) {
 
-            return () => {
-                api.destroy();
-            };
+            // If API exists, update it
+            if (apiRef.current) {
+                apiRef.current.set({
+                    fen: fen,
+                    dests: dests,
+                    turnColor: orientation === 'white' ? 'white' : 'black',
+                    movable: {
+                        color: orientation === 'white' ? 'white' : 'black',
+                        free: false,
+                        dests: dests
+                    }
+                });
+            } else {
+                // First initialization
+                const api = Chessground(boardRef.current, {
+                    fen: fen,
+                    orientation: orientation,
+                    coordinates: true,
+                    movable: {
+                        free: false,
+                        color: undefined,
+                        dests: dests,
+                        showDests: true
+                    },
+                    events: {
+                        move: (orig, dest) => {
+                            if (onMove) onMove(orig, dest);
+                        }
+                    }
+                });
+                apiRef.current = api;
+            }
         }
-    }, [fen, orientation]);
+    }, [fen, orientation, isLoading, dests]);
+
+    // Clean up on unmount ONLY
+    useEffect(() => {
+        return () => {
+            if (apiRef.current) apiRef.current.destroy();
+        };
+    }, []);
 
     return (
         <div className="relative w-full h-full aspect-square">
