@@ -131,13 +131,22 @@ const ActivePuzzle: React.FC<{
                 }
 
                 // Update Visuals
+                const validDests = toDests(engine);
+                console.log(`[Puzzle ${puzzle.id}] Opponent moved. New FEN: ${engine.fen()}`);
+                console.log(`[Puzzle ${puzzle.id}] UserSide: ${userSide}, EngineTurn: ${engine.turn()}`);
+                console.log(`[Puzzle ${puzzle.id}] Legal moves: ${validDests.size} keys`);
+
+                if (validDests.size === 0) {
+                    console.error(`[Puzzle ${puzzle.id}] NO LEGAL MOVES! Game might be over or engine state invalid.`);
+                }
+
                 cg.set({
                     fen: engine.fen(), // Use engine.fen()
                     lastMove: [opponentFrom, opponentTo],
                     movable: {
                         free: false,
                         color: userSide,
-                        dests: toDests(engine) as any // Use toDests(engine)
+                        dests: validDests as any
                     }
                 });
 
