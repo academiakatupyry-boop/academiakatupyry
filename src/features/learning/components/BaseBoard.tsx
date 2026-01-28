@@ -29,6 +29,7 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                 apiRef.current.set({
                     fen: fen,
                     dests: dests,
+                    orientation: orientation, // Fix: Explicitly update board rotation
                     turnColor: orientation === 'white' ? 'white' : 'black',
                     movable: {
                         color: orientation === 'white' ? 'white' : 'black',
