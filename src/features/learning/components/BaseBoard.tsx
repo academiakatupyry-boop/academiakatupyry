@@ -22,10 +22,11 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                 orientation: orientation,
                 coordinates: true, // Requested feature
                 movable: {
-                    free: true, // Allow ANY move
-                    color: undefined, // Allow moving pieces of both colors (undefined usually allows this in free mode)
-                    dests: undefined // No specific destinations
+                    free: true,
+                    color: 'both' as any, // Force 'both' to allow moving any piece
+                    dests: undefined // Allow all destinations
                 },
+                viewOnly: false, // Explicitly enable interaction
                 events: {
                     move: (orig, dest) => {
                         console.log(`Pieza movida: ${orig} -> ${dest}`);
