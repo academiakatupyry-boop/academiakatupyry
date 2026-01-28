@@ -92,14 +92,19 @@ async function main() {
         // CHECK 1: Theme
         if (!themes || !themes.includes(TARGET_THEME)) continue;
 
-        // CHECK 2: White to Move?
-        // FEN structure: "rnbqk... w KQkq - 0 1"
-        // The second part is 'w' or 'b'
+        // CHECK 2: User wants to PLAY as White.
+        // In Lichess DB, FEN is the state BEFORE the setup move.
+        // The first move in 'moves' is the Opponent's setup move.
+        // So:
+        // If FEN is 'w', White plays setup -> Turn becomes Black -> User plays Black.
+        // If FEN is 'b', Black plays setup -> Turn becomes White -> User plays White.
+        // Therefore, we must search for 'b' to let the user play 'w'.
+
         const parts = fen.split(' ');
         if (parts.length < 2) continue; // Invalid FEN
         const activeColor = parts[1];
 
-        if (activeColor === 'w') {
+        if (activeColor === 'b') { // CHANGED: 'w' -> 'b'
             puzzlesToUpload.push({
                 id: id,
                 fen: fen,
