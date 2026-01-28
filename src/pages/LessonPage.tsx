@@ -140,9 +140,12 @@ const ActivePuzzle: React.FC<{
         // Cleanup
         return () => {
             clearTimeout(timer);
-            cg.destroy();
+            if (apiRef.current) {
+                apiRef.current.destroy();
+                apiRef.current = null;
+            }
         };
-    }, []); // Empty dependency array! We depend on 'key' from parent to re-mount.
+    }, [puzzle.id]); // CRITICAL: Reset when puzzle ID changes
 
     const handleUserMove = (orig: string, dest: string, allMoves: string[], engine: Chess, playerColor: 'white' | 'black') => {
         const currentIndex = moveProgress.current;
