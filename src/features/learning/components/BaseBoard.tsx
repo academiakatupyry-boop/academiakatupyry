@@ -8,6 +8,7 @@ interface BaseBoardProps {
     isLoading?: boolean;
     dests?: Map<string, string[]>;
     onMove?: (orig: string, dest: string) => void;
+    onSelect?: (key: string) => void;
     /** Arbitrary value to force board re-sync (e.g. on invalid move feedback) */
     triggerUpdate?: any;
 }
@@ -18,6 +19,7 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
     isLoading = false,
     dests,
     onMove,
+    onSelect,
     triggerUpdate
 }) => {
     const boardRef = useRef<HTMLDivElement>(null);
@@ -41,6 +43,9 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                     events: {
                         move: (orig, dest) => {
                             if (onMove) onMove(orig, dest);
+                        },
+                        select: (key) => {
+                            if (onSelect) onSelect(key);
                         }
                     }
                 });
@@ -56,40 +61,42 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                         showDests: true
                     },
                     events: {
-                        move: (orig, dest) => {
-                            if (onMove) onMove(orig, dest);
-                        }
+                        if(onMove) onMove(orig, dest);
+                    },
+                    select: (key) => {
+                        if (onSelect) onSelect(key);
                     }
+                }
                 });
-                apiRef.current = api;
-            }
+    apiRef.current = api;
+}
         }
     }, [fen, orientation, isLoading, dests, triggerUpdate]);
 
-    // Clean up on unmount ONLY
-    useEffect(() => {
-        return () => {
-            if (apiRef.current) apiRef.current.destroy();
-        };
-    }, []);
+// Clean up on unmount ONLY
+useEffect(() => {
+    return () => {
+        if (apiRef.current) apiRef.current.destroy();
+    };
+}, []);
 
-    return (
-        <div className="relative w-full h-full aspect-square">
-            <div
-                ref={boardRef}
-                className="cg-wrap shadow-lg rounded-sm bg-white ring-4 ring-white"
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    aspectRatio: '1/1'
-                }}
-            />
-            {isLoading && (
-                <div className="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center rounded-sm backdrop-blur-sm">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-island mb-3"></div>
-                    <span className="text-slate-600 font-bold text-sm tracking-wide">Cargando tablero...</span>
-                </div>
-            )}
-        </div>
-    );
+return (
+    <div className="relative w-full h-full aspect-square">
+        <div
+            ref={boardRef}
+            className="cg-wrap shadow-lg rounded-sm bg-white ring-4 ring-white"
+            style={{
+                width: '100%',
+                height: '100%',
+                aspectRatio: '1/1'
+            }}
+        />
+        {isLoading && (
+            <div className="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center rounded-sm backdrop-blur-sm">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-island mb-3"></div>
+                <span className="text-slate-600 font-bold text-sm tracking-wide">Cargando tablero...</span>
+            </div>
+        )}
+    </div>
+);
 };

@@ -15,7 +15,7 @@ const LessonPage: React.FC = () => {
 
     // Phase 3: Game Logic (The Judge)
     // Key is crucial: Force re-initialization of hook and logic when puzzle changes
-    const { fen, dests, status, handleUserMove, turn, feedback } = useGameLogic(activePuzzle);
+    const { fen, dests, status, handleUserMove, turn, feedback, clearFeedback } = useGameLogic(activePuzzle);
 
     const userColor = turn === 'w' ? 'white' : 'black';
 
@@ -44,16 +44,16 @@ const LessonPage: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Feedback/Error Toast */}
+                    {/* Feedback/Error Toast - Less intrusive position (Bottom Center) */}
                     {feedback?.type === 'error' && status !== 'solved' && (
-                        <div className="absolute top-10 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300 w-3/4 md:w-auto">
-                            <div className="bg-red-500 text-white px-6 py-4 rounded-xl shadow-2xl flex flex-col items-center text-center gap-1 border-2 border-red-400">
-                                <div className="flex items-center gap-2 font-bold text-lg">
-                                    <span className="material-symbols-outlined">error</span>
+                        <div className="absolute top-12 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-200 pointer-events-none w-3/4 md:w-auto">
+                            <div className="bg-red-500/95 backdrop-blur-sm text-white px-5 py-3 rounded-lg shadow-xl flex flex-col items-center text-center gap-1 border border-red-400/50 ring-2 ring-white/20">
+                                <div className="flex items-center gap-2 font-bold text-base">
+                                    <span className="material-symbols-outlined text-xl">error</span>
                                     <span>{feedback.message}</span>
                                 </div>
                                 {feedback.hint && (
-                                    <span className="text-red-100 text-sm italic bg-red-600/30 px-3 py-1 rounded-full">{feedback.hint}</span>
+                                    <span className="text-red-50 text-xs italic bg-black/10 px-2 py-0.5 rounded-full">{feedback.hint}</span>
                                 )}
                             </div>
                         </div>
@@ -78,6 +78,9 @@ const LessonPage: React.FC = () => {
                             triggerUpdate={feedback} // Force reset on feedback change (snapback)
                             onMove={(orig, dest) => {
                                 handleUserMove(orig, dest);
+                            }}
+                            onSelect={() => {
+                                clearFeedback(); // Clear error immediately when user touches pieces
                             }}
                         />
                     )}
