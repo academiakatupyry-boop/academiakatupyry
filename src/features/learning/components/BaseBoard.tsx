@@ -61,10 +61,12 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                         showDests: true
                     },
                     events: {
-                        if(onMove) onMove(orig, dest);
-                    },
-                    select: (key) => {
-                        if (onSelect) onSelect(key);
+                        move: (orig, dest) => {
+                            if (onMove) onMove(orig, dest);
+                        },
+                        select: (key) => {
+                            if (onSelect) onSelect(key);
+                        }
                     }
                 }
                 });
