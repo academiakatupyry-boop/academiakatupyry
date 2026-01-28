@@ -87,7 +87,15 @@ const LessonPage: React.FC = () => {
                         <div>
                             <h3 className="text-blue-900 font-bold text-sm mb-1">Tu Misión</h3>
                             <p className="text-sm text-blue-700 leading-relaxed">
-                                Encuentra el mejor movimiento para ganar.
+                                {status === 'solved' ? (
+                                    <span className="text-green-600 font-bold">¡Bien hecho!</span>
+                                ) : (
+                                    <span>
+                                        Juegan <strong className="uppercase">{userColor === 'white' ? 'Blancas' : 'Negras'}</strong>
+                                    </span>
+                                )}
+                                <br />
+                                <span className="opacity-80 text-xs mt-1 block font-medium">Encuentra el mate en 1.</span>
                             </p>
                         </div>
                     </div>
@@ -103,7 +111,7 @@ const LessonPage: React.FC = () => {
                                 <div
                                     key={i}
                                     className={`h-2.5 flex-1 rounded-full transition-all duration-300 ${i < currentPuzzleIndex ? 'bg-green-500' :
-                                            i === currentPuzzleIndex ? 'bg-blue-500' : 'bg-slate-200'
+                                        i === currentPuzzleIndex ? 'bg-blue-500' : 'bg-slate-200'
                                         }`}
                                 ></div>
                             ))}
