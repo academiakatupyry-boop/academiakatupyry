@@ -75,6 +75,7 @@ const LessonPage: React.FC = () => {
                             isLoading={loading}
                             orientation="white"
                             dests={dests}
+                            triggerUpdate={feedback} // Force reset on feedback change (snapback)
                             onMove={(orig, dest) => {
                                 handleUserMove(orig, dest);
                             }}

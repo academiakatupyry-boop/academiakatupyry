@@ -8,6 +8,8 @@ interface BaseBoardProps {
     isLoading?: boolean;
     dests?: Map<string, string[]>;
     onMove?: (orig: string, dest: string) => void;
+    /** Arbitrary value to force board re-sync (e.g. on invalid move feedback) */
+    triggerUpdate?: any;
 }
 
 export const BaseBoard: React.FC<BaseBoardProps> = ({
@@ -15,7 +17,8 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
     orientation = 'white',
     isLoading = false,
     dests,
-    onMove
+    onMove,
+    triggerUpdate
 }) => {
     const boardRef = useRef<HTMLDivElement>(null);
     const apiRef = useRef<any>(null);
@@ -61,7 +64,7 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                 apiRef.current = api;
             }
         }
-    }, [fen, orientation, isLoading, dests]);
+    }, [fen, orientation, isLoading, dests, triggerUpdate]);
 
     // Clean up on unmount ONLY
     useEffect(() => {
