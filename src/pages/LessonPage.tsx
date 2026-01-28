@@ -114,10 +114,21 @@ const ActivePuzzle: React.FC<{
         apiRef.current = cg;
 
         // 4. Initial Opponent Move (Auto-play sequence)
+        console.log(`[Puzzle ${puzzle.id}] Waiting to play opponent move: ${opponentMove}`);
+
         const timer = setTimeout(() => {
             try {
+                // Extract promotion if present (e.g. "a7a8q")
+                const promotion = opponentMove.length > 4 ? opponentMove[4] : undefined;
+
+                console.log(`[Puzzle ${puzzle.id}] Playing opponent move: ${opponentMove} (promo: ${promotion})`);
+
                 // Apply move to engine (use local variable)
-                engine.move({ from: opponentFrom, to: opponentTo });
+                const moveResult = engine.move({ from: opponentFrom, to: opponentTo, promotion });
+
+                if (!moveResult) {
+                    throw new Error(`Illegal opponent move: ${opponentMove} in FEN ${engine.fen()}`);
+                }
 
                 // Update Visuals
                 cg.set({
@@ -132,8 +143,11 @@ const ActivePuzzle: React.FC<{
 
                 playAudio('move');
                 setStatus('user'); // Unlock for user
+                console.log(`[Puzzle ${puzzle.id}] Status set to 'user'. Board unlocked.`);
             } catch (e) {
-                console.error("Error executing initial opponent move:", e);
+                console.error(`[Puzzle ${puzzle.id}] CRITICAL ERROR executing opponent move:`, e);
+                setStatus('error'); // Show error UI instead of freezing
+                setErrorMsg(`Error al mover oponente: ${opponentMove}`);
             }
         }, 800);
 
