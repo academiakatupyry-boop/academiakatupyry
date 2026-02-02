@@ -12,7 +12,7 @@ const toDests = (chess: Chess) => {
     return dests;
 };
 
-import { Color } from 'chess.js';
+
 
 export const useGameLogic = (puzzle: Puzzle | null) => {
     const [game, setGame] = useState(new Chess());
@@ -149,12 +149,15 @@ export const useGameLogic = (puzzle: Puzzle | null) => {
 
     }, [status]);
 
+    const clearFeedback = () => setFeedback(null);
+
     return {
         fen,
         turn,
         dests,
         status,
         feedback,
+        clearFeedback,
         handleUserMove
     };
 };

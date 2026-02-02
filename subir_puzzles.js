@@ -1,13 +1,25 @@
-const { createClient } = require('@supabase/supabase-js');
-const fs = require('fs');
+import { createClient } from '@supabase/supabase-js';
+import fs from 'fs';
+import path from 'path';
 
-// REEMPLAZA ESTOS DATOS con los de tu proyecto en Supabase (Settings > API)
-// Nota: Normalmente usaríamos variables de entorno, pero para este script manual
-// puedes pegarlas aquí o asegurarte de tener un archivo .env que cargues.
-// Por seguridad, intentaremos leer de process.env si usas 'dotenv' o puedes pegarlas directo.
+// Load .env manually if available
+let env = {};
+if (fs.existsSync('.env')) {
+    const envContent = fs.readFileSync('.env', 'utf8');
+    envContent.split('\n').forEach(line => {
+        const [k, v] = line.split('=');
+        if (k && v) env[k.trim()] = v.trim();
+    });
+}
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'TU_URL_DE_SUPABASE';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'TU_ANON_KEY';
+const supabaseUrl = process.env.VITE_SUPABASE_URL || env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+    console.error("❌ Error: Missing Supabase Credentials in .env or process.env");
+    process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function subirDatos() {

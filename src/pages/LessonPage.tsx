@@ -99,15 +99,15 @@ const LessonPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-2 space-y-2">
                     {/* Mission Card */}
-                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-                            <span className="material-symbols-outlined">psychology</span>
+                    <div className="bg-blue-50 p-2.5 rounded-xl border border-blue-100 flex gap-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                            <span className="material-symbols-outlined text-lg">psychology</span>
                         </div>
                         <div>
-                            <h3 className="text-blue-900 font-bold text-sm mb-1">Tu Misión</h3>
-                            <p className="text-sm text-blue-700 leading-relaxed">
+                            <h3 className="text-blue-900 font-bold text-sm mb-0.5">Tu Misión</h3>
+                            <p className="text-sm text-blue-700 leading-tight">
                                 {status === 'solved' ? (
                                     <span className="text-green-600 font-bold">¡Bien hecho!</span>
                                 ) : (
@@ -116,22 +116,22 @@ const LessonPage: React.FC = () => {
                                     </span>
                                 )}
                                 <br />
-                                <span className="opacity-80 text-xs mt-1 block font-medium">Encuentra el mate en 1.</span>
+                                <span className="opacity-80 text-xs mt-0.5 block font-medium">Encuentra el mate en 1.</span>
                             </p>
                         </div>
                     </div>
 
                     {/* Progress */}
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                        <div className="flex justify-between text-xs font-bold mb-3 uppercase text-slate-400">
+                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <div className="flex justify-between text-xs font-bold mb-1.5 uppercase text-slate-400">
                             <span>Ejercicio {currentPuzzleIndex + 1} de {puzzles.length || '?'}</span>
                             <span className="text-slate-600">{currentPuzzleIndex} / {puzzles.length || '?'}</span>
                         </div>
-                        <div className="flex gap-2.5">
+                        <div className="flex gap-1.5">
                             {Array.from({ length: Math.min(puzzles.length || 5, 10) }).map((_, i) => (
                                 <div
                                     key={i}
-                                    className={`h-2.5 flex-1 rounded-full transition-all duration-300 ${i < currentPuzzleIndex ? 'bg-green-500' :
+                                    className={`h-2 flex-1 rounded-full transition-all duration-300 ${i < currentPuzzleIndex ? 'bg-green-500' :
                                         i === currentPuzzleIndex ? 'bg-blue-500' : 'bg-slate-200'
                                         }`}
                                 ></div>
