@@ -94,7 +94,7 @@ const SubscriptionPage: React.FC = () => {
     ];
 
     const handleSubscribe = (planName: string, price: string) => {
-        const phoneNumber = '595981123456';
+        const phoneNumber = '595973875198';
         const message = `Hola! Quiero convertirme en *${planName}* (${price}). ¿Cómo realizo el pago?`;
         const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
