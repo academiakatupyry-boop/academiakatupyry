@@ -35,7 +35,7 @@ const PrototypeNav: React.FC = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="flex items-center gap-1 md:gap-2 overflow-x-auto hide-scrollbar px-2 mask-linear">
+                <nav className="hidden md:flex items-center gap-1 md:gap-2 overflow-x-auto hide-scrollbar px-2 mask-linear">
                     {screens.map(screen => {
                         const isActive = location.pathname === screen.path;
                         return (
