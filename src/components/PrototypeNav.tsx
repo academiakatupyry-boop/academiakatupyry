@@ -20,6 +20,7 @@ const PrototypeNav: React.FC = () => {
         { path: "/chronicles", label: "Noticias", icon: "auto_stories" },
         { path: "/market", label: "Tienda", icon: "storefront" },
         { path: "/schools", label: "Escuela", icon: "school" },
+        { path: "/parents", label: "Padres", icon: "family_star" },
         { path: "/profile", label: "Perfil", icon: "account_circle" }
     ];
 

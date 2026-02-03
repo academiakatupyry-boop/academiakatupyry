@@ -13,6 +13,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
 
     const navItems = [
         { path: '/schools', label: 'ESCUELAS', icon: 'domain' }, // Schools first
+        { path: '/parents', label: 'PARA PADRES', icon: 'family_star' }, // Parents added
         { path: '/fundamentals', label: 'FUNDAMENTOS', icon: 'menu_book' }, // Fundamentals promoted
         { path: '/learn', label: 'APRENDER', icon: 'school' },
         { path: '/board', label: 'JUGAR', icon: 'sports_esports' },

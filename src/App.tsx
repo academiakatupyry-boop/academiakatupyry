@@ -12,6 +12,8 @@ import ChroniclesPage from './pages/ChroniclesPage';
 import MarketPage from './pages/MarketPage';
 import SchoolsPage from './pages/SchoolsPage';
 import SchoolFormPage from './pages/SchoolFormPage';
+import ParentsPage from './pages/ParentsPage';
+import ParentsFormPage from './pages/ParentsFormPage';
 import ProfilePage from './pages/ProfilePage';
 import LearnPage from './pages/LearnPage';
 import LessonPage from './pages/LessonPage';
@@ -37,6 +39,8 @@ const App: React.FC = () => {
           <Route path="/market" element={<MarketPage />} />
           <Route path="/schools" element={<SchoolsPage />} />
           <Route path="/school-form" element={<SchoolFormPage />} />
+          <Route path="/parents" element={<ParentsPage />} />
+          <Route path="/parents-form" element={<ParentsFormPage />} />
           <Route path="/subscription" element={<SubscriptionPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/stats" element={<ProfilePage initialTab="Estadísticas" />} />
