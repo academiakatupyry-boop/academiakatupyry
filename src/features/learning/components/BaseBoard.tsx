@@ -33,12 +33,12 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
             if (apiRef.current) {
                 apiRef.current.set({
                     fen: fen,
-                    dests: dests,
-                    orientation: orientation,
+                    orientation: orientation as "white" | "black",
                     turnColor: orientation === 'white' ? 'white' : 'black',
                     movable: {
-                        color: orientation === 'white' ? 'white' : 'black',
-                        showDests: true
+                        color: (orientation === 'white' ? 'white' : 'black') as "white" | "black",
+                        showDests: true,
+                        dests: dests as any
                     },
                     events: {
                         move: (orig, dest) => {
@@ -53,12 +53,12 @@ export const BaseBoard: React.FC<BaseBoardProps> = ({
                 // First initialization
                 const api = Chessground(boardRef.current, {
                     fen: fen,
-                    dests: dests,
-                    orientation: orientation,
+                    orientation: orientation as "white" | "black",
                     turnColor: orientation === 'white' ? 'white' : 'black',
                     movable: {
-                        color: orientation === 'white' ? 'white' : 'black',
-                        showDests: true
+                        color: (orientation === 'white' ? 'white' : 'black') as "white" | "black",
+                        showDests: true,
+                        dests: dests as any
                     },
                     events: {
                         move: (orig, dest) => {
