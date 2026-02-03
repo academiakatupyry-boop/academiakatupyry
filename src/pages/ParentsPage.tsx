@@ -87,6 +87,94 @@ const ParentsPage: React.FC = () => {
                                 Estimula la búsqueda de soluciones originales ante situaciones nuevas y desafiantes.
                             </p>
                         </div>
+
+                        {/* Benefit 5 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-cyan-100 text-cyan-600">
+                                <span className="material-symbols-outlined text-3xl filled">extension</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Lógica</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Desarrolla el pensamiento estructurado y la comprensión de causa y efecto.
+                            </p>
+                        </div>
+
+                        {/* Benefit 6 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-pink-100 text-pink-600">
+                                <span className="material-symbols-outlined text-3xl filled">memory</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Memoria</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Mejora significativamente la retención de patrones visuales y secuencias.
+                            </p>
+                        </div>
+
+                        {/* Benefit 7 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-teal-100 text-teal-600">
+                                <span className="material-symbols-outlined text-3xl filled">hourglass_bottom</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Paciencia</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Enseña el valor de esperar el momento adecuado antes de actuar.
+                            </p>
+                        </div>
+
+                        {/* Benefit 8 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-orange-100 text-orange-600">
+                                <span className="material-symbols-outlined text-3xl filled">balance</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Decisiones</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Entrena la evaluación de riesgos y recompensas bajo presión de tiempo.
+                            </p>
+                        </div>
+
+                        {/* Benefit 9 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-red-100 text-red-600">
+                                <span className="material-symbols-outlined text-3xl filled">security</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Resiliencia</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Aprenden a manejar la derrota y a ver los errores como oportunidades.
+                            </p>
+                        </div>
+
+                        {/* Benefit 10 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-indigo-100 text-indigo-600">
+                                <span className="material-symbols-outlined text-3xl filled">map</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Planificación</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Fomenta el establecimiento de objetivos y estrategias a largo plazo.
+                            </p>
+                        </div>
+
+                        {/* Benefit 11 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-yellow-100 text-yellow-600">
+                                <span className="material-symbols-outlined text-3xl filled">handshake</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Deportividad</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                Inculca el respeto por el oponente y la aceptación de las reglas.
+                            </p>
+                        </div>
+
+                        {/* Benefit 12 */}
+                        <div className="flex flex-col items-start p-6 bg-white border-2 border-b-4 border-slate-200 rounded-2xl hover:-translate-y-1 transition-all duration-300 h-full">
+                            <div className="p-3 mb-4 rounded-2xl bg-slate-100 text-slate-600">
+                                <span className="material-symbols-outlined text-3xl filled">fitness_center</span>
+                            </div>
+                            <h3 className="font-display font-black text-xl text-slate-800 mb-2">Disciplina</h3>
+                            <p className="text-slate-500 font-bold text-sm leading-relaxed">
+                                La práctica constante es el único camino hacia la verdadera maestría.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
