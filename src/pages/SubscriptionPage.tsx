@@ -90,6 +90,28 @@ const SubscriptionPage: React.FC = () => {
             btnShadow: 'border-purple-800',
             textColor: 'text-purple-600',
             special: true
+        },
+        {
+            id: 'institucional',
+            name: 'Institucional',
+            role: 'Para Colegios',
+            price: '2.000.000',
+            period: '/ mes',
+            features: [
+                'Acceso para toda la institución',
+                'Sin necesidad de profesor presencial',
+                'Seguimiento de alumnos',
+                'Torneos Intercolegiales',
+                'Soporte Técnico Especializado'
+            ],
+            icon: 'domain',
+            color: 'bg-teal-600',
+            lightColor: 'bg-teal-50',
+            borderColor: 'border-teal-200',
+            btnColor: 'bg-teal-600',
+            btnShadow: 'border-teal-800',
+            textColor: 'text-teal-600',
+            special: false
         }
     ];
 
